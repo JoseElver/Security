@@ -2,13 +2,13 @@
   <div>
     <nav class="navbar navbar-dark bg-dark justify-content-between flex-nowrap flex-row">
       <div class="container">
-        <a class="navbar-brand float-left">Firebase Vue CRUD Example</a>
+        <a class="navbar-brand float-left">Security</a>
         <ul class="nav navbar-nav flex-row float-right">
           <li class="nav-item">
-            <router-link class="nav-link pr-3" to="/">Add User</router-link>
+            <router-link class="nav-link pr-3" to="/">Crear Hoja de Vida</router-link>
           </li>
           <li class="nav-item">
-            <router-link class="nav-link" to="/list">View Users</router-link>
+            <router-link class="nav-link" to="/list">Listado de usuarios</router-link>
           </li>
         </ul>
       </div>

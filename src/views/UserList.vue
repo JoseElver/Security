@@ -67,7 +67,7 @@
         methods: {
             deleteUser(id){
               if (window.confirm("Do you really want to delete?")) {
-                db.collection("users").doc(id).delete().then(() => {
+                db.collection("usuarios").doc(id).delete().then(() => {
                     console.log("Document deleted!");
                 })
                 .catch((error) => {
