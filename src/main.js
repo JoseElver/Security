@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import App from './App.vue'
+import Login from './views/Login.vue'
 import router from './router'
 import store from './store'
 import vuetify from './plugins/vuetify';
@@ -22,5 +23,5 @@ new Vue({
   router,
   store,
   vuetify,
-  render: h => h(App)
+  render: h => h(Login)
 }).$mount('#app')

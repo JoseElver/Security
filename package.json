@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "@babel/polyfill": "^7.4.4",
+    "@fortawesome/fontawesome": "^1.1.8",
     "@mdi/font": "5.9.55",
     "@syncfusion/ej2-vue-navigations": "^18.4.47",
     "@voorhoede/vue-accordion": "^0.2.1",

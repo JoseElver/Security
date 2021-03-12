@@ -26,9 +26,9 @@
                         <td>{{ usuario.email }}</td>
                         <td>{{ usuario.telefono }}</td>
                         <td>
-                            <router-link :to="{name: 'edit', params: { id: usuario.key }}" class="btn btn-primary">Edit
+                            <router-link :to="{name: 'edit', params: { id: usuario.key }}" class="btn btn-primary">Editar
                             </router-link>
-                            <button @click.prevent="deleteUser(usuario.key)" class="btn btn-danger">Delete</button>
+                            <button @click.prevent="deleteUser(usuario.key)" class="btn btn-danger">Eliminar</button>
                         </td>
                     </tr>
                 </tbody>
@@ -66,9 +66,9 @@
         },
         methods: {
             deleteUser(id){
-              if (window.confirm("Do you really want to delete?")) {
+              if (window.confirm("¿Estás seguro de eliminar el registro?")) {
                 db.collection("usuarios").doc(id).delete().then(() => {
-                    console.log("Document deleted!");
+                    console.log("Documento eliminado correctamente");
                 })
                 .catch((error) => {
                     console.error(error);

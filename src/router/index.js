@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
+import Login from '@/views/Login.vue'
 
 Vue.use(VueRouter)
 
@@ -18,6 +19,11 @@ const routes = [
     path: '/edit/:id',
     name: 'edit',
     component: () => import('../views/UserEdit')
+  },
+  {
+    path: '/Login',
+    name: 'Login',
+    component: Login
   },
 
   

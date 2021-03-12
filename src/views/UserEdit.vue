@@ -1,4 +1,6 @@
 <template>
+ <v-app id="inspire">
+     <v-container fluid>
     <div class="row justify-content-center">
         <div class="col-md-5">
             <h3 class="text-center">Actualizar usuario</h3>
@@ -42,13 +44,70 @@
                     <label>Teléfono</label>
                     <input type="text" class="form-control" v-model="usuario.telefono" required>
                 </div>
-
+        <label>Tipo de vivienda</label>
+              <v-select
+      v-model="usuario.vivienda" 
+      :items="tipoVivienda"
+      required
+      dense
+      solo
+      @change="$v.select.$touch()"
+      @blur="$v.select.$touch()"
+    ></v-select>
+    <div class="form-group">
+                    <label>Propietario</label>
+                    <input type="text" class="form-control" v-model="usuario.propietario" required>
+                </div>
+                      <label>Modalidad</label>
+              <v-select
+      v-model="usuario.modalidad" 
+      :items="tipoModalidad"
+      required
+      dense
+      solo
+    ></v-select>
+     
+       
                 <div class="form-group">
-                    <button class="btn btn-primary btn-block">Guardar</button>
+                    <label>Teléfono</label>
+                    <input type="number" class="form-control" v-model="usuario.telefonoVivienda" required>
+                </div>
+                 <div class="form-group">
+                    <label>Dirección</label>
+                    <input type="text" class="form-control" v-model="usuario.direccionPropiedad" required>
+                </div>
+                <label>Tipo de Vehiculo</label>
+              <v-select
+      v-model="usuario.vehiculo" 
+      :items="tipoVehiculo"
+      required
+      dense
+      solo
+    ></v-select>
+                <div class="form-group">
+                    <label>Marca</label>
+                    <input type="text" class="form-control" v-model="usuario.marca" required>
+                </div>  
+                <div class="form-group">
+                    <label>Placa</label>
+                    <input type="text" class="form-control" v-model="usuario.placa" required>
+                </div>
+                 <div class="form-group">
+                    <label>Cilindraje</label>
+                    <input type="text" class="form-control" v-model="usuario.cilindraje" required>
+                </div>
+                 <div class="form-group">
+                    <label>Modelo</label>
+                    <input type="text" class="form-control" v-model="usuario.modeloVehiculo" required>
+                </div>
+                <div class="form-group">
+                    <button class="btn btn-primary btn-block">Actualizar</button>
                 </div>
             </form>
         </div>
     </div>
+     </v-container>
+ </v-app>
 </template>
 
 <script>
@@ -57,6 +116,10 @@
     export default {
         data() {
             return {
+                 tipos: ['Cédula', 'Tarjeta de identidad'],
+                 tipoVivienda: ['Casa', 'Apartamento', 'Finca'],
+                tipoModalidad: ['Interés social', 'De ahorro programado'],
+                tipoVehiculo: ['Carro', 'Moto'],
                 usuario: {
                 }
             }
