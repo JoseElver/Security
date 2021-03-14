@@ -112,6 +112,7 @@
 
 <script>
     import { db } from '../firebaseDb';
+    import Swal from 'sweetalert2'
 
     export default {
         data() {
@@ -137,7 +138,11 @@
                 event.preventDefault()
                 db.collection('usuarios').doc(this.$route.params.id)
                 .update(this.usuario).then(() => {
-                    console.log("Datos actualizados");
+                                  Swal.fire(
+  '¡Actualizado!',
+  '¡Registro se ha editado correctamente!',
+  'success'
+)
                     this.$router.push('/list')
                 }).catch((error) => {
                     console.log(error);

@@ -1,6 +1,9 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Login from '@/views/Login.vue'
+import Crear from '@/views/UserCreate.vue'
+import Lista from '@/views/UserList.vue'
+import Editar from '@/views/UserEdit.vue'
 
 Vue.use(VueRouter)
 
@@ -8,17 +11,17 @@ const routes = [
   {
     path: '/',
     name: 'add',
-    component: () => import('../views/UserCreate')
+    component: Crear
   },
   {
     path: '/list',
     name: 'list',
-    component: () => import('../views/UserList')
+    component: Lista
   },
   {
     path: '/edit/:id',
     name: 'edit',
-    component: () => import('../views/UserEdit')
+    component: Editar
   },
   {
     path: '/Login',

@@ -39,6 +39,7 @@
 
 <script>
     import { db } from '../firebaseDb';
+    import Swal from 'sweetalert2'
     
     export default {
         data() {
@@ -66,14 +67,29 @@
         },
         methods: {
             deleteUser(id){
-              if (window.confirm("¿Estás seguro de eliminar el registro?")) {
-                db.collection("usuarios").doc(id).delete().then(() => {
-                    console.log("Documento eliminado correctamente");
+                Swal.fire({
+     title: `¿Estás seguro que deseas elimiar el registro del usuario?`,
+        type: 'question',
+        showCancelButton: true,
+        cancelButtonColor: '#d33',
+        confirmButtonColor: '#3085d6',
+        confirmButtonText: 'Si, eliminar',
+        cancelButtonText: 'Cancelar'
+}).then((result) => {
+
+  if (result.isConfirmed) {
+
+         db.collection("usuarios").doc(id).delete().then(() => {
+            Swal.fire(
+            'Eliminado!',
+            'El registro se eliminó éxitosamente',
+            'success'
+          )
                 })
-                .catch((error) => {
-                    console.error(error);
-                })
-              }
+  } else if (result.isDenied) {
+    Swal.fire('No se pudo eliminar el registro', '', 'Info')
+  }
+})
             }
         }
     }

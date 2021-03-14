@@ -139,6 +139,7 @@
 
 <script>
     import { db } from '../firebaseDb';
+    import Swal from 'sweetalert2'
 
     export default {
         data() {
@@ -156,7 +157,11 @@
             onFormSubmit(event) {
                 event.preventDefault()
                 db.collection('usuarios').add(this.usuario).then(() => {
-                    alert("Usuario creado correctamente!");
+                                                      Swal.fire(
+  '¡Felicitaciones!',
+  '¡Registro se ha creado correctamente!',
+  'success'
+)
                     this.usuario.primernombre = ''
                     this.usuario.segundonombre = ''
                     this.usuario.primerapellido = ''
