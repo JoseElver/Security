@@ -10,7 +10,7 @@
         <v-expansion-panel-header>Información personal</v-expansion-panel-header>
         <v-expansion-panel-content>
 
-          <form @submit.prevent="onFormSubmit">
+          <form @submit.prevent="onFormSubmit" enctype="multipart/form-data">
                 <div class="form-group">
                     <label>Primer Nombre</label>
                     <input type="text" class="form-control" v-model="usuario.primernombre" required>
@@ -122,7 +122,11 @@
                     <label>Modelo</label>
                     <input type="text" class="form-control" v-model="usuario.modeloVehiculo" required>
                 </div>
-
+                <form @submit.prevent="subirImgen" enctype="multipart/form-data">
+                <label>Foto de la cédula</label><br>
+                <input type="file" accept="image/*" @change="clickImagen($event)" :src="cedula">
+                </form>
+   
                 <div class="form-group">
                     <button class="btn btn-primary btn-block">Guardar</button>
                 </div>
@@ -139,12 +143,18 @@
 
 <script>
     import { db } from '../firebaseDb';
-    import Swal from 'sweetalert2'
+    import {storage} from '../firebaseDb';
+    import Swal from 'sweetalert2';
+    const ref = storage.ref();
 
     export default {
         data() {
             return {
                 tipos: ['Cédula', 'Tarjeta de identidad'],
+                cedula: '',
+                imagenes:[],
+                imagen: null,
+                imagenDes: null,
                 tipoVivienda: ['Casa', 'Apartamento', 'Finca'],
                 tipoModalidad: ['Interés social', 'De ahorro programado'],
                 tipoVehiculo: ['Carro', 'Moto'],
@@ -154,8 +164,17 @@
             }
         },
         methods: {
+            clickImagen(e){
+                this.imagen= e.target.files[0];
+                console.log(this.imagen)
+
+            },  
             onFormSubmit(event) {
-                event.preventDefault()
+            event.preventDefault()
+            const refImg = ref.child('imagenes/'+this.imagen.name);
+            const metadata = { contentType: 'img/jpeg' };
+            refImg.put(this.imagen, metadata)
+            .then( e => console.log(e) )
                 db.collection('usuarios').add(this.usuario).then(() => {
                                                       Swal.fire(
   '¡Felicitaciones!',
