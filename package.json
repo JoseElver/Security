@@ -16,6 +16,7 @@
     "bootstrap": "^4.6.0",
     "core-js": "^3.6.5",
     "firebase": "^8.2.10",
+    "firebaseui": "^4.8.0",
     "roboto-fontface": "*",
     "sweetalert2": "^10.15.5",
     "tailwindcss": "^2.0.3",

@@ -18,7 +18,6 @@
                         <v-btn class="mx-2" fab color="black" outlined>
                           <v-icon>mdi-facebook</v-icon>
                         </v-btn>
-
                         <v-btn class="mx-2" fab color="black" outlined>
                           <v-icon>mdi-google-plus</v-icon>
                         </v-btn>
@@ -34,12 +33,12 @@
                           type="text"
                           label="Email"
                           color="black"
-                          v-model="userLogin.email"
+                          v-model="email"
                         />
 
                         <v-text-field
                           label="Contraseña"
-                          v-model="userLogin.password"
+                          v-model="password"
                           :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
                           :type="show1 ? 'text' : 'password'"
                           @click:append="show1 = !show1"
@@ -122,12 +121,12 @@
                           type="text"
                           label="Email"
                           color="black"
-                          v-model="userLogin.email"
+                          v-model="email"
                         />
 
                         <v-text-field
                           label="Contraseña"
-                          v-model="userLogin.password"
+                          v-model="password"
                           :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
                           :type="show1 ? 'text' : 'password'"
                           @click:append="show1 = !show1"
@@ -135,7 +134,7 @@
 
                         <v-text-field
                           label="Confirmar contraseña"
-                          v-model="userLogin.confirmPassword"
+                          v-model="confirmPassword"
                           :append-icon="show2 ? 'mdi-eye' : 'mdi-eye-off'"
                           :type="show2 ? 'text' : 'password'"
                           @click:append="show2 = !show2"
@@ -166,6 +165,10 @@
 <script>
 import { db } from "../firebaseDb";
 import Swal from "sweetalert2";
+import "firebase/app";
+import "firebase/auth";
+import firebase from "firebase/app";
+
 
 export default {
   data: () => ({
@@ -173,8 +176,9 @@ export default {
     show1: false,
     show2: false,
     userLogin: {},
-    password: "",
-
+    email: '',
+    password: '',
+    confirmPassword:'',
     rules: {
       required: (value) => !!value || "Requerido.",
       email: [
@@ -184,67 +188,63 @@ export default {
   }),
 
   methods: {
+    
     registro() {
       var bd = "";
       var EMAIL_REGEXP = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-      if (!EMAIL_REGEXP.test(this.userLogin.email)) {
+      if (!EMAIL_REGEXP.test(this.email)) {
         Swal.fire(
           "¡Atención!",
-          "La dirección de email " + this.userLogin.email + " está incompleta",
+          "La dirección de email " + this.email + " está incompleta",
           "info"
         );
-      } else if (this.userLogin.password == null) {
+      } else if (this.password == null) {
         Swal.fire("¡Atención!", "Digite la contraseña por favor", "info");
-      } else if (this.userLogin.email == null) {
+      } else if (this.email == null) {
         Swal.fire("¡Atención!", "Digite el correo por favor", "info");
-      } else if (this.userLogin.confirmPassword == null) {
+      } else if (this.confirmPassword == null) {
         Swal.fire("¡Atención!", "Confirme la contraseña por favor", "info");
-      } else if (this.userLogin.confirmPassword != this.userLogin.password) {
+      } else if (this.confirmPassword != this.password) {
         Swal.fire("¡Atención!", "Las contraseñas no coinciden", "info");
       } else {
-        db.collection("userLogin")
-          .add(this.userLogin)
-          .then(() => {
-            Swal.fire(
-              "¡Felicitaciones!",
-              "¡Registrado correctamente!",
-              "success"
-            );
-            this.userLogin.email = "";
-            this.userLogin.password = "";
-            this.userLogin.confirmPassword = "";
-            this.resetForm()
+        firebase
+        .auth()
+        .createUserWithEmailAndPassword(this.email, this.password)
+          .then( () =>  {
+            Swal.fire("¡Felicitaciones!", "Usuario creado correctamente", "success");
           })
-          .catch((error) => {
-            console.log(error);
+          .catch(function(error) {
+            console.log(error.message)
           });
+         
       }
+          this.email='',
+          this.password='',
+          this.confirmPassword=''
     },
      inicioSesion() {
         var EMAIL_REGEXP = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-      if (!EMAIL_REGEXP.test(this.userLogin.email)) {
+      if (!EMAIL_REGEXP.test(this.email)) {
         Swal.fire(
           "¡Atención!",
-          "La dirección de email " + this.userLogin.email + " está incompleta",
+          "La dirección de email " + this.email + " está incompleta",
           "info"
         );
       }
-    else if (this.userLogin.email == null) {
+    else if (this.email == null) {
       Swal.fire("¡Atención!", "Digite el correo por favor", "info");
-    } else if (this.userLogin.password == null) {
+    } else if (this.password == null) {
       Swal.fire("¡Atención!", "Digite la contraseña por favor", "info");
     } else {
-       var bd=""
-        const usuarioLogin =  db.collection('userLogin');
-        const querry = usuarioLogin.where("email","==",this.userLogin.email).where("password","==",this.userLogin.password);
-        querry.get().then((snapshotChange) => {
-                snapshotChange.forEach((doc) => {
-              console.log(`Si hay registro`);
-              this.$router.push('/list')
-                   var bd=1; 
-                });
-         
-            })
+       firebase
+        .auth()
+        .signInWithEmailAndPassword(this.email, this.password)
+          .then( () =>  {
+            Swal.fire("¡Felicitaciones!", "Ingresó", "success");
+          })
+          .catch(function(error) {
+            console.log(error.message)
+          });
     }
   },
   resetForm () {
@@ -255,6 +255,7 @@ export default {
   props: {
     source: String,
   },
+   
 };
 </script>
 <style scoped>
