@@ -9,6 +9,11 @@
                 <v-row>
                   <v-col cols="12" md="8">
                     <v-card-text class="mt-12">
+                      <v-img
+                        src="../assets/logotipo.png"
+                        max-height="20%"
+                        max-width="20%"
+                      ></v-img>
                       <h1
                         class="text-center display-2 black--text text--accent-3"
                       >
@@ -49,17 +54,12 @@
                       </h6>
                     </v-card-text>
                     <div class="text-center mt-3">
-                      <v-btn
-                        rounded
-                        color="blue"
-                        class="boton"
-                        dark
-                        @click="inicioSesion()"
+                      <v-btn rounded class="boton" dark @click="inicioSesion()"
                         >Iniciar sesión</v-btn
                       >
                     </div>
                   </v-col>
-                  <v-col cols="12" md="4" class="blue">
+                  <v-col cols="12" md="4" class="clase">
                     <v-card-text class="white--text mt-12">
                       <h1 class="carta text-center display-1">Hola, Amigo!</h1>
                       <h5 class="text-center">
@@ -77,7 +77,7 @@
               </v-window-item>
               <v-window-item :value="2">
                 <v-row class="fill-height">
-                  <v-col cols="12" md="4" class="blue">
+                  <v-col cols="12" md="4" class="clase">
                     <v-card-text class="white--text mt-12">
                       <h1 class="carta2 text-center display-1">
                         Bienvenido de nuevo!
@@ -96,6 +96,11 @@
 
                   <v-col cols="12" md="8">
                     <v-card-text class="mt-12">
+                      <v-img
+                        src="../assets/logotipo.png"
+                        max-height="20%"
+                        max-width="20%"
+                      ></v-img>
                       <h1
                         class="text-center display-2 black--text text--accent-3"
                       >
@@ -142,12 +147,7 @@
                       </v-form>
                     </v-card-text>
                     <div class="text-center mt-n5">
-                      <v-btn
-                        class="boton2"
-                        rounded
-                        color="blue"
-                        dark
-                        @click="registro()"
+                      <v-btn class="boton2" rounded dark @click="registro()"
                         >Registrarse</v-btn
                       >
                     </div>
@@ -163,12 +163,10 @@
 </template>
 
 <script>
-import { db } from "../firebaseDb";
 import Swal from "sweetalert2";
 import "firebase/app";
 import "firebase/auth";
 import firebase from "firebase/app";
-
 
 export default {
   data: () => ({
@@ -176,9 +174,9 @@ export default {
     show1: false,
     show2: false,
     userLogin: {},
-    email: '',
-    password: '',
-    confirmPassword:'',
+    email: "",
+    password: "",
+    confirmPassword: "",
     rules: {
       required: (value) => !!value || "Requerido.",
       email: [
@@ -188,7 +186,6 @@ export default {
   }),
 
   methods: {
-    
     registro() {
       var bd = "";
       var EMAIL_REGEXP = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -208,59 +205,58 @@ export default {
         Swal.fire("¡Atención!", "Las contraseñas no coinciden", "info");
       } else {
         firebase
-        .auth()
-        .createUserWithEmailAndPassword(this.email, this.password)
-          .then( () =>  {
-            Swal.fire("¡Felicitaciones!", "Usuario creado correctamente", "success");
+          .auth()
+          .createUserWithEmailAndPassword(this.email, this.password)
+          .then(() => {
+            Swal.fire(
+              "¡Felicitaciones!",
+              "Usuario creado correctamente",
+              "success"
+            );
           })
-          .catch(function(error) {
-            console.log(error.message)
+          .catch(function (error) {
+            console.log(error.message);
           });
-         
       }
-          this.email='',
-          this.password='',
-          this.confirmPassword=''
+      (this.email = ""), (this.password = ""), (this.confirmPassword = "");
     },
-     inicioSesion() {
-        var EMAIL_REGEXP = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    inicioSesion() {
+      var EMAIL_REGEXP = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
       if (!EMAIL_REGEXP.test(this.email)) {
         Swal.fire(
           "¡Atención!",
           "La dirección de email " + this.email + " está incompleta",
           "info"
         );
-      }
-    else if (this.email == null) {
-      Swal.fire("¡Atención!", "Digite el correo por favor", "info");
-    } else if (this.password == null) {
-      Swal.fire("¡Atención!", "Digite la contraseña por favor", "info");
-    } else {
-       firebase
-        .auth()
-        .signInWithEmailAndPassword(this.email, this.password)
-          .then( () =>  {
+      } else if (this.email == null) {
+        Swal.fire("¡Atención!", "Digite el correo por favor", "info");
+      } else if (this.password == null) {
+        Swal.fire("¡Atención!", "Digite la contraseña por favor", "info");
+      } else {
+        firebase
+          .auth()
+          .signInWithEmailAndPassword(this.email, this.password)
+          .then(() => {
             Swal.fire("¡Felicitaciones!", "Ingresó", "success");
           })
-          .catch(function(error) {
-            console.log(error.message)
+          .catch(function (error) {
+            console.log(error.message);
           });
-    }
-  },
-  resetForm () {
-      this.$refs.form.reset()
+      }
+    },
+    resetForm() {
+      this.$refs.form.reset();
     },
   },
- 
+
   props: {
     source: String,
   },
-   
 };
 </script>
 <style scoped>
 .login-label {
-  color: rgb(10, 95, 223);
+  color: rgb(26, 56, 125) !important;
   font-size: 16;
   align-self: center;
 }
@@ -272,9 +268,14 @@ export default {
 }
 .boton {
   margin-bottom: 10%;
+  background-color: rgb(26, 56, 125) !important;
 }
 .boton2 {
   margin-top: 5%;
   margin-bottom: 10%;
+  background-color: rgb(26, 56, 125) !important;
+}
+.clase {
+  background-color: rgb(26, 56, 125) !important;
 }
 </style>
