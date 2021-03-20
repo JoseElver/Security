@@ -3,6 +3,7 @@ import VueRouter from 'vue-router'
 import Login from '@/views/Login.vue'
 import Crear from '@/views/UserCreate.vue'
 import Lista from '@/views/UserList.vue'
+import Home from '@/views/Home.vue'
 import Editar from '@/views/UserEdit.vue'
 import 'firebase/app';
 import 'firebase/auth';
@@ -11,8 +12,8 @@ Vue.use(VueRouter)
 
 const routes = [
   {
-    path: '/',
-    name: 'add',
+    path: '/crear',
+    name: 'crear',
     component: Crear
   },
   {
@@ -30,6 +31,11 @@ const routes = [
     name: 'Login',
     component: Login
   },
+  {
+    path: '/Home',
+    name: 'Home',
+    component: Home
+  },
 
   
 ]
@@ -40,7 +46,7 @@ const router = new VueRouter({
   routes
 })
 
-router.beforeEach((to, from, next) => {
+/**router.beforeEach((to, from, next) => {
   const requiresAuth = to.matched.some(x => x.meta.requiresAuth);
   if(requiresAuth) {
     firebase.auth().onAuthStateChanged( (user) => {
@@ -48,6 +54,6 @@ router.beforeEach((to, from, next) => {
       else next();
     })
   } else next()
-});
+});*/
 
 export default router

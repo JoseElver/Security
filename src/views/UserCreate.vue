@@ -192,9 +192,6 @@
                         required
                       />
                     </div>
-                    <div class="form-group">
-                      <button class="btn btn-primary btn-block">Guardar</button>
-                    </div>
                   </form>
                 </v-expansion-panel-content>
               </v-expansion-panel>
@@ -204,26 +201,23 @@
                 <v-expansion-panel-header>Soportes</v-expansion-panel-header>
                 <v-expansion-panel-content>
                   <form @submit.prevent="onFormSubmit">
-                    <label>Foto de la cédula</label><br />
+                    <label>Foto de la cédula</label><br/>
                     <input
                       type="file"
                       accept="image/*"
                       @change="clickImagen($event)"
                       :src="cedula"
-                    />
-                  </form>
-                  <form @submit.prevent="onFormSubmit">
-                    <label>Documento PDF</label><br />
+                    /><br/>
+                    <label>Documento PDF</label><br/>
                     <input
                       type="file"
                       accept="application/pdf"
                       @change="clickDocumento($event)"
                     />
-                  </form>
-
-                  <div class="form-group">
-                    <button class="btn btn-primary btn-block" @click="subir($event)">Guardar</button>
+                       <div class="form-group">
+                    <button class="btn btn-primary btn-block">Guardar</button>
                   </div>
+                  </form>
                 </v-expansion-panel-content>
               </v-expansion-panel>
             </v-expansion-panels>
@@ -264,25 +258,17 @@ export default {
       this.documento = e.target.files[0];
       console.log(this.documento);
     },
-    subir(e) {
+
+    
+    onFormSubmit(event) {
+      event.preventDefault();
       const refImg = ref.child('imagenes/' + this.imagen.name);
       const metadata = { contentType: 'image/jpeg' };
       refImg.put(this.imagen, metadata).then((e) => console.log(e));
 
       const refDoc = ref.child('documentos/' + this.documento.name);
       const metadata2 = { contentType: 'application/pdf' };
-      refDoc.put(this.imagen, metadata2).then((e) => console.log(e));
-    },
-    
-    onFormSubmit(event) {
-      event.preventDefault();
-       const refImg = ref.child('imagenes/' + this.imagen.name);
-      const metadata = { contentType: 'image/jpeg' };
-      refImg.put(this.imagen, metadata).then((e) => console.log(e));
-
-      const refDoc = ref.child('documentos/' + this.documento.name);
-      const metadata2 = { contentType: 'application/pdf' };
-      refDoc.put(this.imagen, metadata2).then((e) => console.log(e));
+      refDoc.put(this.documento, metadata2).then((e) => console.log(e));
       db.collection("usuarios")
         .add(this.usuario)
         .then(() => {

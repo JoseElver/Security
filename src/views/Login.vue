@@ -167,6 +167,7 @@ import Swal from "sweetalert2";
 import "firebase/app";
 import "firebase/auth";
 import firebase from "firebase/app";
+import Crear from './UserCreate'
 
 export default {
   data: () => ({
@@ -238,6 +239,7 @@ export default {
           .signInWithEmailAndPassword(this.email, this.password)
           .then(() => {
             Swal.fire("¡Felicitaciones!", "Ingresó", "success");
+            this.$router.push('crear');
           })
           .catch(function (error) {
             console.log(error.message);
@@ -252,6 +254,9 @@ export default {
   props: {
     source: String,
   },
+  components: {
+    Crear
+  }
 };
 </script>
 <style scoped>

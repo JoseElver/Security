@@ -17,10 +17,13 @@
         </ul>
         <ul class="nav navbar-nav flex-row float-right">
           <li class="nav-item">
-            <router-link class="nav-link pr-3" to="/">Crear Hoja de Vida</router-link>
+            <router-link class="nav-link pr-3" to="/crear">Crear Hoja de Vida</router-link>
           </li>
           <li class="nav-item">
-            <router-link class="nav-link" to="/list">Listado de usuarios</router-link>
+            <router-link class="nav-link pr-3" to="/list">Listado de usuarios</router-link>
+          </li>
+          <li class="nav-item">
+            <router-link class="nav-link" to="/login">Iniciar sesión</router-link>
           </li>
         </ul>
       </div>
