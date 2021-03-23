@@ -100,6 +100,18 @@
                     <label>Modelo</label>
                     <input type="text" class="form-control" v-model="usuario.modeloVehiculo" required>
                 </div>
+                  <label>Foto de la cédula</label><br/>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      :src="cedula"
+                    /><br/>
+                    <label>Documento PDF</label><br/>
+                    <input
+                      type="file"
+                      accept="application/pdf"
+                      :src="archivoPdf"
+                    />
                 <div class="form-group">
                     <button class="btn btn-primary btn-block">Actualizar</button>
                 </div>
@@ -117,8 +129,10 @@
     export default {
         data() {
             return {
-                 tipos: ['Cédula', 'Tarjeta de identidad'],
-                 tipoVivienda: ['Casa', 'Apartamento', 'Finca'],
+                cedula: "",
+                archivoPdf: "",
+                tipos: ['Cédula', 'Tarjeta de identidad'],
+                tipoVivienda: ['Casa', 'Apartamento', 'Finca'],
                 tipoModalidad: ['Interés social', 'De ahorro programado'],
                 tipoVehiculo: ['Carro', 'Moto'],
                 usuario: {
