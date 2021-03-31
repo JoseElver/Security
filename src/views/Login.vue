@@ -238,7 +238,6 @@ export default {
           .auth()
           .signInWithEmailAndPassword(this.email, this.password)
           .then(() => {
-            Swal.fire("¡Felicitaciones!", "Ingresó", "success");
             this.$router.push('crear');
           })
           .catch(function (error) {
