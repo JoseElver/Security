@@ -65,12 +65,13 @@
                     ></v-select>
                     <div class="form-group">
                       <label>Documento</label>
-                      <input
-                        type="number"
-                        class="form-control"
-                        v-model="usuario.documento"
-                        required
-                      />
+                      <input type="number" 
+                      class="form-control"
+                      v-model="usuario.documento"
+                      required
+                      oninput="this.value = this.value.replace(/[^0-9.]/g, ''); this.value = this.value.replace(/(\..*)\./g, '$1');" 
+                      onKeyDown="if(this.value.length==15 && event.keyCode!=8) return false;"
+                      >
                     </div>
                     <label>Género</label>
                     <v-select
@@ -84,14 +85,16 @@
                       <label>Altura</label>
                       <v-layout>
                         <v-flex xs12 sm2>
-                          <input
-                            type="number"
-                            class="form-control"
-                            v-model="usuario.altura"
-                            required
-                            min="1"
-                            max="210"
-                          />
+                         
+                      <input 
+                      type="number" 
+                      class="form-control"
+                      v-model="usuario.altura"
+                      required
+                      oninput="this.value = this.value.replace(/[^0-9.]/g, ''); this.value = this.value.replace(/(\..*)\./g, '$1');" 
+                      onKeyDown="if(this.value.length==3 && event.keyCode!=8) return false;"
+                      min="140"
+                      max="210">
                         </v-flex>
                         <v-flex xs12 sm2>
                           <label class="centimetros">centímetros</label>
@@ -120,12 +123,13 @@
                     ></v-select>
                     <div class="form-group">
                       <label>Celular</label>
-                      <input
-                        type="number"
-                        class="form-control"
-                        v-model="usuario.telefono"
-                        required
-                      />
+                      <input type="number" 
+                      class="form-control"
+                      v-model="usuario.telefono"
+                      required
+                      oninput="this.value = this.value.replace(/[^0-9.]/g, ''); this.value = this.value.replace(/(\..*)\./g, '$1');" 
+                      onKeyDown="if(this.value.length==10 && event.keyCode!=8) return false;"
+                      >
                     </div>
                     <div class="form-group">
                       <label>Correo electrónico</label>
@@ -147,12 +151,12 @@
                     ></v-select>
                     <label>Departamento de residencia</label>
                     <select
+                      required
                       class="form-control"
                       id="departamentos"
                       @click="municipios()"
                       v-model="usuario.departamento"
                     >
-                      <option value="0">Seleccione...</option>
                       <option value="AMAZONAS">AMAZONAS</option>
                       <option value="ANTIOQUIA">ANTIOQUIA</option>
                       <option value="ARAUCA">ARAUCA</option>
@@ -193,6 +197,7 @@
                     </select>
                     <label>Municipio de residencia</label>
                     <select
+                      required
                       id="municipios"
                       class="form-control"
                       v-model="usuario.municipio"
@@ -268,7 +273,7 @@
                       </v-flex>
                     </v-layout>
                     <div class="form-group">
-                      <button class="btn btn-primary btn-block">Guardar</button>
+                      <button class="continuar">Guardado temporal</button>
                     </div>
                   </form>
                 </v-expansion-panel-content>
@@ -310,15 +315,18 @@
                     ></v-select>
                     <div class="form-group">
                       <label>Teléfono</label>
-                      <input
-                        type="number"
-                        class="form-control"
-                        v-model="usuario.telefonoVivienda"
-                        required
-                      />
+                      <input 
+                      type="number" 
+                      class="form-control"
+                      v-model="usuario.telefonoVivienda"
+                      required
+                      oninput="this.value = this.value.replace(/[^0-9.]/g, ''); this.value = this.value.replace(/(\..*)\./g, '$1');" 
+                      onKeyDown="if(this.value.length==10 && event.keyCode!=8) return false;"
+                      >
                     </div>
                     <label>Departamento de residencia</label>
                     <select
+                      required
                       class="form-control"
                       id="departamentos1"
                       @click="municipiosResidencia()"
@@ -365,12 +373,16 @@
                     </select>
                     <label>Municipio de residencia</label>
                     <select
+                      required
                       id="municipios2"
                       class="form-control"
                       v-model="usuario.ciudadPropiedad"
                     >
                       <option value="0"></option>
                     </select>
+                    <div class="form-group">
+                      <button class="continuar">Guardado temporal</button>
+                    </div>
                   </form>
                 </v-expansion-panel-content>
               </v-expansion-panel>
@@ -384,6 +396,7 @@
                   <form @submit.prevent="onFormSubmit" name="f3" id="f3">
                     <label>Tipo de Vehiculo</label>
                     <select
+                      required
                       class="form-control"
                       id="vehiculos"
                       @click="vehiculos()"
@@ -420,6 +433,7 @@
                       <v-layout>
                         <v-flex xs12 sm2>
                           <select
+                            required
                             id="cilindraje"
                             class="form-control"
                             v-model="usuario.cilindraje"
@@ -440,6 +454,9 @@
                       dense
                       solo
                     ></v-select>
+                    <div class="form-group">
+                      <button class="continuar">Guardado temporal</button>
+                    </div>
                   </form>
                 </v-expansion-panel-content>
               </v-expansion-panel>
@@ -455,6 +472,7 @@
                   <form @submit.prevent="onFormSubmit" name="f4" id="f4">
                     <label>Institución</label>
                     <select
+                      required
                       class="form-control"
                       id="institucion"
                       @click="institucion()"
@@ -477,6 +495,7 @@
                     </select>
                     <label>Último grado obtenido</label>
                     <select
+                      required
                       id="grado"
                       class="form-control"
                       v-model="usuario.ultimoGrado"
@@ -590,6 +609,7 @@
                   <form @submit.prevent="onFormSubmit" name="f5" id="f5">
                     <label>Tipo de arma</label>
                     <select
+                      required
                       class="form-control"
                       id="arma"
                       @click="armas()"
@@ -602,7 +622,6 @@
                     <v-select
                       v-model="usuario.modalidadArma"
                       :items="tipoModalidadArma"
-                      required
                       dense
                       solo
                     ></v-select>
@@ -620,7 +639,6 @@
                         type="text"
                         class="form-control"
                         v-model="usuario.numeroArma"
-                        required
                       />
                     </div>
                   </form>
@@ -638,7 +656,6 @@
                     <v-select
                       v-model="usuario.salario"
                       :items="tipoSalario"
-                      required
                       dense
                       solo
                     ></v-select>
@@ -672,6 +689,7 @@
                     </div>
                     <label>Fallecido</label>
                     <select
+                      required
                       id="respuesta"
                       @click="respuesta()"
                       class="form-control"
@@ -691,6 +709,7 @@
                     ></v-select>
                     <label>Departamento de residencia</label>
                     <select
+                      required
                       v-bind:disabled="esHablitado"
                       class="form-control"
                       id="departamentos2"
@@ -737,6 +756,7 @@
                     </select>
                     <label>Ciudad / Municipio</label>
                     <select
+                      required
                       v-bind:disabled="esHablitado"
                       id="municipiosPadre"
                       class="form-control"
@@ -752,6 +772,8 @@
                         class="form-control"
                         v-model="usuario.telefonoPadre"
                         required
+                        oninput="this.value = this.value.replace(/[^0-9.]/g, ''); this.value = this.value.replace(/(\..*)\./g, '$1');" 
+                        onKeyDown="if(this.value.length==10 && event.keyCode!=8) return false;"
                       />
                     </div>
                     <div class="form-group">
@@ -787,6 +809,7 @@
                     </div>
                     <label>Fallecido</label>
                     <select
+                      required
                       id="respuestaMadre"
                       @click="respuestaMadre()"
                       class="form-control"
@@ -806,6 +829,7 @@
                     ></v-select>
                     <label>Departamento de residencia</label>
                     <select
+                      required
                       v-bind:disabled="esHablitadoMadre"
                       class="form-control"
                       id="departamentos3"
@@ -852,6 +876,7 @@
                     </select>
                     <label>Ciudad / Municipio</label>
                     <select
+                      required
                       v-bind:disabled="esHablitadoMadre"
                       id="municipiosMadre"
                       class="form-control"
@@ -867,6 +892,8 @@
                         class="form-control"
                         v-model="usuario.telefonoMadre"
                         required
+                        oninput="this.value = this.value.replace(/[^0-9.]/g, ''); this.value = this.value.replace(/(\..*)\./g, '$1');" 
+                        onKeyDown="if(this.value.length==10 && event.keyCode!=8) return false;"
                       />
                     </div>
                     <div class="form-group">
@@ -924,10 +951,12 @@
                     <div class="form-group">
                       <label>Nro. de la libreta Militar</label>
                       <input
-                        type="text"
+                        type="number"
                         class="form-control"
                         v-model="usuario.numeroLibreta"
                         required
+                        oninput="this.value = this.value.replace(/[^0-9.]/g, ''); this.value = this.value.replace(/(\..*)\./g, '$1');" 
+                        onKeyDown="if(this.value.length==15 && event.keyCode!=8) return false;"
                       />
                     </div>
                     <label>Clase de la libreta militar</label>
@@ -966,6 +995,8 @@
                         class="form-control"
                         v-model="usuario.numeroLicencia"
                         required
+                        oninput="this.value = this.value.replace(/[^0-9.]/g, ''); this.value = this.value.replace(/(\..*)\./g, '$1');" 
+                        onKeyDown="if(this.value.length==16 && event.keyCode!=8) return false;"
                       />
                     </div>
                     <label>Categoria</label>
@@ -1009,6 +1040,7 @@
                     </div>
                     <label>Departamento de residencia</label>
                     <select
+                      required
                       class="form-control"
                       id="departamentos4"
                       @click="municipiosFamiliar1()"
@@ -1054,6 +1086,7 @@
                     </select>
                     <label>Ciudad / Municipio</label>
                     <select
+                      required
                       id="municipioFamiliar1"
                       class="form-control"
                       v-model="usuario.municipioFamiliar1"
@@ -1084,6 +1117,8 @@
                         class="form-control"
                         v-model="usuario.telefonoFijoFamiliar1"
                         required
+                        oninput="this.value = this.value.replace(/[^0-9.]/g, ''); this.value = this.value.replace(/(\..*)\./g, '$1');" 
+                        onKeyDown="if(this.value.length==10 && event.keyCode!=8) return false;"
                       />
                     </div>
                     <div class="form-group">
@@ -1093,6 +1128,8 @@
                         class="form-control"
                         v-model="usuario.celularFamiliar1"
                         required
+                        oninput="this.value = this.value.replace(/[^0-9.]/g, ''); this.value = this.value.replace(/(\..*)\./g, '$1');" 
+                        onKeyDown="if(this.value.length==10 && event.keyCode!=8) return false;"
                       />
                     </div>
                     <div class="form-group">
@@ -1102,6 +1139,8 @@
                         class="form-control"
                         v-model="usuario.telefonoOficinaFamiliar1"
                         required
+                        oninput="this.value = this.value.replace(/[^0-9.]/g, ''); this.value = this.value.replace(/(\..*)\./g, '$1');" 
+                        onKeyDown="if(this.value.length==10 && event.keyCode!=8) return false;"
                       />
                     </div>
                     <br />
@@ -1119,6 +1158,7 @@
                     </div>
                     <label>Departamento de residencia</label>
                     <select
+                      required
                       class="form-control"
                       id="departamentos5"
                       @click="municipiosFamiliar2()"
@@ -1164,6 +1204,7 @@
                     </select>
                     <label>Ciudad / Municipio</label>
                     <select
+                      required
                       id="municipioFamiliar2"
                       class="form-control"
                       v-model="usuario.municipioFamiliar2"
@@ -1194,6 +1235,8 @@
                         class="form-control"
                         v-model="usuario.telefonoFijoFamiliar2"
                         required
+                        oninput="this.value = this.value.replace(/[^0-9.]/g, ''); this.value = this.value.replace(/(\..*)\./g, '$1');" 
+                        onKeyDown="if(this.value.length==10 && event.keyCode!=8) return false;"
                       />
                     </div>
                     <div class="form-group">
@@ -1203,6 +1246,8 @@
                         class="form-control"
                         v-model="usuario.celularFamiliar2"
                         required
+                        oninput="this.value = this.value.replace(/[^0-9.]/g, ''); this.value = this.value.replace(/(\..*)\./g, '$1');" 
+                        onKeyDown="if(this.value.length==10 && event.keyCode!=8) return false;"
                       />
                     </div>
                     <div class="form-group">
@@ -1212,6 +1257,8 @@
                         class="form-control"
                         v-model="usuario.telefonoOficinaFamiliar2"
                         required
+                        oninput="this.value = this.value.replace(/[^0-9.]/g, ''); this.value = this.value.replace(/(\..*)\./g, '$1');" 
+                        onKeyDown="if(this.value.length==10 && event.keyCode!=8) return false;"
                       />
                     </div>
                     <v-expansion-panels focusable>
@@ -1227,11 +1274,13 @@
                                 type="text"
                                 class="form-control"
                                 v-model="usuario.nombreFamiliar3"
+                                required
                                 autofocus
                               />
                             </div>
                             <label>Departamento de residencia</label>
                             <select
+                              required
                               class="form-control"
                               id="departamentos6"
                               @click="municipiosFamiliar3()"
@@ -1281,6 +1330,7 @@
                             </select>
                             <label>Ciudad / Municipio</label>
                             <select
+                              required
                               id="municipioFamiliar3"
                               class="form-control"
                               v-model="usuario.municipioFamiliar3"
@@ -1297,6 +1347,7 @@
                             </div>
                             <label>Parentesco</label>
                             <v-select
+                              required
                               v-model="usuario.parentescoFamiliar3"
                               :items="tipoParentescoFamiliar3"
                               dense
@@ -1305,25 +1356,34 @@
                             <div class="form-group">
                               <label>Teléfono fijo</label>
                               <input
+                                required
                                 type="number"
                                 class="form-control"
                                 v-model="usuario.telefonoFijoFamiliar3"
+                                oninput="this.value = this.value.replace(/[^0-9.]/g, ''); this.value = this.value.replace(/(\..*)\./g, '$1');" 
+                                onKeyDown="if(this.value.length==10 && event.keyCode!=8) return false;"
                               />
                             </div>
                             <div class="form-group">
                               <label>Celular</label>
                               <input
+                                required
                                 type="number"
                                 class="form-control"
                                 v-model="usuario.celularFamiliar3"
+                                oninput="this.value = this.value.replace(/[^0-9.]/g, ''); this.value = this.value.replace(/(\..*)\./g, '$1');" 
+                                onKeyDown="if(this.value.length==10 && event.keyCode!=8) return false;"
                               />
                             </div>
                             <div class="form-group">
                               <label>Teléfono Oficina</label>
                               <input
+                                required
                                 type="number"
                                 class="form-control"
                                 v-model="usuario.telefonoOficinaFamiliar3"
+                                oninput="this.value = this.value.replace(/[^0-9.]/g, ''); this.value = this.value.replace(/(\..*)\./g, '$1');" 
+                                onKeyDown="if(this.value.length==10 && event.keyCode!=8) return false;"
                               />
                             </div>
                           </form>
@@ -1344,6 +1404,7 @@
                                 type="text"
                                 class="form-control"
                                 v-model="usuario.nombreFamiliar4"
+                                required
                                 autofocus
                               />
                             </div>
@@ -1353,6 +1414,7 @@
                               id="departamentos7"
                               @click="municipiosFamiliar4()"
                               v-model="usuario.departamentoFamiliar4"
+                              required
                             >
                               <option value="AMAZONAS">AMAZONAS</option>
                               <option value="ANTIOQUIA">ANTIOQUIA</option>
@@ -1401,6 +1463,7 @@
                               id="municipioFamiliar4"
                               class="form-control"
                               v-model="usuario.municipioFamiliar4"
+                              required
                             >
                               <option value="0"></option>
                             </select>
@@ -1410,12 +1473,14 @@
                                 type="text"
                                 class="form-control"
                                 v-model="usuario.direccionFamiliar4"
+                                required
                               />
                             </div>
                             <label>Parentesco</label>
                             <v-select
                               v-model="usuario.parentescoFamiliar4"
                               :items="tipoParentescoFamiliar4"
+                              required
                               dense
                               solo
                             ></v-select>
@@ -1425,6 +1490,9 @@
                                 type="number"
                                 class="form-control"
                                 v-model="usuario.telefonoFijoFamiliar4"
+                                required
+                                oninput="this.value = this.value.replace(/[^0-9.]/g, ''); this.value = this.value.replace(/(\..*)\./g, '$1');" 
+                                onKeyDown="if(this.value.length==10 && event.keyCode!=8) return false;"
                               />
                             </div>
                             <div class="form-group">
@@ -1433,6 +1501,9 @@
                                 type="number"
                                 class="form-control"
                                 v-model="usuario.celularFamiliar4"
+                                required
+                                oninput="this.value = this.value.replace(/[^0-9.]/g, ''); this.value = this.value.replace(/(\..*)\./g, '$1');" 
+                                onKeyDown="if(this.value.length==10 && event.keyCode!=8) return false;"
                               />
                             </div>
                             <div class="form-group">
@@ -1441,6 +1512,9 @@
                                 type="number"
                                 class="form-control"
                                 v-model="usuario.telefonoOficinaFamiliar4"
+                                required
+                                oninput="this.value = this.value.replace(/[^0-9.]/g, ''); this.value = this.value.replace(/(\..*)\./g, '$1');" 
+                                onKeyDown="if(this.value.length==10 && event.keyCode!=8) return false;"
                               />
                             </div>
                           </form>
@@ -1484,6 +1558,7 @@
                       id="departamentos8"
                       @click="municipiosPersonal1()"
                       v-model="usuario.departamentoPersonal1"
+                      required
                     >
                       <option value="AMAZONAS">AMAZONAS</option>
                       <option value="ANTIOQUIA">ANTIOQUIA</option>
@@ -1528,6 +1603,7 @@
                       id="municipioPersonal1"
                       class="form-control"
                       v-model="usuario.municipioPersonal1"
+                      required
                     >
                       <option value="0"></option>
                     </select>
@@ -1547,6 +1623,8 @@
                         class="form-control"
                         v-model="usuario.telefonoFijoPersonal1"
                         required
+                        oninput="this.value = this.value.replace(/[^0-9.]/g, ''); this.value = this.value.replace(/(\..*)\./g, '$1');" 
+                        onKeyDown="if(this.value.length==10 && event.keyCode!=8) return false;"
                       />
                     </div>
                     <div class="form-group">
@@ -1556,6 +1634,8 @@
                         class="form-control"
                         v-model="usuario.celularPersonal1"
                         required
+                        oninput="this.value = this.value.replace(/[^0-9.]/g, ''); this.value = this.value.replace(/(\..*)\./g, '$1');" 
+                        onKeyDown="if(this.value.length==10 && event.keyCode!=8) return false;"
                       />
                     </div>
                     <div class="form-group">
@@ -1565,6 +1645,8 @@
                         class="form-control"
                         v-model="usuario.telefonoOficinaPersonal1"
                         required
+                        oninput="this.value = this.value.replace(/[^0-9.]/g, ''); this.value = this.value.replace(/(\..*)\./g, '$1');" 
+                        onKeyDown="if(this.value.length==10 && event.keyCode!=8) return false;"
                       />
                     </div>
                     <br />
@@ -1586,6 +1668,7 @@
                       id="departamentos9"
                       @click="municipiosPersonal2()"
                       v-model="usuario.departamentoPersonal2"
+                      required
                     >
                       <option value="AMAZONAS">AMAZONAS</option>
                       <option value="ANTIOQUIA">ANTIOQUIA</option>
@@ -1630,6 +1713,7 @@
                       id="municipioPersonal2"
                       class="form-control"
                       v-model="usuario.municipioPersonal2"
+                      required
                     >
                       <option value="0"></option>
                     </select>
@@ -1649,6 +1733,8 @@
                         class="form-control"
                         v-model="usuario.telefonoFijoPersonal2"
                         required
+                        oninput="this.value = this.value.replace(/[^0-9.]/g, ''); this.value = this.value.replace(/(\..*)\./g, '$1');" 
+                        onKeyDown="if(this.value.length==10 && event.keyCode!=8) return false;"
                       />
                     </div>
                     <div class="form-group">
@@ -1658,6 +1744,8 @@
                         class="form-control"
                         v-model="usuario.celularPersonal2"
                         required
+                        oninput="this.value = this.value.replace(/[^0-9.]/g, ''); this.value = this.value.replace(/(\..*)\./g, '$1');" 
+                        onKeyDown="if(this.value.length==10 && event.keyCode!=8) return false;"
                       />
                     </div>
                     <div class="form-group">
@@ -1667,6 +1755,8 @@
                         class="form-control"
                         v-model="usuario.telefonoOficinaPersonal2"
                         required
+                        oninput="this.value = this.value.replace(/[^0-9.]/g, ''); this.value = this.value.replace(/(\..*)\./g, '$1');" 
+                        onKeyDown="if(this.value.length==10 && event.keyCode!=8) return false;"
                       />
                     </div>
                     <v-expansion-panels focusable>
@@ -1682,6 +1772,7 @@
                         type="text"
                         class="form-control"
                         v-model="usuario.nombrePersonal3"
+                        required
                         autofocus
                       />
                              </div>
@@ -1691,6 +1782,7 @@
                               id="departamentos10"
                               @click="municipiosPersonal3()"
                               v-model="usuario.departamentoPersonal3"
+                              required
                             >
                               <option value="AMAZONAS">AMAZONAS</option>
                               <option value="ANTIOQUIA">ANTIOQUIA</option>
@@ -1739,6 +1831,7 @@
                               id="municipioPersonal3"
                               class="form-control"
                               v-model="usuario.municipioPersonal3"
+                              required
                             >
                               <option value="0"></option>
                             </select>
@@ -1748,6 +1841,7 @@
                         type="text"
                         class="form-control"
                         v-model="usuario.direccionPersonal3"
+                        required
                       />
                     </div>
                     <div class="form-group">
@@ -1756,6 +1850,9 @@
                         type="number"
                         class="form-control"
                         v-model="usuario.telefonoFijoPersonal3"
+                        required
+                        oninput="this.value = this.value.replace(/[^0-9.]/g, ''); this.value = this.value.replace(/(\..*)\./g, '$1');" 
+                        onKeyDown="if(this.value.length==10 && event.keyCode!=8) return false;"
                       />
                     </div>
                     <div class="form-group">
@@ -1764,6 +1861,9 @@
                         type="number"
                         class="form-control"
                         v-model="usuario.celularPersonal3"
+                        required
+                        oninput="this.value = this.value.replace(/[^0-9.]/g, ''); this.value = this.value.replace(/(\..*)\./g, '$1');" 
+                        onKeyDown="if(this.value.length==10 && event.keyCode!=8) return false;"
                       />
                     </div>
                     <div class="form-group">
@@ -1772,6 +1872,9 @@
                         type="number"
                         class="form-control"
                         v-model="usuario.telefonoOficinaPersonal3"
+                        required
+                        oninput="this.value = this.value.replace(/[^0-9.]/g, ''); this.value = this.value.replace(/(\..*)\./g, '$1');" 
+                        onKeyDown="if(this.value.length==10 && event.keyCode!=8) return false;"
                       />
                     </div>
                           </form>
@@ -1791,6 +1894,7 @@
                         type="text"
                         class="form-control"
                         v-model="usuario.nombrePersonal4"
+                        required
                         autofocus
                       />
                     </div>
@@ -1800,6 +1904,7 @@
                               id="departamentos11"
                               @click="municipiosPersonal4()"
                               v-model="usuario.departamentoPersonal4"
+                              required
                             >
                               <option value="AMAZONAS">AMAZONAS</option>
                               <option value="ANTIOQUIA">ANTIOQUIA</option>
@@ -1848,6 +1953,7 @@
                               id="municipioPersonal4"
                               class="form-control"
                               v-model="usuario.municipioPersonal4"
+                              required
                             >
                               <option value="0"></option>
                             </select>
@@ -1857,6 +1963,7 @@
                         type="text"
                         class="form-control"
                         v-model="usuario.direccionPersonal4"
+                        required
                       />
                     </div>
                     <div class="form-group">
@@ -1865,6 +1972,9 @@
                         type="number"
                         class="form-control"
                         v-model="usuario.telefonoFijoPersonal4"
+                        required
+                        oninput="this.value = this.value.replace(/[^0-9.]/g, ''); this.value = this.value.replace(/(\..*)\./g, '$1');" 
+                        onKeyDown="if(this.value.length==10 && event.keyCode!=8) return false;"
                       />
                     </div>
                     <div class="form-group">
@@ -1873,6 +1983,9 @@
                         type="number"
                         class="form-control"
                         v-model="usuario.celularPersonalr4"
+                        required
+                        oninput="this.value = this.value.replace(/[^0-9.]/g, ''); this.value = this.value.replace(/(\..*)\./g, '$1');" 
+                        onKeyDown="if(this.value.length==10 && event.keyCode!=8) return false;"
                       />
                     </div>
                     <div class="form-group">
@@ -1881,6 +1994,9 @@
                         type="number"
                         class="form-control"
                         v-model="usuario.telefonoOficinaPersonal4"
+                        required
+                        oninput="this.value = this.value.replace(/[^0-9.]/g, ''); this.value = this.value.replace(/(\..*)\./g, '$1');" 
+                        onKeyDown="if(this.value.length==10 && event.keyCode!=8) return false;"
                       />
                     </div>
                           </form>
@@ -1921,12 +2037,13 @@
                       dense
                       solo
                     ></v-select>
-                    <label>Departamento de residencia</label>
+                    <label>Departamento</label>
                     <select
                       class="form-control"
                       id="departamentos12"
                       @click="municipiosLaboral1()"
                       v-model="usuario.departamentoLaboral1"
+                      required
                     >
                       <option value="AMAZONAS">AMAZONAS</option>
                       <option value="ANTIOQUIA">ANTIOQUIA</option>
@@ -1971,6 +2088,7 @@
                       id="municipioLaboral1"
                       class="form-control"
                       v-model="usuario.municipioLaboral1"
+                      required
                     >
                       <option value="0"></option>
                     </select>
@@ -2036,12 +2154,13 @@
                               dense
                               solo
                             ></v-select>
-                            <label>Departamento de residencia</label>
+                            <label>Departamento</label>
                             <select
                               class="form-control"
                               id="departamentos13"
                               @click="municipiosLaboral2()"
                               v-model="usuario.departamentoLaboral2"
+                              required
                             >
                               <option value="AMAZONAS">AMAZONAS</option>
                               <option value="ANTIOQUIA">ANTIOQUIA</option>
@@ -2090,6 +2209,7 @@
                               id="municipioLaboral2"
                               class="form-control"
                               v-model="usuario.municipioLaboral2"
+                              required
                             >
                               <option value="0"></option>
                             </select>
@@ -2159,12 +2279,13 @@
                               dense
                               solo
                             ></v-select>
-                            <label>Departamento de residencia</label>
+                            <label>Departamento</label>
                             <select
                               class="form-control"
                               id="departamentos14"
                               @click="municipiosLaboral3()"
                               v-model="usuario.departamentoLaboral3"
+                              required
                             >
                               <option value="AMAZONAS">AMAZONAS</option>
                               <option value="ANTIOQUIA">ANTIOQUIA</option>
@@ -2213,6 +2334,7 @@
                               id="municipioLaboral3"
                               class="form-control"
                               v-model="usuario.municipioLaboral3"
+                              required
                             >
                               <option value="0"></option>
                             </select>
@@ -2281,12 +2403,13 @@
                               dense
                               solo
                             ></v-select>
-                            <label>Departamento de residencia</label>
+                            <label>Departamento</label>
                             <select
                               class="form-control"
                               id="departamentos15"
                               @click="municipiosLaboral4()"
                               v-model="usuario.departamentoLaboral4"
+                              required
                             >
                               <option value="AMAZONAS">AMAZONAS</option>
                               <option value="ANTIOQUIA">ANTIOQUIA</option>
@@ -2335,6 +2458,7 @@
                               id="municipioLaboral4"
                               class="form-control"
                               v-model="usuario.municipioLaboral4"
+                              required
                             >
                               <option value="0"></option>
                             </select>
@@ -2404,12 +2528,13 @@
                               dense
                               solo
                             ></v-select>
-                            <label>Departamento de residencia</label>
+                            <label>Departamento</label>
                             <select
                               class="form-control"
                               id="departamentos16"
                               @click="municipiosLaboral5()"
                               v-model="usuario.departamentoLaboral5"
+                              required
                             >
                               <option value="AMAZONAS">AMAZONAS</option>
                               <option value="ANTIOQUIA">ANTIOQUIA</option>
@@ -2458,6 +2583,7 @@
                               id="municipioLaboral5"
                               class="form-control"
                               v-model="usuario.municipioLaboral5"
+                              required
                             >
                               <option value="0"></option>
                             </select>
@@ -2959,6 +3085,7 @@
                       accept="image/*"
                       @change="fotoPersonal($event)"
                       :src="cedula"
+                      required
                     /><br />
                     <strong><label>Foto Familia</label></strong><br />
                     <input
@@ -2966,6 +3093,7 @@
                       accept="image/*"
                       @change="fotoFamilia($event)"
                       :src="foto_Familia"
+                      required
                     /><br />
                     <strong><label>Foto Vivienda</label></strong><br />
                     <input
@@ -2973,6 +3101,7 @@
                       accept="image/*"
                       @change="fotoVivienda($event)"
                       :src="foto_Vivienda"
+                      required
                     /><br />
                     
                     <div class="form-group">
@@ -2991,6 +3120,7 @@
                       accept="application/pdf"
                       :src="certificado_Laboral"
                       @change="clickCertficadoLaboral($event)"
+                      required
                     />
                     <br />
                      <strong><label>Certificados Académicos</label></strong><br />
@@ -2999,6 +3129,7 @@
                       accept="application/pdf"
                       :src="certificado_Academico"
                       @change="clickCertficadoAcademico($event)"
+                      required
                     />
                     <br />
                      <strong><label>Certificados Cursos</label></strong><br />
@@ -3007,6 +3138,7 @@
                       accept="application/pdf"
                       :src="certificado_Cursos"
                       @change="clickCertficadoCursos($event)"
+                      required
                     />
                     <br />
                      <strong><label>Certificados Experiencias</label></strong><br />
@@ -3015,6 +3147,7 @@
                       accept="application/pdf"
                       :src="certificado_Experiencias"
                       @change="clickCertficadoExperiencias($event)"
+                      required
                     />
                     <div class="form-group">
                        <br />
@@ -3023,6 +3156,7 @@
                       type="button"
                       @click="subir_documentos()"
                       value="Guardar documentos"
+                      required
                     />
                     </div>
                     <br />
@@ -23999,6 +24133,10 @@ export default {
             );
       }
     },
+    numberOnly(id) {
+      var element = document.getElementById(id);
+      element.value = element.value.replace(/[^0-9]/gi, "");
+    },
     clickCertficadoLaboral(e) {
       this.archivoCerLaboral = e.target.files[0];
       console.log(this.archivoCerLaboral);
@@ -24684,6 +24822,26 @@ export default {
     background-color:#0075cf;
   }
   .boton:hover{
+    opacity: 0.9;
+    text-decoration: none;
+  }
+   .continuar{
+    margin-left: 30%;
+    margin-right: 30%;
+    width: 40%;
+    border-radius: 2px;
+    border: 2px solid rgb(13, 15, 69);
+    color:#ffffff;
+    font-weight:bold;
+    display:inline-block ;
+    padding:6px 12px;
+    font-size:16px;
+    text-align:center;
+    cursor:pointer;
+    outline:0; 
+    background-color:rgb(26, 56, 125)!important;
+  }
+  .continuar:hover{
     opacity: 0.9;
     text-decoration: none;
   }
