@@ -1998,13 +1998,6 @@
                         />
                       </v-flex>
                     </div>
-                    <label>Certificado de la experiencia</label><br />
-                    <input
-                      type="file"
-                      accept="application/pdf"
-                      @change="clickDocumento1($event)"
-                      :src="archivoPdf1"
-                    /><br /><br />
                     <label>Tipo de servicio prestado</label>
                     <input
                         type="text"
@@ -2124,13 +2117,6 @@
                                 />
                               </v-flex>
                             </div>
-                            <label>Certificado de la experiencia</label><br />
-                            <input
-                              type="file"
-                              accept="application/pdf"
-                              @change="clickDocumento2($event)"
-                              :src="archivoPdf2"
-                            /><br /><br />
                             <label>Tipo de servicio prestado</label>
                     <input
                         type="text"
@@ -2254,14 +2240,6 @@
                                 />
                               </v-flex>
                             </div>
-                            <label>Certificado de la experiencia</label><br />
-                            <input
-                              type="file"
-                              accept="application/pdf"
-                              @change="clickDocumento3($event)"
-                              :src="archivoPdf2"
-                            /><br /><br />
-                            <label>Tipo de servicio prestado</label>
                     <input
                         type="text"
                         class="form-control"
@@ -2384,13 +2362,6 @@
                                 />
                               </v-flex>
                             </div>
-                            <label>Certificado de la experiencia</label><br />
-                            <input
-                              type="file"
-                              accept="application/pdf"
-                              @change="clickDocumento4($event)"
-                              :src="archivoPdf2"
-                            /><br /><br />
                             <label>Tipo de servicio prestado</label>
                     <input
                         type="text"
@@ -2514,13 +2485,6 @@
                                 />
                               </v-flex>
                             </div>
-                            <label>Certificado de la experiencia</label><br />
-                            <input
-                              type="file"
-                              accept="application/pdf"
-                              @change="clickDocumento5($event)"
-                              :src="archivoPdf2"
-                            /><br /><br />
                             <label>Tipo de servicio prestado</label>
                     <input
                         type="text"
@@ -2988,23 +2952,85 @@
                 >
                 <v-expansion-panel-content>
                   <form @submit.prevent="onFormSubmit">
-                    <label>Foto de la cédula</label><br />
+                    <strong><label>Foto Personal</label></strong>
+                    <br />
                     <input
                       type="file"
                       accept="image/*"
-                      @change="clickImagen($event)"
+                      @change="fotoPersonal($event)"
                       :src="cedula"
                     /><br />
-                    <label>Documento PDF</label><br />
+                    <strong><label>Foto Familia</label></strong><br />
+                    <input
+                      type="file"
+                      accept="image/*"
+                      @change="fotoFamilia($event)"
+                      :src="foto_Familia"
+                    /><br />
+                    <strong><label>Foto Vivienda</label></strong><br />
+                    <input
+                      type="file"
+                      accept="image/*"
+                      @change="fotoVivienda($event)"
+                      :src="foto_Vivienda"
+                    /><br />
+                    
+                    <div class="form-group">
+                      <br />
+                       <input
+                       class="boton"
+                      type="button"
+                      @click="btn_imagenes()"
+                      value="Guardar imagenes"
+                    />
+                    </div>
+                    <br />
+                    <strong><label>Certificados Laborales</label></strong><br />
                     <input
                       type="file"
                       accept="application/pdf"
-                      @change="clickDocumento($event)"
-                      :src="archivoPdf"
+                      :src="certificado_Laboral"
+                      @change="clickCertficadoLaboral($event)"
                     />
+                    <br />
+                     <strong><label>Certificados Académicos</label></strong><br />
+                    <input
+                      type="file"
+                      accept="application/pdf"
+                      :src="certificado_Academico"
+                      @change="clickCertficadoAcademico($event)"
+                    />
+                    <br />
+                     <strong><label>Certificados Cursos</label></strong><br />
+                    <input
+                      type="file"
+                      accept="application/pdf"
+                      :src="certificado_Cursos"
+                      @change="clickCertficadoCursos($event)"
+                    />
+                    <br />
+                     <strong><label>Certificados Experiencias</label></strong><br />
+                    <input
+                      type="file"
+                      accept="application/pdf"
+                      :src="certificado_Experiencias"
+                      @change="clickCertficadoExperiencias($event)"
+                    />
+                    <div class="form-group">
+                       <br />
+                       <input
+                       class="boton"
+                      type="button"
+                      @click="subir_documentos()"
+                      value="Guardar documentos"
+                    />
+                    </div>
+                    <br />
+
                     <div class="form-group">
                       <button class="btn btn-primary btn-block">Guardar</button>
                     </div>
+
                   </form>
                 </v-expansion-panel-content>
               </v-expansion-panel>
@@ -3097,17 +3123,21 @@ export default {
         "30",
       ],
       cedula: "",
-      archivoPdf: "",
-      archivoPdf1: "",
-      archivoPdf2: "",
-      archivoPdf3: "",
-      archivoPdf4: "",
-      archivoPdf5: "",
+      foto_Familia: "",
+      foto_Vivienda: "",
+      certificado_Laboral:"",
+      certificado_Academico:"",
+      certificado_Cursos:"",
+      certificado_Experiencias:"",
       imagenes: [],
       imagen: null,
+      imagenFamilia: null,
+      imagenVivienda: null,
       documentos: [],
-      archivo: null,
-      archivo1: null,
+      archivoCerLaboral: null,
+      archivoCerAcademico: null,
+      archivoCerCursos: null,
+      archivoCerExperiencias: null,
       archivo2: null,
       archivo3: null,
       archivo4: null,
@@ -23871,43 +23901,119 @@ export default {
     };
   },
   methods: {
-    clickImagen(e) {
+    fotoPersonal(e) {
       this.imagen = e.target.files[0];
       console.log(this.imagen);
     },
-    clickDocumento(e) {
-      this.archivo = e.target.files[0];
-      console.log(this.archivo);
+      fotoFamilia(e) {
+      this.imagenFamilia = e.target.files[0];
+      console.log(this.imagenFamilia);
     },
-    clickDocumento1(e) {
-      this.archivo1 = e.target.files[0];
-      console.log(this.archivo1);
+      fotoVivienda(e) {
+      this.imagenVivienda = e.target.files[0];
+      console.log(this.imagenVivienda);
     },
-    clickDocumento2(e) {
-      this.archivo2 = e.target.files[0];
-      console.log(this.archivo2);
-    },
-    clickDocumento3(e) {
-      this.archivo3 = e.target.files[0];
-      console.log(this.archivo3);
-    },
-    clickDocumento4(e) {
-      this.archivo4 = e.target.files[0];
-      console.log(this.archivo4);
-    },
-    clickDocumento5(e) {
-      this.archivo5 = e.target.files[0];
-      console.log(this.archivo5);
-    },
-
-    salir() {
+    btn_imagenes(){
+      global.banderaImagen= 1;
+      if (this.imagen== null) {
+        Swal.fire(
+          "¡Atención!",
+          "No ha guardado la foto personal",
+          "info"
+        );
+      }
+      else if (this.imagenFamilia == null) {
+        Swal.fire("¡Atención!", "No ha guardado la foto familiar", "info");
+      }
+        else if (this.imagenVivienda == null) {
+        Swal.fire("¡Atención!", "No ha guardado la foto de la vivienda", "info");
+      } 
+      else{
       const refImg = ref.child("imagenes/" + this.imagen.name);
       const metadata = { contentType: "image/jpeg" };
-      refImg.put(this.imagen, metadata).then((e) => console.log(e));
+      refImg.put(this.imagen, metadata).then((e) => {
+      console.log(e)
+      });
 
-      const refDoc = ref.child("documentos/" + this.archivo1.name);
-      const metadata2 = { contentType: "application/pdf" };
-      refDoc.put(this.archivo1, metadata2).then((e) => console.log(e));
+
+      const refImg2 = ref.child("imagenes/" + this.imagenFamilia.name);
+      const metadata2 = { contentType: "image/jpeg" };
+      refImg2.put(this.imagenFamilia, metadata2).then((e) => console.log(e));
+
+      const refImg3 = ref.child("imagenes/" + this.imagenVivienda.name);
+      const metadata3 = { contentType: "image/jpeg" };
+      refImg3.put(this.imagenVivienda, metadata3).then((e) => console.log(e));
+
+      Swal.fire(
+              "¡Felicitaciones!",
+              "Ha guardado las fotos correctamente",
+              "success"
+            );
+    }
+    
+    },
+
+    subir_documentos(){
+      global.banderaDocumento= 1;
+      if (this.archivoCerLaboral== null) {
+        Swal.fire(
+          "¡Atención!",
+          "No ha guardado el certificado laboral",
+          "info"
+        );
+      }
+      else if (this.archivoCerAcademico == null) {
+        Swal.fire("¡Atención!", "No ha guardado el certificado académico", "info");
+      }
+        else if (this.archivoCerCursos == null) {
+        Swal.fire("¡Atención!", "No ha guardado el certificado de los cursos realizados", "info");
+      } 
+       else if (this.archivoCerExperiencias == null) {
+        Swal.fire("¡Atención!", "No ha guardado el certificado de las experiencias", "info");
+      } 
+      else{
+      const refDoc = ref.child("documentos/" + this.archivoCerLaboral.name);
+      console.log(this.archivoCerLaboral.name);
+      const metadata4 = { contentType: "application/pdf" };
+      refDoc.put(this.archivoCerLaboral, metadata4).then((e) => console.log(e));
+
+      const refDoc1 = ref.child("documentos/" + this.archivoCerAcademico.name);
+      console.log(this.archivoCerAcademico.name);
+      const metadata5 = { contentType: "application/pdf" };
+      refDoc1.put(this.archivoCerAcademico, metadata5).then((e) => console.log(e));
+
+      const refDoc2 = ref.child("documentos/" + this.archivoCerCursos.name);
+      console.log(this.archivoCerCursos.name);
+      const metadata6 = { contentType: "application/pdf" };
+      refDoc2.put(this.archivoCerCursos, metadata6).then((e) => console.log(e));
+
+      const refDoc3 = ref.child("documentos/" + this.archivoCerExperiencias.name);
+      console.log(this.archivoCerExperiencias.name);
+      const metadata7 = { contentType: "application/pdf" };
+      refDoc3.put(this.archivoCerExperiencias, metadata7).then((e) => console.log(e));
+
+       Swal.fire(
+              "¡Felicitaciones!",
+              "Ha guardado los documentos correctamente",
+              "success"
+            );
+      }
+    },
+    clickCertficadoLaboral(e) {
+      this.archivoCerLaboral = e.target.files[0];
+      console.log(this.archivoCerLaboral);
+    },
+    clickCertficadoAcademico(e) {
+      this.archivoCerAcademico = e.target.files[0];
+      console.log(this.archivoCerAcademico);
+    },
+    clickCertficadoCursos(e) {
+      this.archivoCerCursos = e.target.files[0];
+      console.log(this.archivoCerCursos);
+    },
+    clickCertficadoExperiencias(e) {
+      this.archivoCerExperiencias = e.target.files[0];
+      console.log(this.archivoCerExperiencias);
     },
 
     municipios() {
@@ -24291,7 +24397,8 @@ export default {
 
     onFormSubmit(event) {
       event.preventDefault();
-
+              console.log(global.banderaImagen, "Documentos " + global.banderaDocumento)
+      if(global.banderaImagen==1 && global.banderaDocumento==1){
       db.collection("usuarios")
         .add({
           primernombre: this.usuario.primernombre,
@@ -24501,6 +24608,13 @@ export default {
           tituloCurso3: this.usuario.tituloCurso3,
           tituloCurso4: this.usuario.tituloCurso4,
           tituloCurso5: this.usuario.tituloCurso5,
+          fotoPersonal: this.imagen.name,
+          fotoFamilia: this.imagenFamilia.name,
+          fotoVivenda: this.imagenVivienda.name,
+          certificadoLaboral: this.archivoCerLaboral.name,
+          certificadoCursos: this.archivoCerAcademico.name,
+          certificadoLaboral: this.archivoCerCursos.name,
+          certificadoExperiencias: this.archivoCerExperiencias.name,
         })
         .then(() => {
           Swal.fire(
@@ -24531,6 +24645,14 @@ export default {
         .catch((error) => {
           console.log(error);
         });
+        }
+        else {
+           Swal.fire(
+            "¡Atención!",
+            "¡Antes de guardar debe subir documentos e imagenes !",
+            "info"
+          );
+        }
     },
   },
 };
@@ -24549,4 +24671,20 @@ export default {
 .UpperCase{
   text-transform: uppercase;
 }
+ .boton{
+    margin:16px 6px 2px 0;
+    color:#ffffff;
+    font-weight:bold;
+    display:inline-block;
+    padding:6px 12px;
+    font-size:16px;
+    text-align:center;
+    cursor:pointer;
+    outline:0; 
+    background-color:#0075cf;
+  }
+  .boton:hover{
+    opacity: 0.9;
+    text-decoration: none;
+  }
 </style>

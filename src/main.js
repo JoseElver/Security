@@ -15,6 +15,8 @@ const options = {
   confirmButtonColor: '#41b882',
   cancelButtonColor: '#ff7674',
 };
+global.banderaImagen = 0;
+global.banderaDocumento = 0;
 
 Vue.use(VueSweetalert2, options);
 
