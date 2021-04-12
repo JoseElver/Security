@@ -1,7 +1,7 @@
 <template>
   <v-app id="inspire">
-    <v-container fluid>
-      <div class="row justify-content-center">
+    <v-container fluid >
+      <div class="contenido row justify-content-center">
         <div class="clase col-md 10">
           <div id="app">
             <v-expansion-panels focusable>
@@ -22,7 +22,7 @@
                       <label>Primer Nombre</label>
                       <input
                         type="text"
-                        class="form-control"
+                        class="UpperCase form-control"
                         v-model="usuario.primernombre"
                         required
                         autofocus
@@ -32,7 +32,7 @@
                       <label>Segundo Nombre</label>
                       <input
                         type="text"
-                        class="form-control"
+                        class="UpperCase form-control"
                         v-model="usuario.segundonombre"
                         required
                       />
@@ -41,7 +41,7 @@
                       <label>Primer Apellido</label>
                       <input
                         type="text"
-                        class="form-control"
+                        class="UpperCase form-control"
                         v-model="usuario.primerapellido"
                         required
                       />
@@ -50,7 +50,7 @@
                       <label>Segundo Apellido</label>
                       <input
                         type="text"
-                        class="form-control"
+                        class="UpperCase form-control"
                         v-model="usuario.segundoapellido"
                         required
                       />
@@ -157,6 +157,7 @@
                       @click="municipios()"
                       v-model="usuario.departamento"
                     >
+                      <option value="0">Seleccione...</option>
                       <option value="AMAZONAS">AMAZONAS</option>
                       <option value="ANTIOQUIA">ANTIOQUIA</option>
                       <option value="ARAUCA">ARAUCA</option>
@@ -205,18 +206,32 @@
                       <option value="0"></option>
                     </select>
                     <label>Zona de residencia</label>
-                    <v-select
-                      v-model="usuario.zona"
-                      :items="tipoZona"
+                      <select
                       required
-                      dense
-                      solo
-                    ></v-select>
+                      class="form-control"
+                      id="zona"
+                      @click="zona_residencia()"
+                      v-model="usuario.zona"
+                    >
+                      <option value="0">Seleccione...</option>
+                      <option value="Urbano">Urbano</option>
+                      <option value="Rural">Rural</option>
+                    </select>
+                    <label>Sector de residencia</label>
+                    <select
+                      v-bind:disabled="esHablitadoZona"
+                      required
+                      id="sector"
+                      class="form-control"
+                      v-model="usuario.sector"
+                    >
+                      <option value="0"></option>
+                    </select>
                     <div class="form-group">
                       <label>Dirección de residencia</label>
                       <input
                         type="text"
-                        class="form-control"
+                        class="UpperCase form-control"
                         v-model="usuario.direccionResidencia"
                         required
                       />
@@ -238,20 +253,24 @@
                       solo
                     ></v-select>
                     <label>Experiencia en Seguridad Privada</label>
-                    <v-select
-                      v-model="usuario.experiencia"
-                      :items="tipoExperiencia"
+                    <select
                       required
-                      dense
-                      solo
-                    ></v-select>
+                      class="form-control"
+                      id="experiencia"
+                      @click="seguridad_privada()"
+                      v-model="usuario.experiencia"
+                    >
+                      <option value="0">Seleccione...</option>
+                      <option value="SI">SI</option>
+                      <option value="NO">NO</option>
+                    </select>
                     <label>Tiempo de experiencia</label>
                     <v-layout>
                       <v-flex xs12 sm2>
                         <v-select
+                          v-bind:disabled="esHablitadoExperiencia"
                           v-model="usuario.year"
                           :items="tipoYear"
-                          required
                           dense
                           solo
                         ></v-select>
@@ -261,9 +280,9 @@
                       </v-flex>
                       <v-flex xs12 sm2 class="selector">
                         <v-select
+                          v-bind:disabled="esHablitadoExperiencia"
                           v-model="usuario.meses"
                           :items="tipoMeses"
-                          required
                           dense
                           solo
                         ></v-select>
@@ -272,9 +291,6 @@
                         <label class="centimetros">Meses</label>
                       </v-flex>
                     </v-layout>
-                    <div class="form-group">
-                      <button class="continuar">Guardado temporal</button>
-                    </div>
                   </form>
                 </v-expansion-panel-content>
               </v-expansion-panel>
@@ -283,7 +299,7 @@
               <v-expansion-panel>
                 <v-expansion-panel-header
                   ><strong
-                    >Información de vivienda</strong
+                    >Información de residencia</strong
                   ></v-expansion-panel-header
                 >
                 <v-expansion-panel-content>
@@ -300,7 +316,7 @@
                       <label>Propietario</label>
                       <input
                         type="text"
-                        class="form-control"
+                        class="UpperCase form-control"
                         v-model="usuario.propietario"
                         required
                       />
@@ -380,9 +396,6 @@
                     >
                       <option value="0"></option>
                     </select>
-                    <div class="form-group">
-                      <button class="continuar">Guardado temporal</button>
-                    </div>
                   </form>
                 </v-expansion-panel-content>
               </v-expansion-panel>
@@ -402,18 +415,19 @@
                       @click="vehiculos()"
                       v-model="usuario.vehiculo"
                     >
-                      <option value="Vehiculo_Sedan">Vehículo Sedan</option>
-                      <option value="Camoineta">Camoineta</option>
-                      <option value="Vehiculo_Blindado">
-                        Vehículo Blindado
+                      <option value="0">Seleccione...</option>
+                      <option value="VEHICULO_SEDAN">VEHICULO SEDAN</option>
+                      <option value="CAMIONETA">CAMIONETA</option>
+                      <option value="VEHICULO_BLINDADO">
+                        VEHICULO BLINDADO
                       </option>
-                      <option value="Motocicleta">Motocicleta</option>
+                      <option value="MOTOCICLETA">MOTOCICLETA</option>
                     </select>
                     <div class="form-group">
                       <label>Marca</label>
                       <input
                         type="text"
-                        class="form-control"
+                        class="UpperCase form-control"
                         v-model="usuario.marca"
                         required
                       />
@@ -433,6 +447,7 @@
                       <v-layout>
                         <v-flex xs12 sm2>
                           <select
+                            v-bind:disabled="esHablitadoCilindraje"
                             required
                             id="cilindraje"
                             class="form-control"
@@ -454,9 +469,6 @@
                       dense
                       solo
                     ></v-select>
-                    <div class="form-group">
-                      <button class="continuar">Guardado temporal</button>
-                    </div>
                   </form>
                 </v-expansion-panel-content>
               </v-expansion-panel>
@@ -465,7 +477,7 @@
               <v-expansion-panel>
                 <v-expansion-panel-header
                   ><strong
-                    >Perteneció a institución armada</strong
+                    >Perteneció a una institución armada</strong
                   ></v-expansion-panel-header
                 >
                 <v-expansion-panel-content>
@@ -478,20 +490,22 @@
                       @click="institucion()"
                       v-model="usuario.institucion"
                     >
-                      <option value="Ejercito_Nacional">
-                        Ejercito Nacional
+                      <option value="0">Seleccione...</option>
+                      <option value="EJERCITO_NACIONAL">
+                        EJERCITO NACIONAL
                       </option>
-                      <option value="Armada_Nacional">Armada Nacional</option>
-                      <option value="Infanteria_Marina">
-                        Infanteria de marina
+                      <option value="ARMADA_NACIONAL">ARMADA NACIONAL</option>
+                      <option value="INFANTERIA_MARINA">
+                        INFANTERIA DE MARINA
                       </option>
-                      <option value="Policia_Nacional">Policía Nacional</option>
-                      <option value="Fuerza_Aerea">Fuerza Aérea</option>
+                      <option value="POLICIA_NACIONAL">POLICIA NACIONAL</option>
+                      <option value="FUERZA_AEREA">FUERZA AEREA</option>
                       <option value="DAS">DAS</option>
-                      <option value="Migracion_Colombia">
-                        Migración Colombia
+                      <option value="MIGRACION_COLOMBIA">
+                        MIGRACION COLOMBIA
                       </option>
                       <option value="CTI">CTI</option>
+                      <option value="INPEC">INPEC</option>
                     </select>
                     <label>Último grado obtenido</label>
                     <select
@@ -503,19 +517,24 @@
                       <option value="0"></option>
                     </select>
                     <label>Estado</label>
-                    <v-select
-                      v-model="usuario.estadoLaboral"
-                      :items="tipoEstadoLaboral"
+                    <select
                       required
-                      dense
-                      solo
-                    ></v-select>
+                      class="form-control"
+                      id="estado"
+                      @click="estado_laboral()"
+                      v-model="usuario.estadoLaboral"
+                    >
+                      <option value="0">Seleccione...</option>
+                      <option value="ACTIVO">ACTIVO</option>
+                      <option value="RETIRADO">RETIRADO</option>
+                    </select>
                     <div class="form-group">
                       <label>Fecha Incial</label>
                       <v-flex xs12 sm2>
                         <input
                           type="date"
                           class="form-control"
+                          id="inicial"
                           v-model="usuario.fechaIncial"
                           pattern="\d{4}-\d{2}-\d{2}"
                           required
@@ -528,6 +547,8 @@
                         <input
                           type="date"
                           class="form-control"
+                          id="final"
+                          oninput="inp1 = document.getElementById('inicial').value; inp2 = document.getElementById('final').value; if(inp1 > inp2){alert('Error, la fecha inicial es mayor que la fecha final. Por favor corregir');};"
                           v-model="usuario.fechaFinal"
                           pattern="\d{4}-\d{2}-\d{2}"
                           required
@@ -537,6 +558,7 @@
                     <div class="form-group">
                       <label>Motivo de retiro</label>
                       <v-select
+                        v-bind:disabled="esHabilitadoMotivo"
                         v-model="usuario.retiro"
                         :items="tipoRetiro"
                         required
@@ -555,11 +577,10 @@
                 >
                 <v-expansion-panel-content>
                   <form @submit.prevent="onFormSubmit">
-                    <label>Otros Idiomas</label>
+                    <label>Primer idioma</label>
                     <v-select
                       v-model="usuario.idiomas"
                       :items="tipoIdiomas"
-                      multiple
                       required
                       dense
                       solo
@@ -595,6 +616,109 @@
                         v-model="usuario.observaciones"
                         required
                       ></textarea>
+                      <br>
+                      <v-expansion-panels focusable>
+                      <v-expansion-panel>
+                        <v-expansion-panel-header
+                          >Segundo idioma (Opcional)</v-expansion-panel-header
+                        >
+                        <v-expansion-panel-content>
+                          <form @submit.prevent="onFormSubmit">
+                            <label>Otro idioma</label>
+                    <v-select
+                      v-model="usuario.idiomas2"
+                      :items="tipoIdiomas"
+                      required
+                      dense
+                      solo
+                    ></v-select>
+                    <label>Nivel de escritura</label>
+                    <v-select
+                      v-model="usuario.nivelEscritura2"
+                      :items="tipoNivelEscritura"
+                      required
+                      dense
+                      solo
+                    ></v-select>
+                    <label>Nivel de lectura</label>
+                    <v-select
+                      v-model="usuario.nivelLectura2"
+                      :items="tipoNivelLectura"
+                      required
+                      dense
+                      solo
+                    ></v-select>
+                    <label>Nivel Conversacional</label>
+                    <v-select
+                      v-model="usuario.nivelConversacional2"
+                      :items="tipoNivelConversacional"
+                      required
+                      dense
+                      solo
+                    ></v-select>
+                    <div class="form-group">
+                      <label>Observaciones</label>
+                      <textarea
+                        class="form-control"
+                        v-model="usuario.observaciones2"
+                        required
+                      ></textarea>
+                    </div>
+                          </form>
+                        </v-expansion-panel-content>
+                      </v-expansion-panel>
+                    </v-expansion-panels>
+                    <v-expansion-panels focusable>
+                      <v-expansion-panel>
+                        <v-expansion-panel-header
+                          >Tercer idioma (Opcional)</v-expansion-panel-header
+                        >
+                        <v-expansion-panel-content>
+                          <form @submit.prevent="onFormSubmit">
+                            <label>Otro idioma</label>
+                    <v-select
+                      v-model="usuario.idiomas3"
+                      :items="tipoIdiomas"
+                      required
+                      dense
+                      solo
+                    ></v-select>
+                    <label>Nivel de escritura</label>
+                    <v-select
+                      v-model="usuario.nivelEscritura3"
+                      :items="tipoNivelEscritura"
+                      required
+                      dense
+                      solo
+                    ></v-select>
+                    <label>Nivel de lectura</label>
+                    <v-select
+                      v-model="usuario.nivelLectura3"
+                      :items="tipoNivelLectura"
+                      required
+                      dense
+                      solo
+                    ></v-select>
+                    <label>Nivel Conversacional</label>
+                    <v-select
+                      v-model="usuario.nivelConversacional3"
+                      :items="tipoNivelConversacional"
+                      required
+                      dense
+                      solo
+                    ></v-select>
+                    <div class="form-group">
+                      <label>Observaciones</label>
+                      <textarea
+                        class="form-control"
+                        v-model="usuario.observaciones3"
+                        required
+                      ></textarea>
+                    </div>
+                          </form>
+                        </v-expansion-panel-content>
+                      </v-expansion-panel>
+                    </v-expansion-panels>
                     </div>
                   </form>
                 </v-expansion-panel-content>
@@ -615,8 +739,9 @@
                       @click="armas()"
                       v-model="usuario.arma"
                     >
-                      <option value="Pistola">Pístola</option>
-                      <option value="Revolver">Revólver</option>
+                      <option value="0">Seleccione...</option>
+                      <option value="PISTOLA">PISTOLA</option>
+                      <option value="REVOLVER">REVOLVER</option>
                     </select>
                     <label>Modalidad</label>
                     <v-select
@@ -648,7 +773,7 @@
             <v-expansion-panels focusable>
               <v-expansion-panel>
                 <v-expansion-panel-header
-                  ><strong>Sueldo</strong></v-expansion-panel-header
+                  ><strong>Estimación salarial</strong></v-expansion-panel-header
                 >
                 <v-expansion-panel-content>
                   <form @submit.prevent="onFormSubmit">
@@ -681,7 +806,7 @@
                       <label>Nombre y Apellidos del Padre</label>
                       <input
                         type="text"
-                        class="form-control"
+                        class="UpperCase form-control"
                         v-model="usuario.nombrePadre"
                         required
                         autofocus
@@ -694,7 +819,8 @@
                       @click="respuesta()"
                       class="form-control"
                       v-model="usuario.fallecidoPadre"
-                    >
+                    > 
+                      <option value="0">Seleccione...</option>
                       <option value="SI">SI</option>
                       <option value="NO">NO</option>
                     </select>
@@ -716,6 +842,7 @@
                       @click="municipiosPadre()"
                       v-model="usuario.departamentoPadre"
                     >
+                      <option value="0">Seleccione...</option>
                       <option value="AMAZONAS">AMAZONAS</option>
                       <option value="ANTIOQUIA">ANTIOQUIA</option>
                       <option value="ARAUCA">ARAUCA</option>
@@ -801,7 +928,7 @@
                       <label>Nombre y Apellidos de la Madre</label>
                       <input
                         type="text"
-                        class="form-control"
+                        class="UpperCase form-control"
                         v-model="usuario.nombreMadre"
                         required
                         autofocus
@@ -815,6 +942,7 @@
                       class="form-control"
                       v-model="usuario.fallecidoMadre"
                     >
+                      <option value="0">Seleccione...</option>
                       <option value="SI">SI</option>
                       <option value="NO">NO</option>
                     </select>
@@ -836,6 +964,7 @@
                       @click="municipiosMadre()"
                       v-model="usuario.departamentoMadre"
                     >
+                      <option value="0">Seleccione...</option>
                       <option value="AMAZONAS">AMAZONAS</option>
                       <option value="ANTIOQUIA">ANTIOQUIA</option>
                       <option value="ARAUCA">ARAUCA</option>
@@ -979,8 +1108,21 @@
                         />
                       </v-flex>
                     </div>
-                    <label>Licencia de conducción</label>
+                     <label>Licencia de conducción</label>
+                    <select
+                      required
+                      class="form-control"
+                      id="licencia"
+                      @click="licencia_conduccion()"
+                      v-model="usuario.poseeLicencia"
+                    >
+                      <option value="0">Seleccione...</option>
+                      <option value="SI">SI</option>
+                      <option value="NO">NO</option>
+                    </select>
+                    <label>Clase de licencia de conducción</label>
                     <v-select
+                      v-bind:disabled="esHablitadoLicencia"
                       v-model="usuario.licenciaConduccion"
                       :items="tipoLicenciaConduccion"
                       required
@@ -991,6 +1133,7 @@
                     <div class="form-group">
                       <label>Número de licencia</label>
                       <input
+                        v-bind:disabled="esHablitadoLicencia"
                         type="text"
                         class="form-control"
                         v-model="usuario.numeroLicencia"
@@ -999,14 +1142,6 @@
                         onKeyDown="if(this.value.length==16 && event.keyCode!=8) return false;"
                       />
                     </div>
-                    <label>Categoria</label>
-                    <v-select
-                      v-model="usuario.categoriaLicencia"
-                      :items="tipoCategoriaLicencia"
-                      required
-                      dense
-                      solo
-                    ></v-select>
                   </form>
                 </v-expansion-panel-content>
               </v-expansion-panel>
@@ -1032,7 +1167,7 @@
                       <label>Nombre completo</label>
                       <input
                         type="text"
-                        class="form-control"
+                        class="UpperCase form-control"
                         v-model="usuario.nombreFamiliar1"
                         required
                         autofocus
@@ -1046,6 +1181,7 @@
                       @click="municipiosFamiliar1()"
                       v-model="usuario.departamentoFamiliar1"
                     >
+                      <option value="0">Seleccione...</option>
                       <option value="AMAZONAS">AMAZONAS</option>
                       <option value="ANTIOQUIA">ANTIOQUIA</option>
                       <option value="ARAUCA">ARAUCA</option>
@@ -1097,7 +1233,7 @@
                       <label>Dirección</label>
                       <input
                         type="text"
-                        class="form-control"
+                        class="UpperCase form-control"
                         v-model="usuario.direccionFamiliar1"
                         required
                       />
@@ -1116,7 +1252,6 @@
                         type="number"
                         class="form-control"
                         v-model="usuario.telefonoFijoFamiliar1"
-                        required
                         oninput="this.value = this.value.replace(/[^0-9.]/g, ''); this.value = this.value.replace(/(\..*)\./g, '$1');" 
                         onKeyDown="if(this.value.length==10 && event.keyCode!=8) return false;"
                       />
@@ -1138,7 +1273,6 @@
                         type="number"
                         class="form-control"
                         v-model="usuario.telefonoOficinaFamiliar1"
-                        required
                         oninput="this.value = this.value.replace(/[^0-9.]/g, ''); this.value = this.value.replace(/(\..*)\./g, '$1');" 
                         onKeyDown="if(this.value.length==10 && event.keyCode!=8) return false;"
                       />
@@ -1150,7 +1284,7 @@
                       <label>Nombre completo</label>
                       <input
                         type="text"
-                        class="form-control"
+                        class="UpperCase form-control"
                         v-model="usuario.nombreFamiliar2"
                         required
                         autofocus
@@ -1164,6 +1298,7 @@
                       @click="municipiosFamiliar2()"
                       v-model="usuario.departamentoFamiliar2"
                     >
+                      <option value="0">Seleccione...</option>
                       <option value="AMAZONAS">AMAZONAS</option>
                       <option value="ANTIOQUIA">ANTIOQUIA</option>
                       <option value="ARAUCA">ARAUCA</option>
@@ -1215,7 +1350,7 @@
                       <label>Dirección</label>
                       <input
                         type="text"
-                        class="form-control"
+                        class="UpperCase form-control"
                         v-model="usuario.direccionFamiliar2"
                         required
                       />
@@ -1234,7 +1369,6 @@
                         type="number"
                         class="form-control"
                         v-model="usuario.telefonoFijoFamiliar2"
-                        required
                         oninput="this.value = this.value.replace(/[^0-9.]/g, ''); this.value = this.value.replace(/(\..*)\./g, '$1');" 
                         onKeyDown="if(this.value.length==10 && event.keyCode!=8) return false;"
                       />
@@ -1256,271 +1390,10 @@
                         type="number"
                         class="form-control"
                         v-model="usuario.telefonoOficinaFamiliar2"
-                        required
                         oninput="this.value = this.value.replace(/[^0-9.]/g, ''); this.value = this.value.replace(/(\..*)\./g, '$1');" 
                         onKeyDown="if(this.value.length==10 && event.keyCode!=8) return false;"
                       />
                     </div>
-                    <v-expansion-panels focusable>
-                      <v-expansion-panel>
-                        <v-expansion-panel-header
-                          >Tercera referencia familiar</v-expansion-panel-header
-                        >
-                        <v-expansion-panel-content>
-                          <form @submit.prevent="onFormSubmit" name="f8" id="f8">
-                            <div class="form-group">
-                              <label>Nombre completo</label>
-                              <input
-                                type="text"
-                                class="form-control"
-                                v-model="usuario.nombreFamiliar3"
-                                required
-                                autofocus
-                              />
-                            </div>
-                            <label>Departamento de residencia</label>
-                            <select
-                              required
-                              class="form-control"
-                              id="departamentos6"
-                              @click="municipiosFamiliar3()"
-                              v-model="usuario.departamentoFamiliar3"
-                            >
-                              <option value="AMAZONAS">AMAZONAS</option>
-                              <option value="ANTIOQUIA">ANTIOQUIA</option>
-                              <option value="ARAUCA">ARAUCA</option>
-                              <option value="ATLANTICO">ATLÁNTICO</option>
-                              <option value="BOLIVAR">BOLÍVAR</option>
-                              <option value="BOYACA">BOYACÁ</option>
-                              <option value="CALDAS">CALDAS</option>
-                              <option value="CAQUETA">CAQUETÁ</option>
-                              <option value="CASANARE">CASANARE</option>
-                              <option value="CAUCA">CAUCA</option>
-                              <option value="CESAR">CESAR</option>
-                              <option value="CHOCO">CHOCÓ</option>
-                              <option value="CORDOBA">CÓRDOBA</option>
-                              <option value="CUNDINAMARCA">CUNDINAMARCA</option>
-                              <option value="DISTRITO_CAPITAL">
-                                DISTRITO CAPITAL
-                              </option>
-                              <option value="GUAINIA">GUAINÍA</option>
-                              <option value="GUAJIRA">GUAJIRA</option>
-                              <option value="GUAVIARE">GUAVIARE</option>
-                              <option value="HUILA">HUILA</option>
-                              <option value="MAGDALENA">MAGDALENA</option>
-                              <option value="META">META</option>
-                              <option value="NARINO">NARIÑO</option>
-                              <option value="NORTE_DE_SANTANDER">
-                                NORTE DE SANTANDER
-                              </option>
-                              <option value="PUTUMAYO">PUTUMAYO</option>
-                              <option value="QUINDIO">QUINDÍO</option>
-                              <option value="RISARALDA">RISARALDA</option>
-                              <option value="SAN_ANDRES_Y_PROVIDENCIA">
-                                SAN ANDRÉS Y PROVIDENCIA
-                              </option>
-                              <option value="SANTANDER">SANTANDER</option>
-                              <option value="SUCRE">SUCRE</option>
-                              <option value="TOLIMA">TOLIMA</option>
-                              <option value="VALLE_DEL_CAUCA">
-                                VALLE DEL CAUCA
-                              </option>
-                              <option value="VAUPES">VAUPÉS</option>
-                              <option value="VICHADA">VICHADA</option>
-                            </select>
-                            <label>Ciudad / Municipio</label>
-                            <select
-                              required
-                              id="municipioFamiliar3"
-                              class="form-control"
-                              v-model="usuario.municipioFamiliar3"
-                            >
-                              <option value="0"></option>
-                            </select>
-                            <div class="form-group">
-                              <label>Dirección</label>
-                              <input
-                                type="text"
-                                class="form-control"
-                                v-model="usuario.direccionFamiliar3"
-                              />
-                            </div>
-                            <label>Parentesco</label>
-                            <v-select
-                              required
-                              v-model="usuario.parentescoFamiliar3"
-                              :items="tipoParentescoFamiliar3"
-                              dense
-                              solo
-                            ></v-select>
-                            <div class="form-group">
-                              <label>Teléfono fijo</label>
-                              <input
-                                required
-                                type="number"
-                                class="form-control"
-                                v-model="usuario.telefonoFijoFamiliar3"
-                                oninput="this.value = this.value.replace(/[^0-9.]/g, ''); this.value = this.value.replace(/(\..*)\./g, '$1');" 
-                                onKeyDown="if(this.value.length==10 && event.keyCode!=8) return false;"
-                              />
-                            </div>
-                            <div class="form-group">
-                              <label>Celular</label>
-                              <input
-                                required
-                                type="number"
-                                class="form-control"
-                                v-model="usuario.celularFamiliar3"
-                                oninput="this.value = this.value.replace(/[^0-9.]/g, ''); this.value = this.value.replace(/(\..*)\./g, '$1');" 
-                                onKeyDown="if(this.value.length==10 && event.keyCode!=8) return false;"
-                              />
-                            </div>
-                            <div class="form-group">
-                              <label>Teléfono Oficina</label>
-                              <input
-                                required
-                                type="number"
-                                class="form-control"
-                                v-model="usuario.telefonoOficinaFamiliar3"
-                                oninput="this.value = this.value.replace(/[^0-9.]/g, ''); this.value = this.value.replace(/(\..*)\./g, '$1');" 
-                                onKeyDown="if(this.value.length==10 && event.keyCode!=8) return false;"
-                              />
-                            </div>
-                          </form>
-                        </v-expansion-panel-content>
-                      </v-expansion-panel>
-                    </v-expansion-panels>
-                    <v-expansion-panels focusable>
-                      <v-expansion-panel>
-                        <v-expansion-panel-header
-                          >Cuarta referencia familiar</v-expansion-panel-header
-                        >
-                        <v-expansion-panel-content>
-                          <form @submit.prevent="onFormSubmit" name="f9"
-                    id="f9">
-                            <div class="form-group">
-                              <label>Nombre completo</label>
-                              <input
-                                type="text"
-                                class="form-control"
-                                v-model="usuario.nombreFamiliar4"
-                                required
-                                autofocus
-                              />
-                            </div>
-                            <label>Departamento de residencia</label>
-                            <select
-                              class="form-control"
-                              id="departamentos7"
-                              @click="municipiosFamiliar4()"
-                              v-model="usuario.departamentoFamiliar4"
-                              required
-                            >
-                              <option value="AMAZONAS">AMAZONAS</option>
-                              <option value="ANTIOQUIA">ANTIOQUIA</option>
-                              <option value="ARAUCA">ARAUCA</option>
-                              <option value="ATLANTICO">ATLÁNTICO</option>
-                              <option value="BOLIVAR">BOLÍVAR</option>
-                              <option value="BOYACA">BOYACÁ</option>
-                              <option value="CALDAS">CALDAS</option>
-                              <option value="CAQUETA">CAQUETÁ</option>
-                              <option value="CASANARE">CASANARE</option>
-                              <option value="CAUCA">CAUCA</option>
-                              <option value="CESAR">CESAR</option>
-                              <option value="CHOCO">CHOCÓ</option>
-                              <option value="CORDOBA">CÓRDOBA</option>
-                              <option value="CUNDINAMARCA">CUNDINAMARCA</option>
-                              <option value="DISTRITO_CAPITAL">
-                                DISTRITO CAPITAL
-                              </option>
-                              <option value="GUAINIA">GUAINÍA</option>
-                      <option value="GUAJIRA">GUAJIRA</option>
-                      <option value="GUAVIARE">GUAVIARE</option>
-                      <option value="HUILA">HUILA</option>
-                              <option value="MAGDALENA">MAGDALENA</option>
-                              <option value="META">META</option>
-                              <option value="NARINO">NARIÑO</option>
-                              <option value="NORTE_DE_SANTANDER">
-                                NORTE DE SANTANDER
-                              </option>
-                              <option value="PUTUMAYO">PUTUMAYO</option>
-                              <option value="QUINDIO">QUINDÍO</option>
-                              <option value="RISARALDA">RISARALDA</option>
-                              <option value="SAN_ANDRES_Y_PROVIDENCIA">
-                                SAN ANDRÉS Y PROVIDENCIA
-                              </option>
-                              <option value="SANTANDER">SANTANDER</option>
-                              <option value="SUCRE">SUCRE</option>
-                              <option value="TOLIMA">TOLIMA</option>
-                              <option value="VALLE_DEL_CAUCA">
-                                VALLE DEL CAUCA
-                              </option>
-                              <option value="VAUPES">VAUPÉS</option>
-                              <option value="VICHADA">VICHADA</option>
-                            </select>
-                            <label>Ciudad / Municipio</label>
-                            <select
-                              id="municipioFamiliar4"
-                              class="form-control"
-                              v-model="usuario.municipioFamiliar4"
-                              required
-                            >
-                              <option value="0"></option>
-                            </select>
-                            <div class="form-group">
-                              <label>Dirección</label>
-                              <input
-                                type="text"
-                                class="form-control"
-                                v-model="usuario.direccionFamiliar4"
-                                required
-                              />
-                            </div>
-                            <label>Parentesco</label>
-                            <v-select
-                              v-model="usuario.parentescoFamiliar4"
-                              :items="tipoParentescoFamiliar4"
-                              required
-                              dense
-                              solo
-                            ></v-select>
-                            <div class="form-group">
-                              <label>Teléfono fijo</label>
-                              <input
-                                type="number"
-                                class="form-control"
-                                v-model="usuario.telefonoFijoFamiliar4"
-                                required
-                                oninput="this.value = this.value.replace(/[^0-9.]/g, ''); this.value = this.value.replace(/(\..*)\./g, '$1');" 
-                                onKeyDown="if(this.value.length==10 && event.keyCode!=8) return false;"
-                              />
-                            </div>
-                            <div class="form-group">
-                              <label>Celular</label>
-                              <input
-                                type="number"
-                                class="form-control"
-                                v-model="usuario.celularFamiliar4"
-                                required
-                                oninput="this.value = this.value.replace(/[^0-9.]/g, ''); this.value = this.value.replace(/(\..*)\./g, '$1');" 
-                                onKeyDown="if(this.value.length==10 && event.keyCode!=8) return false;"
-                              />
-                            </div>
-                            <div class="form-group">
-                              <label>Teléfono Oficina</label>
-                              <input
-                                type="number"
-                                class="form-control"
-                                v-model="usuario.telefonoOficinaFamiliar4"
-                                required
-                                oninput="this.value = this.value.replace(/[^0-9.]/g, ''); this.value = this.value.replace(/(\..*)\./g, '$1');" 
-                                onKeyDown="if(this.value.length==10 && event.keyCode!=8) return false;"
-                              />
-                            </div>
-                          </form>
-                        </v-expansion-panel-content>
-                      </v-expansion-panel>
-                    </v-expansion-panels>
                   </form>
                 </v-expansion-panel-content>
               </v-expansion-panel>
@@ -1546,7 +1419,7 @@
                       <label>Nombre completo</label>
                       <input
                         type="text"
-                        class="form-control"
+                        class="UpperCase form-control"
                         v-model="usuario.nombrePersonal1"
                         required
                         autofocus
@@ -1555,11 +1428,12 @@
                     <label>Departamento de residencia</label>
                     <select
                       class="form-control"
-                      id="departamentos8"
+                      id="departamentos6"
                       @click="municipiosPersonal1()"
                       v-model="usuario.departamentoPersonal1"
                       required
-                    >
+                    > 
+                      <option value="0">Seleccione...</option>
                       <option value="AMAZONAS">AMAZONAS</option>
                       <option value="ANTIOQUIA">ANTIOQUIA</option>
                       <option value="ARAUCA">ARAUCA</option>
@@ -1611,7 +1485,7 @@
                       <label>Dirección</label>
                       <input
                         type="text"
-                        class="form-control"
+                        class="UpperCase form-control"
                         v-model="usuario.direccionPersonal1"
                         required
                       />
@@ -1622,7 +1496,6 @@
                         type="number"
                         class="form-control"
                         v-model="usuario.telefonoFijoPersonal1"
-                        required
                         oninput="this.value = this.value.replace(/[^0-9.]/g, ''); this.value = this.value.replace(/(\..*)\./g, '$1');" 
                         onKeyDown="if(this.value.length==10 && event.keyCode!=8) return false;"
                       />
@@ -1644,7 +1517,6 @@
                         type="number"
                         class="form-control"
                         v-model="usuario.telefonoOficinaPersonal1"
-                        required
                         oninput="this.value = this.value.replace(/[^0-9.]/g, ''); this.value = this.value.replace(/(\..*)\./g, '$1');" 
                         onKeyDown="if(this.value.length==10 && event.keyCode!=8) return false;"
                       />
@@ -1656,7 +1528,7 @@
                       <label>Nombre completo</label>
                       <input
                         type="text"
-                        class="form-control"
+                        class="UpperCase form-control"
                         v-model="usuario.nombrePersonal2"
                         required
                         autofocus
@@ -1665,11 +1537,12 @@
                     <label>Departamento de residencia</label>
                     <select
                       class="form-control"
-                      id="departamentos9"
+                      id="departamentos7"
                       @click="municipiosPersonal2()"
                       v-model="usuario.departamentoPersonal2"
                       required
                     >
+                      <option value="0">Seleccione...</option>
                       <option value="AMAZONAS">AMAZONAS</option>
                       <option value="ANTIOQUIA">ANTIOQUIA</option>
                       <option value="ARAUCA">ARAUCA</option>
@@ -1721,7 +1594,7 @@
                       <label>Dirección</label>
                       <input
                         type="text"
-                        class="form-control"
+                        class="UpperCase form-control"
                         v-model="usuario.direccionPersonal2"
                         required
                       />
@@ -1732,7 +1605,6 @@
                         type="number"
                         class="form-control"
                         v-model="usuario.telefonoFijoPersonal2"
-                        required
                         oninput="this.value = this.value.replace(/[^0-9.]/g, ''); this.value = this.value.replace(/(\..*)\./g, '$1');" 
                         onKeyDown="if(this.value.length==10 && event.keyCode!=8) return false;"
                       />
@@ -1754,256 +1626,10 @@
                         type="number"
                         class="form-control"
                         v-model="usuario.telefonoOficinaPersonal2"
-                        required
                         oninput="this.value = this.value.replace(/[^0-9.]/g, ''); this.value = this.value.replace(/(\..*)\./g, '$1');" 
                         onKeyDown="if(this.value.length==10 && event.keyCode!=8) return false;"
                       />
                     </div>
-                    <v-expansion-panels focusable>
-                      <v-expansion-panel>
-                        <v-expansion-panel-header
-                          >Tercera referencia Personal</v-expansion-panel-header
-                        >
-                        <v-expansion-panel-content>
-                          <form @submit.prevent="onFormSubmit" name="f11" id="f11">
-                             <div class="form-group">
-                      <label>Nombre completo</label>
-                      <input
-                        type="text"
-                        class="form-control"
-                        v-model="usuario.nombrePersonal3"
-                        required
-                        autofocus
-                      />
-                             </div>
-                     <label>Departamento de residencia</label>
-                            <select
-                              class="form-control"
-                              id="departamentos10"
-                              @click="municipiosPersonal3()"
-                              v-model="usuario.departamentoPersonal3"
-                              required
-                            >
-                              <option value="AMAZONAS">AMAZONAS</option>
-                              <option value="ANTIOQUIA">ANTIOQUIA</option>
-                              <option value="ARAUCA">ARAUCA</option>
-                              <option value="ATLANTICO">ATLÁNTICO</option>
-                              <option value="BOLIVAR">BOLÍVAR</option>
-                              <option value="BOYACA">BOYACÁ</option>
-                              <option value="CALDAS">CALDAS</option>
-                              <option value="CAQUETA">CAQUETÁ</option>
-                              <option value="CASANARE">CASANARE</option>
-                              <option value="CAUCA">CAUCA</option>
-                              <option value="CESAR">CESAR</option>
-                              <option value="CHOCO">CHOCÓ</option>
-                              <option value="CORDOBA">CÓRDOBA</option>
-                              <option value="CUNDINAMARCA">CUNDINAMARCA</option>
-                              <option value="DISTRITO_CAPITAL">
-                                DISTRITO CAPITAL
-                              </option>
-                              <option value="GUAINIA">GUAINÍA</option>
-                              <option value="GUAJIRA">GUAJIRA</option>
-                              <option value="GUAVIARE">GUAVIARE</option>
-                              <option value="HUILA">HUILA</option>
-                              <option value="MAGDALENA">MAGDALENA</option>
-                              <option value="META">META</option>
-                              <option value="NARINO">NARIÑO</option>
-                              <option value="NORTE_DE_SANTANDER">
-                                NORTE DE SANTANDER
-                              </option>
-                              <option value="PUTUMAYO">PUTUMAYO</option>
-                              <option value="QUINDIO">QUINDÍO</option>
-                              <option value="RISARALDA">RISARALDA</option>
-                              <option value="SAN_ANDRES_Y_PROVIDENCIA">
-                                SAN ANDRÉS Y PROVIDENCIA
-                              </option>
-                              <option value="SANTANDER">SANTANDER</option>
-                              <option value="SUCRE">SUCRE</option>
-                              <option value="TOLIMA">TOLIMA</option>
-                              <option value="VALLE_DEL_CAUCA">
-                                VALLE DEL CAUCA
-                              </option>
-                              <option value="VAUPES">VAUPÉS</option>
-                              <option value="VICHADA">VICHADA</option>
-                            </select>
-                            <label>Ciudad / Municipio</label>
-                            <select
-                              id="municipioPersonal3"
-                              class="form-control"
-                              v-model="usuario.municipioPersonal3"
-                              required
-                            >
-                              <option value="0"></option>
-                            </select>
-                    <div class="form-group">
-                      <label>Dirección</label>
-                      <input
-                        type="text"
-                        class="form-control"
-                        v-model="usuario.direccionPersonal3"
-                        required
-                      />
-                    </div>
-                    <div class="form-group">
-                      <label>Teléfono fijo</label>
-                      <input
-                        type="number"
-                        class="form-control"
-                        v-model="usuario.telefonoFijoPersonal3"
-                        required
-                        oninput="this.value = this.value.replace(/[^0-9.]/g, ''); this.value = this.value.replace(/(\..*)\./g, '$1');" 
-                        onKeyDown="if(this.value.length==10 && event.keyCode!=8) return false;"
-                      />
-                    </div>
-                    <div class="form-group">
-                      <label>Celular</label>
-                      <input
-                        type="number"
-                        class="form-control"
-                        v-model="usuario.celularPersonal3"
-                        required
-                        oninput="this.value = this.value.replace(/[^0-9.]/g, ''); this.value = this.value.replace(/(\..*)\./g, '$1');" 
-                        onKeyDown="if(this.value.length==10 && event.keyCode!=8) return false;"
-                      />
-                    </div>
-                    <div class="form-group">
-                      <label>Teléfono Oficina</label>
-                      <input
-                        type="number"
-                        class="form-control"
-                        v-model="usuario.telefonoOficinaPersonal3"
-                        required
-                        oninput="this.value = this.value.replace(/[^0-9.]/g, ''); this.value = this.value.replace(/(\..*)\./g, '$1');" 
-                        onKeyDown="if(this.value.length==10 && event.keyCode!=8) return false;"
-                      />
-                    </div>
-                          </form>
-                        </v-expansion-panel-content>
-                      </v-expansion-panel>
-                    </v-expansion-panels>
-                    <v-expansion-panels focusable>
-                      <v-expansion-panel>
-                        <v-expansion-panel-header
-                          >Cuarta referencia Personal</v-expansion-panel-header
-                        >
-                        <v-expansion-panel-content>
-                          <form @submit.prevent="onFormSubmit" name="f12" id="f12">
-                            <div class="form-group">
-                      <label>Nombre completo</label>
-                      <input
-                        type="text"
-                        class="form-control"
-                        v-model="usuario.nombrePersonal4"
-                        required
-                        autofocus
-                      />
-                    </div>
-                    <label>Departamento de residencia</label>
-                            <select
-                              class="form-control"
-                              id="departamentos11"
-                              @click="municipiosPersonal4()"
-                              v-model="usuario.departamentoPersonal4"
-                              required
-                            >
-                              <option value="AMAZONAS">AMAZONAS</option>
-                              <option value="ANTIOQUIA">ANTIOQUIA</option>
-                              <option value="ARAUCA">ARAUCA</option>
-                              <option value="ATLANTICO">ATLÁNTICO</option>
-                              <option value="BOLIVAR">BOLÍVAR</option>
-                              <option value="BOYACA">BOYACÁ</option>
-                              <option value="CALDAS">CALDAS</option>
-                              <option value="CAQUETA">CAQUETÁ</option>
-                              <option value="CASANARE">CASANARE</option>
-                              <option value="CAUCA">CAUCA</option>
-                              <option value="CESAR">CESAR</option>
-                              <option value="CHOCO">CHOCÓ</option>
-                              <option value="CORDOBA">CÓRDOBA</option>
-                              <option value="CUNDINAMARCA">CUNDINAMARCA</option>
-                              <option value="DISTRITO_CAPITAL">
-                                DISTRITO CAPITAL
-                              </option>
-                              <option value="GUAINIA">GUAINÍA</option>
-                      <option value="GUAJIRA">GUAJIRA</option>
-                      <option value="GUAVIARE">GUAVIARE</option>
-                      <option value="HUILA">HUILA</option>
-                              <option value="MAGDALENA">MAGDALENA</option>
-                              <option value="META">META</option>
-                              <option value="NARINO">NARIÑO</option>
-                              <option value="NORTE_DE_SANTANDER">
-                                NORTE DE SANTANDER
-                              </option>
-                              <option value="PUTUMAYO">PUTUMAYO</option>
-                              <option value="QUINDIO">QUINDÍO</option>
-                              <option value="RISARALDA">RISARALDA</option>
-                              <option value="SAN_ANDRES_Y_PROVIDENCIA">
-                                SAN ANDRÉS Y PROVIDENCIA
-                              </option>
-                              <option value="SANTANDER">SANTANDER</option>
-                              <option value="SUCRE">SUCRE</option>
-                              <option value="TOLIMA">TOLIMA</option>
-                              <option value="VALLE_DEL_CAUCA">
-                                VALLE DEL CAUCA
-                              </option>
-                              <option value="VAUPES">VAUPÉS</option>
-                              <option value="VICHADA">VICHADA</option>
-                            </select>
-                            <label>Ciudad / Municipio</label>
-                            <select
-                              id="municipioPersonal4"
-                              class="form-control"
-                              v-model="usuario.municipioPersonal4"
-                              required
-                            >
-                              <option value="0"></option>
-                            </select>
-                    <div class="form-group">
-                      <label>Dirección</label>
-                      <input
-                        type="text"
-                        class="form-control"
-                        v-model="usuario.direccionPersonal4"
-                        required
-                      />
-                    </div>
-                    <div class="form-group">
-                      <label>Teléfono fijo</label>
-                      <input
-                        type="number"
-                        class="form-control"
-                        v-model="usuario.telefonoFijoPersonal4"
-                        required
-                        oninput="this.value = this.value.replace(/[^0-9.]/g, ''); this.value = this.value.replace(/(\..*)\./g, '$1');" 
-                        onKeyDown="if(this.value.length==10 && event.keyCode!=8) return false;"
-                      />
-                    </div>
-                    <div class="form-group">
-                      <label>Celular</label>
-                      <input
-                        type="number"
-                        class="form-control"
-                        v-model="usuario.celularPersonalr4"
-                        required
-                        oninput="this.value = this.value.replace(/[^0-9.]/g, ''); this.value = this.value.replace(/(\..*)\./g, '$1');" 
-                        onKeyDown="if(this.value.length==10 && event.keyCode!=8) return false;"
-                      />
-                    </div>
-                    <div class="form-group">
-                      <label>Teléfono Oficina</label>
-                      <input
-                        type="number"
-                        class="form-control"
-                        v-model="usuario.telefonoOficinaPersonal4"
-                        required
-                        oninput="this.value = this.value.replace(/[^0-9.]/g, ''); this.value = this.value.replace(/(\..*)\./g, '$1');" 
-                        onKeyDown="if(this.value.length==10 && event.keyCode!=8) return false;"
-                      />
-                    </div>
-                          </form>
-                        </v-expansion-panel-content>
-                      </v-expansion-panel>
-                    </v-expansion-panels>
-                    
                   </form>
                 </v-expansion-panel-content>
               </v-expansion-panel>
@@ -2024,7 +1650,7 @@
                       <label>Empresa</label>
                       <input
                         type="text"
-                        class="form-control"
+                        class="UpperCase form-control"
                         v-model="usuario.empresa1"
                         required
                       />
@@ -2040,11 +1666,12 @@
                     <label>Departamento</label>
                     <select
                       class="form-control"
-                      id="departamentos12"
+                      id="departamentos8"
                       @click="municipiosLaboral1()"
                       v-model="usuario.departamentoLaboral1"
                       required
                     >
+                      <option value="0">Seleccione...</option>
                       <option value="AMAZONAS">AMAZONAS</option>
                       <option value="ANTIOQUIA">ANTIOQUIA</option>
                       <option value="ARAUCA">ARAUCA</option>
@@ -2101,6 +1728,7 @@
                           v-model="usuario.fechaIncialLaboral1"
                           pattern="\d{4}-\d{2}-\d{2}"
                           required
+                          id="fechaIncial"
                         />
                       </v-flex>
                     </div>
@@ -2113,23 +1741,27 @@
                           v-model="usuario.fechaFinalLaboral1"
                           pattern="\d{4}-\d{2}-\d{2}"
                           required
+                          id="fechaFinal"
+                          oninput="inp1 = document.getElementById('fechaIncial').value; inp2 = document.getElementById('fechaFinal').value; if(inp1 > inp2){alert('Error, la fecha inicial es mayor que la fecha final. Por favor corregir');};" 
                         />
                       </v-flex>
                     </div>
-                    <label>Tipo de servicio prestado</label>
-                    <input
-                        type="text"
-                        class="form-control"
-                        v-model="usuario.servicioPrestado1"
-                        required
-                      />
-                    <label>Cargo</label>
-                    <input
-                        type="text"
-                        class="form-control"
-                        v-model="usuario.cargoActual1"
-                        required
-                      />
+                      <label>Cargo</label>
+                      <v-select
+                              v-model="usuario.cargoActual1"
+                              :items="tipoCargo1"
+                              required
+                              dense
+                              solo
+                            ></v-select>
+                    <label>Especialidad</label>
+                      <v-select
+                              v-model="usuario.especialidad1"
+                              :items="tipoEspecialidad1"
+                              required
+                              dense
+                              solo
+                            ></v-select>
                       <v-expansion-panels focusable>
                       <v-expansion-panel>
                         <v-expansion-panel-header
@@ -2141,7 +1773,7 @@
                               <label>Empresa</label>
                               <input
                                 type="text"
-                                class="form-control"
+                                class="UpperCase form-control"
                                 v-model="usuario.empresa2"
                                 required
                               />
@@ -2157,11 +1789,12 @@
                             <label>Departamento</label>
                             <select
                               class="form-control"
-                              id="departamentos13"
+                              id="departamentos9"
                               @click="municipiosLaboral2()"
                               v-model="usuario.departamentoLaboral2"
                               required
                             >
+                              <option value="0">Seleccione...</option>
                               <option value="AMAZONAS">AMAZONAS</option>
                               <option value="ANTIOQUIA">ANTIOQUIA</option>
                               <option value="ARAUCA">ARAUCA</option>
@@ -2222,6 +1855,7 @@
                                   v-model="usuario.fechaIncialLaboral2"
                                   pattern="\d{4}-\d{2}-\d{2}"
                                   required
+                                  id="fechaIncial2"
                                 />
                               </v-flex>
                             </div>
@@ -2234,23 +1868,27 @@
                                   v-model="usuario.fechaFinalLaboral2"
                                   pattern="\d{4}-\d{2}-\d{2}"
                                   required
+                                  id="fechaFinal2"
+                                  oninput="inp1 = document.getElementById('fechaIncial2').value; inp2 = document.getElementById('fechaFinal2').value; if(inp1 > inp2){alert('Error, la fecha inicial es mayor que la fecha final. Por favor corregir');};" 
                                 />
                               </v-flex>
                             </div>
-                            <label>Tipo de servicio prestado</label>
-                    <input
-                        type="text"
-                        class="form-control"
-                        v-model="usuario.servicioPrestado2"
-                        required
-                      />
-                    <label>Cargo</label>
-                    <input
-                        type="text"
-                        class="form-control"
-                        v-model="usuario.cargoActual2"
-                        required
-                      />
+                           <label>Cargo</label>
+                      <v-select
+                              v-model="usuario.cargoActual2"
+                              :items="tipoCargo2"
+                              required
+                              dense
+                              solo
+                            ></v-select>
+                    <label>Especialidad</label>
+                      <v-select
+                              v-model="usuario.especialidad2"
+                              :items="tipoEspecialidad2"
+                              required
+                              dense
+                              solo
+                            ></v-select>
                           </form>
                         </v-expansion-panel-content>
                       </v-expansion-panel>
@@ -2266,7 +1904,7 @@
                               <label>Empresa</label>
                               <input
                                 type="text"
-                                class="form-control"
+                                class="UpperCase form-control"
                                 v-model="usuario.empresa3"
                                 required
                               />
@@ -2282,11 +1920,12 @@
                             <label>Departamento</label>
                             <select
                               class="form-control"
-                              id="departamentos14"
+                              id="departamentos10"
                               @click="municipiosLaboral3()"
                               v-model="usuario.departamentoLaboral3"
                               required
                             >
+                              <option value="0">Seleccione...</option>
                               <option value="AMAZONAS">AMAZONAS</option>
                               <option value="ANTIOQUIA">ANTIOQUIA</option>
                               <option value="ARAUCA">ARAUCA</option>
@@ -2347,6 +1986,7 @@
                                   v-model="usuario.fechaIncialLaboral3"
                                   pattern="\d{4}-\d{2}-\d{2}"
                                   required
+                                  id="fechaIncial3"
                                 />
                               </v-flex>
                             </div>
@@ -2359,22 +1999,27 @@
                                   v-model="usuario.fechaFinalLaboral3"
                                   pattern="\d{4}-\d{2}-\d{2}"
                                   required
+                                  id="fechaFinal3"
+                                 oninput="inp1 = document.getElementById('fechaIncial3').value; inp2 = document.getElementById('fechaFinal3').value; if(inp1 > inp2){alert('Error, la fecha inicial es mayor que la fecha final. Por favor corregir');};" 
                                 />
                               </v-flex>
                             </div>
-                    <input
-                        type="text"
-                        class="form-control"
-                        v-model="usuario.servicioPrestado3"
-                        required
-                      />
                     <label>Cargo</label>
-                    <input
-                        type="text"
-                        class="form-control"
-                        v-model="usuario.cargoActual3"
-                        required
-                      />
+                      <v-select
+                              v-model="usuario.cargoActual3"
+                              :items="tipoCargo3"
+                              required
+                              dense
+                              solo
+                            ></v-select>
+                    <label>Especialidad</label>
+                      <v-select
+                              v-model="usuario.especialidad3"
+                              :items="tipoEspecialidad3"
+                              required
+                              dense
+                              solo
+                            ></v-select>
                           </form>
                         </v-expansion-panel-content>
                       </v-expansion-panel>
@@ -2390,7 +2035,7 @@
                               <label>Empresa</label>
                               <input
                                 type="text"
-                                class="form-control"
+                                class="UpperCase form-control"
                                 v-model="usuario.empresa4"
                                 required
                               />
@@ -2406,11 +2051,12 @@
                             <label>Departamento</label>
                             <select
                               class="form-control"
-                              id="departamentos15"
+                              id="departamentos11"
                               @click="municipiosLaboral4()"
                               v-model="usuario.departamentoLaboral4"
                               required
                             >
+                              <option value="0">Seleccione...</option>
                               <option value="AMAZONAS">AMAZONAS</option>
                               <option value="ANTIOQUIA">ANTIOQUIA</option>
                               <option value="ARAUCA">ARAUCA</option>
@@ -2471,6 +2117,7 @@
                                   v-model="usuario.fechaIncialLaboral4"
                                   pattern="\d{4}-\d{2}-\d{2}"
                                   required
+                                  id="fechaIncial4"
                                 />
                               </v-flex>
                             </div>
@@ -2483,23 +2130,27 @@
                                   v-model="usuario.fechaFinalLaboral4"
                                   pattern="\d{4}-\d{2}-\d{2}"
                                   required
+                                  id="fechaFinal4"
+                          oninput="inp1 = document.getElementById('fechaIncial4').value; inp2 = document.getElementById('fechaFinal4').value; if(inp1 > inp2){alert('Error, la fecha inicial es mayor que la fecha final. Por favor corregir');};" 
                                 />
                               </v-flex>
                             </div>
-                            <label>Tipo de servicio prestado</label>
-                    <input
-                        type="text"
-                        class="form-control"
-                        v-model="usuario.servicioPrestado4"
-                        required
-                      />
-                    <label>Cargo</label>
-                    <input
-                        type="text"
-                        class="form-control"
-                        v-model="usuario.cargoActual4"
-                        required
-                      />
+                            <label>Cargo</label>
+                      <v-select
+                              v-model="usuario.cargoActual4"
+                              :items="tipoCargo4"
+                              required
+                              dense
+                              solo
+                            ></v-select>
+                    <label>Especialidad</label>
+                      <v-select
+                              v-model="usuario.especialidad4"
+                              :items="tipoEspecialidad4"
+                              required
+                              dense
+                              solo
+                            ></v-select>
                           </form>
                         </v-expansion-panel-content>
                       </v-expansion-panel>
@@ -2515,7 +2166,7 @@
                               <label>Empresa</label>
                               <input
                                 type="text"
-                                class="form-control"
+                                class="UpperCase form-control"
                                 v-model="usuario.empresa5"
                                 required
                               />
@@ -2531,11 +2182,12 @@
                             <label>Departamento</label>
                             <select
                               class="form-control"
-                              id="departamentos16"
+                              id="departamentos12"
                               @click="municipiosLaboral5()"
                               v-model="usuario.departamentoLaboral5"
                               required
                             >
+                              <option value="0">Seleccione...</option>
                               <option value="AMAZONAS">AMAZONAS</option>
                               <option value="ANTIOQUIA">ANTIOQUIA</option>
                               <option value="ARAUCA">ARAUCA</option>
@@ -2596,6 +2248,7 @@
                                   v-model="usuario.fechaIncialLaboral5"
                                   pattern="\d{4}-\d{2}-\d{2}"
                                   required
+                                  id="fechaIncial5"
                                 />
                               </v-flex>
                             </div>
@@ -2608,23 +2261,27 @@
                                   v-model="usuario.fechaFinalLaboral5"
                                   pattern="\d{4}-\d{2}-\d{2}"
                                   required
+                                  id="fechaFinal5"
+                                  oninput="inp1 = document.getElementById('fechaIncial5').value; inp2 = document.getElementById('fechaFinal5').value; if(inp1 > inp2){alert('Error, la fecha inicial es mayor que la fecha final. Por favor corregir');};" 
                                 />
                               </v-flex>
                             </div>
-                            <label>Tipo de servicio prestado</label>
-                    <input
-                        type="text"
-                        class="form-control"
-                        v-model="usuario.servicioPrestado5"
-                        required
-                      />
-                    <label>Cargo</label>
-                    <input
-                        type="text"
-                        class="form-control"
-                        v-model="usuario.cargoActual5"
-                        required
-                      />
+                            <label>Cargo</label>
+                      <v-select
+                              v-model="usuario.cargoActual5"
+                              :items="tipoCargo5"
+                              required
+                              dense
+                              solo
+                            ></v-select>
+                    <label>Especialidad</label>
+                      <v-select
+                              v-model="usuario.especialidad5"
+                              :items="tipoEspecialidad5"
+                              required
+                              dense
+                              solo
+                            ></v-select>
                           </form>
                         </v-expansion-panel-content>
                       </v-expansion-panel>
@@ -2646,7 +2303,7 @@
                       <label>Institución</label>
                       <input
                         type="text"
-                        class="form-control"
+                        class="UpperCase form-control"
                         v-model="usuario.institucionAcademica1"
                         required
                       />
@@ -2666,7 +2323,7 @@
                     <label>Título obtenido</label>
                     <input
                       type="text"
-                      class="form-control"
+                      class="UpperCase form-control"
                       v-model="usuario.titulo1"
                       required
                     />
@@ -2690,7 +2347,7 @@
                               <label>Institución</label>
                               <input
                                 type="text"
-                                class="form-control"
+                                class="UpperCase form-control"
                                 v-model="usuario.institucionAcademica2"
                                 required
                               />
@@ -2710,7 +2367,7 @@
                             <label>Título obtenido</label>
                             <input
                               type="text"
-                              class="form-control"
+                              class="UpperCase form-control"
                               v-model="usuario.titulo2"
                               required
                             />
@@ -2738,7 +2395,7 @@
                               <label>Institución</label>
                               <input
                                 type="text"
-                                class="form-control"
+                                class="UpperCase form-control"
                                 v-model="usuario.institucionAcademica3"
                                 required
                               />
@@ -2758,7 +2415,7 @@
                             <label>Título obtenido</label>
                             <input
                               type="text"
-                              class="form-control"
+                              class="UpperCase form-control"
                               v-model="usuario.titulo3"
                               required
                             />
@@ -2786,7 +2443,7 @@
                               <label>Institución</label>
                               <input
                                 type="text"
-                                class="form-control"
+                                class="UpperCase form-control"
                                 v-model="usuario.institucionAcademica4"
                                 required
                               />
@@ -2806,7 +2463,7 @@
                             <label>Título obtenido</label>
                             <input
                               type="text"
-                              class="form-control"
+                              class="UpperCase form-control"
                               v-model="usuario.titulo4"
                               required
                             />
@@ -2834,7 +2491,7 @@
                               <label>Institución</label>
                               <input
                                 type="text"
-                                class="form-control"
+                                class="UpperCase form-control"
                                 v-model="usuario.institucionAcademica5"
                                 required
                               />
@@ -2854,7 +2511,7 @@
                             <label>Título obtenido</label>
                             <input
                               type="text"
-                              class="form-control"
+                              class="UpperCase form-control"
                               v-model="usuario.titulo5"
                               required
                             />
@@ -2886,7 +2543,7 @@
                       <label>Institución</label>
                       <input
                         type="text"
-                        class="form-control"
+                        class="UpperCase form-control"
                         v-model="usuario.institucionCurso1"
                         required
                       />
@@ -2904,12 +2561,13 @@
                       </v-flex>
                     </div>
                     <label>Título obtenido</label>
-                    <input
-                      type="text"
-                      class="form-control"
-                      v-model="usuario.tituloCurso1"
-                      required
-                    />
+                    <v-select
+                              v-model="usuario.tituloCurso1"
+                              :items="tipoTituloCurso1"
+                              required
+                              dense
+                              solo
+                            ></v-select>
                     <v-expansion-panels focusable>
                       <v-expansion-panel>
                         <v-expansion-panel-header
@@ -2921,7 +2579,7 @@
                               <label>Institución</label>
                               <input
                                 type="text"
-                                class="form-control"
+                                class="UpperCase form-control"
                                 v-model="usuario.institucionCurso2"
                                 required
                               />
@@ -2939,12 +2597,13 @@
                               </v-flex>
                             </div>
                             <label>Título obtenido</label>
-                            <input
-                              type="text"
-                              class="form-control"
+                            <v-select
                               v-model="usuario.tituloCurso2"
+                              :items="tipoTituloCurso2"
                               required
-                            />
+                              dense
+                              solo
+                            ></v-select>
                           </form>
                         </v-expansion-panel-content>
                       </v-expansion-panel>
@@ -2960,7 +2619,7 @@
                               <label>Institución</label>
                               <input
                                 type="text"
-                                class="form-control"
+                                class="UpperCase form-control"
                                 v-model="usuario.institucionCurso3"
                                 required
                               />
@@ -2978,12 +2637,13 @@
                               </v-flex>
                             </div>
                             <label>Título obtenido</label>
-                            <input
-                              type="text"
-                              class="form-control"
+                             <v-select
                               v-model="usuario.tituloCurso3"
+                              :items="tipoTituloCurso3"
                               required
-                            />
+                              dense
+                              solo
+                            ></v-select>
                           </form>
                         </v-expansion-panel-content>
                       </v-expansion-panel>
@@ -2999,7 +2659,7 @@
                               <label>Institución</label>
                               <input
                                 type="text"
-                                class="form-control"
+                                class="UpperCase form-control"
                                 v-model="usuario.institucionCurso4"
                                 required
                               />
@@ -3017,12 +2677,13 @@
                               </v-flex>
                             </div>
                             <label>Título obtenido</label>
-                            <input
-                              type="text"
-                              class="form-control"
+                             <v-select
                               v-model="usuario.tituloCurso4"
+                              :items="tipoTituloCurso4"
                               required
-                            />
+                              dense
+                              solo
+                            ></v-select>
                           </form>
                         </v-expansion-panel-content>
                       </v-expansion-panel>
@@ -3038,7 +2699,7 @@
                               <label>Institución</label>
                               <input
                                 type="text"
-                                class="form-control"
+                                class="UpperCase form-control"
                                 v-model="usuario.institucionCurso5"
                                 required
                               />
@@ -3056,12 +2717,13 @@
                               </v-flex>
                             </div>
                             <label>Título obtenido</label>
-                            <input
-                              type="text"
-                              class="form-control"
+                             <v-select
                               v-model="usuario.tituloCurso5"
+                              :items="tipoTituloCurso5"
                               required
-                            />
+                              dense
+                              solo
+                            ></v-select>
                           </form>
                         </v-expansion-panel-content>
                       </v-expansion-panel>
@@ -3075,10 +2737,10 @@
               <v-expansion-panel>
                 <v-expansion-panel-header
                   ><strong>Soportes</strong></v-expansion-panel-header
-                >
+                ><br />
                 <v-expansion-panel-content>
                   <form @submit.prevent="onFormSubmit">
-                    <strong><label>Foto Personal</label></strong>
+                    <strong><label>Foto Personal (Seleccione una sola foto en formato JPG o PNG)</label></strong>
                     <br />
                     <input
                       type="file"
@@ -3086,16 +2748,16 @@
                       @change="fotoPersonal($event)"
                       :src="cedula"
                       required
-                    /><br />
-                    <strong><label>Foto Familia</label></strong><br />
+                    /><br /><br />
+                    <strong><label>Foto Familia (Seleccione una foto familiar en formato JPG o PNG)</label></strong><br />
                     <input
                       type="file"
                       accept="image/*"
                       @change="fotoFamilia($event)"
                       :src="foto_Familia"
                       required
-                    /><br />
-                    <strong><label>Foto Vivienda</label></strong><br />
+                    /><br /><br />
+                    <strong><label>Foto Vivienda (Seleccione una foto de la vivienda en formato JPG o PNG)</label></strong><br />
                     <input
                       type="file"
                       accept="image/*"
@@ -3114,7 +2776,7 @@
                     />
                     </div>
                     <br />
-                    <strong><label>Certificados Laborales</label></strong><br />
+                    <strong><label>Certificados Laborales (Selecciones todos los certificados laborales en un sólo archivo PDF)</label></strong><br />
                     <input
                       type="file"
                       accept="application/pdf"
@@ -3122,8 +2784,8 @@
                       @change="clickCertficadoLaboral($event)"
                       required
                     />
-                    <br />
-                     <strong><label>Certificados Académicos</label></strong><br />
+                    <br /><br />
+                     <strong><label>Certificados Académicos (Selecciones todos los certificados académicos en un sólo archivo PDF)</label></strong><br />
                     <input
                       type="file"
                       accept="application/pdf"
@@ -3131,8 +2793,8 @@
                       @change="clickCertficadoAcademico($event)"
                       required
                     />
-                    <br />
-                     <strong><label>Certificados Cursos</label></strong><br />
+                    <br /><br />
+                     <strong><label>Certificados Cursos (Selecciones todos los certificados de cursos en un sólo archivo PDF)</label></strong><br />
                     <input
                       type="file"
                       accept="application/pdf"
@@ -3140,8 +2802,8 @@
                       @change="clickCertficadoCursos($event)"
                       required
                     />
-                    <br />
-                     <strong><label>Certificados Experiencias</label></strong><br />
+                    <br /><br />
+                     <strong><label>Certificados Experiencias (Selecciones todos los certificados de experiencias en un sólo archivo PDF)</label></strong><br />
                     <input
                       type="file"
                       accept="application/pdf"
@@ -3162,7 +2824,7 @@
                     <br />
 
                     <div class="form-group">
-                      <button class="btn btn-primary btn-block">Guardar</button>
+                      <button class="continuar">Guardar</button>
                     </div>
 
                   </form>
@@ -3187,29 +2849,21 @@ export default {
     return {
       esHablitado: false,
       esHablitadoMadre: false,
-      tipos: ["Cédula de ciudadanía", "Cédula de extranjeria"],
-      tipoGenero: ["Masculino", "Femenino"],
-      tipoCivil: ["Soltero", "Casado", "Viudo", "Separado"],
+      esHablitadoExperiencia: false,
+      esHablitadoZona: false,
+      esHablitadoCilindraje: false,
+      esHabilitadoMotivo: false,
+      esHablitadoLicencia: false,
+      tipos: ["CEDULA DE CIUDADANIA", "CEDULA DE EXTRANJERIA"],
+      tipoGenero: ["MASCULINO", "FEMENINO"],
+      tipoCivil: ["SOLTERO", "CASADO", "VIUDO", "SEPARADO"],
       tipoPais: ["COLOMBIA"],
-      tipoZona: [
-        "Urbano",
-        "Rural",
-        "Norte",
-        "Centro",
-        "Sur",
-        "Occidente",
-        "Oriente",
-      ],
-      tipoViviendaResidencia: ["Casa", "Apartamento", "Finca", "No posee"],
+      tipoViviendaResidencia: ["CASA", "APARTAMENTO", "FINCA"],
       tipoModalidadResidencia: [
-        "Propia",
-        "Arriendo",
-        "Familiar",
-        "Apartaestudio",
-        "Conjunto residencial",
-        "Condominio",
+        "PROPIA",
+        "ARRIENDO",
+        "FAMILIAR"
       ],
-      tipoExperiencia: ["SI", "NO"],
       tipoMeses: [
         "1",
         "2",
@@ -3276,8 +2930,10 @@ export default {
       archivo3: null,
       archivo4: null,
       archivo5: null,
-      tipoVivienda: ["Casa", "Apartamento", "Finca"],
-      tipoModalidad: ["Propia", "Arriendo", "Familiar"],
+      tipoVivienda: ["CASA", "APARTAMENTO", "FINCA"],
+      tipoModalidad: ["PROPIA",
+        "ARRIENDO",
+        "FAMILIAR"],
       tipoModeloVehiculo: ["2017", "2018", "2019", "2020", "2021", "2022"],
       tipoRetiro: [
         "DISCRECIONALIDAD",
@@ -3286,19 +2942,18 @@ export default {
         "SOLICITUD PROPIA CON ASIGNACION DE RETIRO",
         "SOLICITUD PROPIA SIN ASIGNACION DE RETIRO",
       ],
-      tipoModalidadArma: ["Tenencia", "Porte"],
-      tipoEstadoLaboral: ["Activo", "Retirado"],
+      tipoModalidadArma: ["TENENCIA", "PORTE"],
       tipoIdiomas: [
-        "Español",
-        "Inglés",
-        "Francés ",
-        "Italiano",
-        "Mandarín",
-        "Portugués",
+        "ESPAÑOL",
+        "INGLES",
+        "FRANCES ",
+        "ITALIANO",
+        "MANDARIN",
+        "PORTUGUES",
       ],
-      tipoNivelEscritura: ["Malo", "Regular", "Bueno", "Excelente"],
-      tipoNivelLectura: ["Malo", "Regular", "Bueno", "Excelente"],
-      tipoNivelConversacional: ["Malo", "Regular", "Bueno", "Excelente"],
+      tipoNivelEscritura: ["MALO", "REGULAR", "BUENO", "EXCELENTE"],
+      tipoNivelLectura: ["MALO", "REGULAR", "BUENO", "EXCELENTE"],
+      tipoNivelConversacional: ["MALO", "REGULAR", "BUENO", "EXCELENTE"],
       tipoSalario: [
         "1'000.000 a 1'500.0000",
         "1'500.000 a 2'000.0000",
@@ -3318,90 +2973,740 @@ export default {
       tipoPaisPadre: ["COLOMBIA"],
       tipoPaisMadre: ["COLOMBIA"],
       tipoReservista: ["SI", "NO"],
-      tipoInstitucionLibreta: ["Batallón Bucaramanga", "Batallón Palmira"],
-      tipoClaseLibreta: ["Primera clase", "Segunda clase"],
-      tipoLicenciaConduccion: ["Moto", "Carro", "Camión"],
-      tipoCategoriaLicencia: ["Alta", "Medio ", "Baja"],
+      tipoInstitucionLibreta: ["EJERCITO NACIONAL", "ARMADA NACIONAL", "FUERZA AEREA", "INPEC",],
+      tipoClaseLibreta: ["PRIMERA CLASE", "SEGUNDA CLASE"],
+      tipoLicenciaConduccion: ["A1", "A2", "B1","B2","B3"],
       tipoParentescoFamiliar1: [
-        "Padre",
-        "Madre ",
-        "Hermano",
-        "Hermana",
-        "Abuelo ",
-        "Abuela",
-        "Tío ",
-        "Tía",
+        "PADRE",
+        "MADRE",
+        "HERMANO",
+        "HERMANA",
+        "ABUELO",
+        "ABUELA",
+        "TIO",
+        "TIA",
+        "PRIMO",
+        "PRIMA",
+        "SOBRINO ",
+        "SOBRINA",
       ],
       tipoParentescoFamiliar2: [
-        "Padre",
-        "Madre ",
-        "Hermano",
-        "Hermana",
-        "Abuelo ",
-        "Abuela",
-        "Tío ",
-        "Tía",
+         "PADRE",
+        "MADRE",
+        "HERMANO",
+        "HERMANA",
+        "ABUELO",
+        "ABUELA",
+        "TIO",
+        "TIA",
+        "PRIMO",
+        "PRIMA",
+        "SOBRINO ",
+        "SOBRINA",
       ],
       tipoParentescoFamiliar3: [
-        "Padre",
-        "Madre ",
-        "Hermano",
-        "Hermana",
-        "Abuelo ",
-        "Abuela",
-        "Tío ",
-        "Tía",
+         "PADRE",
+        "MADRE",
+        "HERMANO",
+        "HERMANA",
+        "ABUELO",
+        "ABUELA",
+        "TIO",
+        "TIA",
+        "PRIMO",
+        "PRIMA",
+        "SOBRINO ",
+        "SOBRINA",
       ],
       tipoParentescoFamiliar4: [
-        "Padre",
-        "Madre ",
-        "Hermano",
-        "Hermana",
-        "Abuelo ",
-        "Abuela",
-        "Tío ",
-        "Tía",
+         "PADRE",
+        "MADRE",
+        "HERMANO",
+        "HERMANA",
+        "ABUELO",
+        "ABUELA",
+        "TIO",
+        "TIA",
+        "PRIMO",
+        "PRIMA",
+        "SOBRINO ",
+        "SOBRINA",
       ],
       tipoLabora1: ["SI", "NO"],
       tipoLabora2: ["SI", "NO"],
       tipoLabora3: ["SI", "NO"],
       tipoLabora4: ["SI", "NO"],
       tipoLabora5: ["SI", "NO"],
+      tipoCargo1:[
+        "ANALISTA DE INFORMACION",
+        "ANALISTA DE NOMINA",
+        "ANALISTA DE SEGURIDAD",
+        "AUXILIAR ADMINISTRATIVO",
+        "CONDUCTOR DE SEGURIDAD",
+        "CONDUCTOR VEHICULO BLINDADOS",
+        "COORDINADOR DE SEGURIDAD FISICA",
+        "COORDINADOR ESQUEMA DE SEGURIDAD PERSONAL",
+        "COORDINADOR SALA DE MONITOREO",
+        "ESCOLTA",
+        "GERENTE DE SEGURIDAD",
+        "GERENTE DEPARTAMENTO DE SEGURIDAD EMPRESARIAL",
+        "GERENTE EMPRESA DE SEGURIDAD PRIVADA",
+        "GUARDA DE SEGURIDAD",
+        "JEFE TALENTO HUMANO EMPRESAS DE VIGILANCIA",
+        "LOGISTICA EMPRESA SEGURIDAD PRIVADA",
+        "MANEJADOR CANINO",
+        "OPERADOR DE MEDIOS TECNOLOGICOS",
+        "PROGRAMADOR DE TURNOS",
+        "RECEPCIONISTA DE SEGURIDAD",
+        "RISK MANAGER",
+        "SUPERVISOR CONDUCTOR",
+        "SUPERVISOR DE PLANTA",
+        "SUPERVISOR MOTORIZADO"
+        ],
+         tipoCargo2:[
+        "ANALISTA DE INFORMACION",
+        "ANALISTA DE NOMINA",
+        "ANALISTA DE SEGURIDAD",
+        "AUXILIAR ADMINISTRATIVO",
+        "CONDUCTOR DE SEGURIDAD",
+        "CONDUCTOR VEHICULO BLINDADOS",
+        "COORDINADOR DE SEGURIDAD FISICA",
+        "COORDINADOR ESQUEMA DE SEGURIDAD PERSONAL",
+        "COORDINADOR SALA DE MONITOREO",
+        "ESCOLTA",
+        "GERENTE DE SEGURIDAD",
+        "GERENTE DEPARTAMENTO DE SEGURIDAD EMPRESARIAL",
+        "GERENTE EMPRESA DE SEGURIDAD PRIVADA",
+        "GUARDA DE SEGURIDAD",
+        "JEFE TALENTO HUMANO EMPRESAS DE VIGILANCIA",
+        "LOGISTICA EMPRESA SEGURIDAD PRIVADA",
+        "MANEJADOR CANINO",
+        "OPERADOR DE MEDIOS TECNOLOGICOS",
+        "PROGRAMADOR DE TURNOS",
+        "RECEPCIONISTA DE SEGURIDAD",
+        "RISK MANAGER",
+        "SUPERVISOR CONDUCTOR",
+        "SUPERVISOR DE PLANTA",
+        "SUPERVISOR MOTORIZADO"
+        ],
+         tipoCargo3:[
+        "ANALISTA DE INFORMACION",
+        "ANALISTA DE NOMINA",
+        "ANALISTA DE SEGURIDAD",
+        "AUXILIAR ADMINISTRATIVO",
+        "CONDUCTOR DE SEGURIDAD",
+        "CONDUCTOR VEHICULO BLINDADOS",
+        "COORDINADOR DE SEGURIDAD FISICA",
+        "COORDINADOR ESQUEMA DE SEGURIDAD PERSONAL",
+        "COORDINADOR SALA DE MONITOREO",
+        "ESCOLTA",
+        "GERENTE DE SEGURIDAD",
+        "GERENTE DEPARTAMENTO DE SEGURIDAD EMPRESARIAL",
+        "GERENTE EMPRESA DE SEGURIDAD PRIVADA",
+        "GUARDA DE SEGURIDAD",
+        "JEFE TALENTO HUMANO EMPRESAS DE VIGILANCIA",
+        "LOGISTICA EMPRESA SEGURIDAD PRIVADA",
+        "MANEJADOR CANINO",
+        "OPERADOR DE MEDIOS TECNOLOGICOS",
+        "PROGRAMADOR DE TURNOS",
+        "RECEPCIONISTA DE SEGURIDAD",
+        "RISK MANAGER",
+        "SUPERVISOR CONDUCTOR",
+        "SUPERVISOR DE PLANTA",
+        "SUPERVISOR MOTORIZADO"
+        ],
+         tipoCargo4:[
+        "ANALISTA DE INFORMACION",
+        "ANALISTA DE NOMINA",
+        "ANALISTA DE SEGURIDAD",
+        "AUXILIAR ADMINISTRATIVO",
+        "CONDUCTOR DE SEGURIDAD",
+        "CONDUCTOR VEHICULO BLINDADOS",
+        "COORDINADOR DE SEGURIDAD FISICA",
+        "COORDINADOR ESQUEMA DE SEGURIDAD PERSONAL",
+        "COORDINADOR SALA DE MONITOREO",
+        "ESCOLTA",
+        "GERENTE DE SEGURIDAD",
+        "GERENTE DEPARTAMENTO DE SEGURIDAD EMPRESARIAL",
+        "GERENTE EMPRESA DE SEGURIDAD PRIVADA",
+        "GUARDA DE SEGURIDAD",
+        "JEFE TALENTO HUMANO EMPRESAS DE VIGILANCIA",
+        "LOGISTICA EMPRESA SEGURIDAD PRIVADA",
+        "MANEJADOR CANINO",
+        "OPERADOR DE MEDIOS TECNOLOGICOS",
+        "PROGRAMADOR DE TURNOS",
+        "RECEPCIONISTA DE SEGURIDAD",
+        "RISK MANAGER",
+        "SUPERVISOR CONDUCTOR",
+        "SUPERVISOR DE PLANTA",
+        "SUPERVISOR MOTORIZADO"
+        ],
+         tipoCargo5:[
+        "ANALISTA DE INFORMACION",
+        "ANALISTA DE NOMINA",
+        "ANALISTA DE SEGURIDAD",
+        "AUXILIAR ADMINISTRATIVO",
+        "CONDUCTOR DE SEGURIDAD",
+        "CONDUCTOR VEHICULO BLINDADOS",
+        "COORDINADOR DE SEGURIDAD FISICA",
+        "COORDINADOR ESQUEMA DE SEGURIDAD PERSONAL",
+        "COORDINADOR SALA DE MONITOREO",
+        "ESCOLTA",
+        "GERENTE DE SEGURIDAD",
+        "GERENTE DEPARTAMENTO DE SEGURIDAD EMPRESARIAL",
+        "GERENTE EMPRESA DE SEGURIDAD PRIVADA",
+        "GUARDA DE SEGURIDAD",
+        "JEFE TALENTO HUMANO EMPRESAS DE VIGILANCIA",
+        "LOGISTICA EMPRESA SEGURIDAD PRIVADA",
+        "MANEJADOR CANINO",
+        "OPERADOR DE MEDIOS TECNOLOGICOS",
+        "PROGRAMADOR DE TURNOS",
+        "RECEPCIONISTA DE SEGURIDAD",
+        "RISK MANAGER",
+        "SUPERVISOR CONDUCTOR",
+        "SUPERVISOR DE PLANTA",
+        "SUPERVISOR MOTORIZADO"
+        ],
+         tipoEspecialidad1:[
+        "CCTV",
+        "INVESTIGADOR",
+        "POLIGRAFISTA",
+        "RECORREDOR MOTORIZADO",
+        "SEGURIDAD AEROPORTUARIA",
+        "SEGURIDAD BANCARIA",
+        "SEGURIDAD DE MERCANCIAS",
+        "SEGURIDAD DE PARQUES",
+        "SEGURIDAD EMBAJADAS Y CONSULADOS",
+        "SEGURIDAD EMPRESAS INDUSTRIALES",
+        "SEGURIDAD EN CENTROS COMERCIALES",
+        "SEGURIDAD EN INSTALACIONES ELECTRICAS",
+        "SEGURIDAD EN PUERTOS MARITIMOS",
+        "SEGURIDAD HOSPITALARIA",
+        "SEGURIDAD MINERA",
+        "SEGURIDAD RESIDENCIAL",
+        "TECNICO DE EXPLOSIVOS",
+        "TECNICO EN CRIMINALISTICA",
+        "TECNICO EN DACTILOSCOPIA",
+        "TECNICO EN DOCUMENTOLOGIA",
+        "TECNICO GRAFOLOGIA",
+        "TRANSPORTE DE VALORES",
+        "VIGILANCIA CANINA",
+        "VIGILANCIA EN CONTROL DE ACCESOS",
+        "VIGILANCIA EN EVENTOS PUBLICOS",
+        ],
+        tipoEspecialidad2:[
+        "CCTV",
+        "INVESTIGADOR",
+        "POLIGRAFISTA",
+        "RECORREDOR MOTORIZADO",
+        "SEGURIDAD AEROPORTUARIA",
+        "SEGURIDAD BANCARIA",
+        "SEGURIDAD DE MERCANCIAS",
+        "SEGURIDAD DE PARQUES",
+        "SEGURIDAD EMBAJADAS Y CONSULADOS",
+        "SEGURIDAD EMPRESAS INDUSTRIALES",
+        "SEGURIDAD EN CENTROS COMERCIALES",
+        "SEGURIDAD EN INSTALACIONES ELECTRICAS",
+        "SEGURIDAD EN PUERTOS MARITIMOS",
+        "SEGURIDAD HOSPITALARIA",
+        "SEGURIDAD MINERA",
+        "SEGURIDAD RESIDENCIAL",
+        "TECNICO DE EXPLOSIVOS",
+        "TECNICO EN CRIMINALISTICA",
+        "TECNICO EN DACTILOSCOPIA",
+        "TECNICO EN DOCUMENTOLOGIA",
+        "TECNICO GRAFOLOGIA",
+        "TRANSPORTE DE VALORES",
+        "VIGILANCIA CANINA",
+        "VIGILANCIA EN CONTROL DE ACCESOS",
+        "VIGILANCIA EN EVENTOS PUBLICOS",
+        ],
+        tipoEspecialidad3:[
+        "CCTV",
+        "INVESTIGADOR",
+        "POLIGRAFISTA",
+        "RECORREDOR MOTORIZADO",
+        "SEGURIDAD AEROPORTUARIA",
+        "SEGURIDAD BANCARIA",
+        "SEGURIDAD DE MERCANCIAS",
+        "SEGURIDAD DE PARQUES",
+        "SEGURIDAD EMBAJADAS Y CONSULADOS",
+        "SEGURIDAD EMPRESAS INDUSTRIALES",
+        "SEGURIDAD EN CENTROS COMERCIALES",
+        "SEGURIDAD EN INSTALACIONES ELECTRICAS",
+        "SEGURIDAD EN PUERTOS MARITIMOS",
+        "SEGURIDAD HOSPITALARIA",
+        "SEGURIDAD MINERA",
+        "SEGURIDAD RESIDENCIAL",
+        "TECNICO DE EXPLOSIVOS",
+        "TECNICO EN CRIMINALISTICA",
+        "TECNICO EN DACTILOSCOPIA",
+        "TECNICO EN DOCUMENTOLOGIA",
+        "TECNICO GRAFOLOGIA",
+        "TRANSPORTE DE VALORES",
+        "VIGILANCIA CANINA",
+        "VIGILANCIA EN CONTROL DE ACCESOS",
+        "VIGILANCIA EN EVENTOS PUBLICOS",
+        ],
+        tipoEspecialidad4:[
+        "CCTV",
+        "INVESTIGADOR",
+        "POLIGRAFISTA",
+        "RECORREDOR MOTORIZADO",
+        "SEGURIDAD AEROPORTUARIA",
+        "SEGURIDAD BANCARIA",
+        "SEGURIDAD DE MERCANCIAS",
+        "SEGURIDAD DE PARQUES",
+        "SEGURIDAD EMBAJADAS Y CONSULADOS",
+        "SEGURIDAD EMPRESAS INDUSTRIALES",
+        "SEGURIDAD EN CENTROS COMERCIALES",
+        "SEGURIDAD EN INSTALACIONES ELECTRICAS",
+        "SEGURIDAD EN PUERTOS MARITIMOS",
+        "SEGURIDAD HOSPITALARIA",
+        "SEGURIDAD MINERA",
+        "SEGURIDAD RESIDENCIAL",
+        "TECNICO DE EXPLOSIVOS",
+        "TECNICO EN CRIMINALISTICA",
+        "TECNICO EN DACTILOSCOPIA",
+        "TECNICO EN DOCUMENTOLOGIA",
+        "TECNICO GRAFOLOGIA",
+        "TRANSPORTE DE VALORES",
+        "VIGILANCIA CANINA",
+        "VIGILANCIA EN CONTROL DE ACCESOS",
+        "VIGILANCIA EN EVENTOS PUBLICOS",
+        ],
+        tipoEspecialidad5:[
+        "CCTV",
+        "INVESTIGADOR",
+        "POLIGRAFISTA",
+        "RECORREDOR MOTORIZADO",
+        "SEGURIDAD AEROPORTUARIA",
+        "SEGURIDAD BANCARIA",
+        "SEGURIDAD DE MERCANCIAS",
+        "SEGURIDAD DE PARQUES",
+        "SEGURIDAD EMBAJADAS Y CONSULADOS",
+        "SEGURIDAD EMPRESAS INDUSTRIALES",
+        "SEGURIDAD EN CENTROS COMERCIALES",
+        "SEGURIDAD EN INSTALACIONES ELECTRICAS",
+        "SEGURIDAD EN PUERTOS MARITIMOS",
+        "SEGURIDAD HOSPITALARIA",
+        "SEGURIDAD MINERA",
+        "SEGURIDAD RESIDENCIAL",
+        "TECNICO DE EXPLOSIVOS",
+        "TECNICO EN CRIMINALISTICA",
+        "TECNICO EN DACTILOSCOPIA",
+        "TECNICO EN DOCUMENTOLOGIA",
+        "TECNICO GRAFOLOGIA",
+        "TRANSPORTE DE VALORES",
+        "VIGILANCIA CANINA",
+        "VIGILANCIA EN CONTROL DE ACCESOS",
+        "VIGILANCIA EN EVENTOS PUBLICOS",
+        ],
       tipoNivelAcademico1: [
-        "Bachiller",
-        "Primaria",
-        "Técnico",
-        "Técnologo",
-        "Profesional",
+        "BACHILLER",
+        "PRIMARIA",
+        "TECNICO",
+        "TECNOLOGO",
+        "PROFESIONAL",
       ],
       tipoNivelAcademico2: [
-        "Bachiller",
-        "Primaria",
-        "Técnico",
-        "Técnologo",
-        "Profesional",
+        "BACHILLER",
+        "PRIMARIA",
+        "TECNICO",
+        "TECNOLOGO",
+        "PROFESIONAL",
       ],
       tipoNivelAcademico3: [
-        "Bachiller",
-        "Primaria",
-        "Técnico",
-        "Técnologo",
-        "Profesional",
+        "BACHILLER",
+        "PRIMARIA",
+        "TECNICO",
+        "TECNOLOGO",
+        "PROFESIONAL",
       ],
       tipoNivelAcademico4: [
-        "Bachiller",
-        "Primaria",
-        "Técnico",
-        "Técnologo",
-        "Profesional",
+        "BACHILLER",
+        "PRIMARIA",
+        "TECNICO",
+        "TECNOLOGO",
+        "PROFESIONAL",
       ],
       tipoNivelAcademico5: [
-        "Bachiller",
-        "Primaria",
-        "Técnico",
-        "Técnologo",
-        "Profesional",
+        "BACHILLER",
+        "PRIMARIA",
+        "TECNICO",
+        "TECNOLOGO",
+        "PROFESIONAL",
       ],
+       tipoTituloCurso1:[
+        "ANALISIS DE RIESGOS",
+        "ANTITERRORISMO",
+        "ARMAMENTO Y TIRO",
+        "AUDITOR BASC",
+        "AUDITOR HESQ",
+        "AUDITOR ISO 18788",
+        "AUDITOR ISO 22301",
+        "AUDITOR ISO 27001",
+        "AUDITOR ISO 28000",
+        "AUDITOR ISO 37001",
+        "AUDITOR ISO 39001",
+        "AUDITOR ISO 41001",
+        "AUTIDOR ISO 45001",
+        "AUDITOR ISO 9001",
+        "AVANZADO DE ESCOLTA",
+        "AVANZADO DE VIGILANCIA",
+        "AVANZADO EN SEGURIDAD DE ARMAS",
+        "BASICO DE ESCOLTA",
+        "BASICO DE VIGILANCIA",
+        "C-TPAT",
+        "CURSO DE ALTURAS",
+        "CURSO DE SEGURIDAD Y SALUD EN EL TRABAJO",
+        "CURSO IMPLEMENTADOR OEA",
+        "DEFENSA PERSONAL",
+        "DERECHOS HUMANOS Y DIH",
+        "DETECCION DE EXPLOSIVOS",
+        "ESPECIALIZACION EN VIGILANCIA PRIVADA",
+        "ESPECIALIZACION EN ADMINISTRACIÓN DE LA SEGURIDAD",
+        "IDENTIFICACION DE SELLOS DE SEGURIDAD",
+        "INSPECCION DE CONTENEDORES",
+        "INVESTIGADOR",
+        "INVESTIGADOR ACCIDENTES DE TRANSITO",
+        "INVESTIGADOR DE POLIZAS DE SEGUROS",
+        "MANEJO DE EMERGENCIAS",
+        "MANEJO DE EXTINGUIDORES",
+        "MANEJO DEFENSIVO (CONDUCCION DE VEHICULOS LIVIANO, SEMIPESADO Y PESADO)",
+        "MANEJO SEGURO DE ARMAS",
+        "MANEJO SUSTANCIAS PELIGROSAS",
+        "MANEJO Y RESCATE",
+        "MOTORIZADO DE SEGURIDAD",
+        "OFICIAL DE PROTECCION DE BUQUES OPB",
+        "OFICIAL DE PROTECCION DE COMPAÑÍA MARITIMA OPC",
+        "OFICIAL DE PROTECCION DE DATOS",
+        "OFICIAL DE PROTECCION INSTALACION PORTUARIAS OPIP",
+        "OMI 3.24 ",
+        "OPERADOR BASICO PARA LA SEGURIDAD AEROPORTUARIA AEROCIVIL",
+        "OPERADOR BASICO PARA LA SEGURIDAD MINERA",
+        "OPERADOR BASICO PARA LA SEGURIDAD PORTUARIA DIMAR",
+        "OPERADOR DE MEDIOS TECNOLOGICOS",
+        "OPERADOR ESCANER",
+        "PLANES DE EMERGENCIAS",
+        "PLANES DE EVACUACION",
+        "PREVENCION DE LA/FT",
+        "PREVENCION DE RIESGOS LABORALES",
+        "PRIMEROS AUXILIOS",
+        "PROFUNDIZACION EN VIGILANCIA",
+        "PROTECCION DE PERSONAS",
+        "PROTECCION EN ZONAS ESPECIALES",
+        "REENTRENAMIENTO EN VIGILANCIA",
+        "RELACIONES INTERPERSONALES",
+        "RISK MANAGER ISO 31000",
+        "SALUD OCUPACIONAL",
+        "SARLAFT",
+        "SERVICIO AL CLENTE",
+        "SIPLAFT",
+        "SUPERVISOR AVANZADO",
+        "SUPERVISOR BASICO",
+        "TECNICA ANTISECUESTRO",
+        "TRANSPORTE DE MERCANCIA",
+        "TRANSPORTE DE VALORES",
+        "TRIPULANTE DE ESCOLTA",
+        "USO DEFENSIVO DE ARMAS"
+        ],
+         tipoTituloCurso2:[
+        "ANALISIS DE RIESGOS",
+        "ANTITERRORISMO",
+        "ARMAMENTO Y TIRO",
+        "AUDITOR BASC",
+        "AUDITOR HESQ",
+        "AUDITOR ISO 18788",
+        "AUDITOR ISO 22301",
+        "AUDITOR ISO 27001",
+        "AUDITOR ISO 28000",
+        "AUDITOR ISO 37001",
+        "AUDITOR ISO 39001",
+        "AUDITOR ISO 41001",
+        "AUTIDOR ISO 45001",
+        "AUDITOR ISO 9001",
+        "AVANZADO DE ESCOLTA",
+        "AVANZADO DE VIGILANCIA",
+        "AVANZADO EN SEGURIDAD DE ARMAS",
+        "BASICO DE ESCOLTA",
+        "BASICO DE VIGILANCIA",
+        "C-TPAT",
+        "CURSO DE ALTURAS",
+        "CURSO DE SEGURIDAD Y SALUD EN EL TRABAJO",
+        "CURSO IMPLEMENTADOR OEA",
+        "DEFENSA PERSONAL",
+        "DERECHOS HUMANOS Y DIH",
+        "DETECCION DE EXPLOSIVOS",
+        "ESPECIALIZACION EN VIGILANCIA PRIVADA",
+        "ESPECIALIZACION EN ADMINISTRACIÓN DE LA SEGURIDAD",
+        "IDENTIFICACION DE SELLOS DE SEGURIDAD",
+        "INSPECCION DE CONTENEDORES",
+        "INVESTIGADOR",
+        "INVESTIGADOR ACCIDENTES DE TRANSITO",
+        "INVESTIGADOR DE POLIZAS DE SEGUROS",
+        "MANEJO DE EMERGENCIAS",
+        "MANEJO DE EXTINGUIDORES",
+        "MANEJO DEFENSIVO (CONDUCCION DE VEHICULOS LIVIANO, SEMIPESADO Y PESADO)",
+        "MANEJO SEGURO DE ARMAS",
+        "MANEJO SUSTANCIAS PELIGROSAS",
+        "MANEJO Y RESCATE",
+        "MOTORIZADO DE SEGURIDAD",
+        "OFICIAL DE PROTECCION DE BUQUES OPB",
+        "OFICIAL DE PROTECCION DE COMPAÑÍA MARITIMA OPC",
+        "OFICIAL DE PROTECCION DE DATOS",
+        "OFICIAL DE PROTECCION INSTALACION PORTUARIAS OPIP",
+        "OMI 3.24 ",
+        "OPERADOR BASICO PARA LA SEGURIDAD AEROPORTUARIA AEROCIVIL",
+        "OPERADOR BASICO PARA LA SEGURIDAD MINERA",
+        "OPERADOR BASICO PARA LA SEGURIDAD PORTUARIA DIMAR",
+        "OPERADOR DE MEDIOS TECNOLOGICOS",
+        "OPERADOR ESCANER",
+        "PLANES DE EMERGENCIAS",
+        "PLANES DE EVACUACION",
+        "PREVENCION DE LA/FT",
+        "PREVENCION DE RIESGOS LABORALES",
+        "PRIMEROS AUXILIOS",
+        "PROFUNDIZACION EN VIGILANCIA",
+        "PROTECCION DE PERSONAS",
+        "PROTECCION EN ZONAS ESPECIALES",
+        "REENTRENAMIENTO EN VIGILANCIA",
+        "RELACIONES INTERPERSONALES",
+        "RISK MANAGER ISO 31000",
+        "SALUD OCUPACIONAL",
+        "SARLAFT",
+        "SERVICIO AL CLENTE",
+        "SIPLAFT",
+        "SUPERVISOR AVANZADO",
+        "SUPERVISOR BASICO",
+        "TECNICA ANTISECUESTRO",
+        "TRANSPORTE DE MERCANCIA",
+        "TRANSPORTE DE VALORES",
+        "TRIPULANTE DE ESCOLTA",
+        "USO DEFENSIVO DE ARMAS"
+        ],
+         tipoTituloCurso3:[
+        "ANALISIS DE RIESGOS",
+        "ANTITERRORISMO",
+        "ARMAMENTO Y TIRO",
+        "AUDITOR BASC",
+        "AUDITOR HESQ",
+        "AUDITOR ISO 18788",
+        "AUDITOR ISO 22301",
+        "AUDITOR ISO 27001",
+        "AUDITOR ISO 28000",
+        "AUDITOR ISO 37001",
+        "AUDITOR ISO 39001",
+        "AUDITOR ISO 41001",
+        "AUTIDOR ISO 45001",
+        "AUDITOR ISO 9001",
+        "AVANZADO DE ESCOLTA",
+        "AVANZADO DE VIGILANCIA",
+        "AVANZADO EN SEGURIDAD DE ARMAS",
+        "BASICO DE ESCOLTA",
+        "BASICO DE VIGILANCIA",
+        "C-TPAT",
+        "CURSO DE ALTURAS",
+        "CURSO DE SEGURIDAD Y SALUD EN EL TRABAJO",
+        "CURSO IMPLEMENTADOR OEA",
+        "DEFENSA PERSONAL",
+        "DERECHOS HUMANOS Y DIH",
+        "DETECCION DE EXPLOSIVOS",
+        "ESPECIALIZACION EN VIGILANCIA PRIVADA",
+        "ESPECIALIZACION EN ADMINISTRACIÓN DE LA SEGURIDAD",
+        "IDENTIFICACION DE SELLOS DE SEGURIDAD",
+        "INSPECCION DE CONTENEDORES",
+        "INVESTIGADOR",
+        "INVESTIGADOR ACCIDENTES DE TRANSITO",
+        "INVESTIGADOR DE POLIZAS DE SEGUROS",
+        "MANEJO DE EMERGENCIAS",
+        "MANEJO DE EXTINGUIDORES",
+        "MANEJO DEFENSIVO (CONDUCCION DE VEHICULOS LIVIANO, SEMIPESADO Y PESADO)",
+        "MANEJO SEGURO DE ARMAS",
+        "MANEJO SUSTANCIAS PELIGROSAS",
+        "MANEJO Y RESCATE",
+        "MOTORIZADO DE SEGURIDAD",
+        "OFICIAL DE PROTECCION DE BUQUES OPB",
+        "OFICIAL DE PROTECCION DE COMPAÑÍA MARITIMA OPC",
+        "OFICIAL DE PROTECCION DE DATOS",
+        "OFICIAL DE PROTECCION INSTALACION PORTUARIAS OPIP",
+        "OMI 3.24 ",
+        "OPERADOR BASICO PARA LA SEGURIDAD AEROPORTUARIA AEROCIVIL",
+        "OPERADOR BASICO PARA LA SEGURIDAD MINERA",
+        "OPERADOR BASICO PARA LA SEGURIDAD PORTUARIA DIMAR",
+        "OPERADOR DE MEDIOS TECNOLOGICOS",
+        "OPERADOR ESCANER",
+        "PLANES DE EMERGENCIAS",
+        "PLANES DE EVACUACION",
+        "PREVENCION DE LA/FT",
+        "PREVENCION DE RIESGOS LABORALES",
+        "PRIMEROS AUXILIOS",
+        "PROFUNDIZACION EN VIGILANCIA",
+        "PROTECCION DE PERSONAS",
+        "PROTECCION EN ZONAS ESPECIALES",
+        "REENTRENAMIENTO EN VIGILANCIA",
+        "RELACIONES INTERPERSONALES",
+        "RISK MANAGER ISO 31000",
+        "SALUD OCUPACIONAL",
+        "SARLAFT",
+        "SERVICIO AL CLENTE",
+        "SIPLAFT",
+        "SUPERVISOR AVANZADO",
+        "SUPERVISOR BASICO",
+        "TECNICA ANTISECUESTRO",
+        "TRANSPORTE DE MERCANCIA",
+        "TRANSPORTE DE VALORES",
+        "TRIPULANTE DE ESCOLTA",
+        "USO DEFENSIVO DE ARMAS"
+        ],
+         tipoTituloCurso4:[
+        "ANALISIS DE RIESGOS",
+        "ANTITERRORISMO",
+        "ARMAMENTO Y TIRO",
+        "AUDITOR BASC",
+        "AUDITOR HESQ",
+        "AUDITOR ISO 18788",
+        "AUDITOR ISO 22301",
+        "AUDITOR ISO 27001",
+        "AUDITOR ISO 28000",
+        "AUDITOR ISO 37001",
+        "AUDITOR ISO 39001",
+        "AUDITOR ISO 41001",
+        "AUTIDOR ISO 45001",
+        "AUDITOR ISO 9001",
+        "AVANZADO DE ESCOLTA",
+        "AVANZADO DE VIGILANCIA",
+        "AVANZADO EN SEGURIDAD DE ARMAS",
+        "BASICO DE ESCOLTA",
+        "BASICO DE VIGILANCIA",
+        "C-TPAT",
+        "CURSO DE ALTURAS",
+        "CURSO DE SEGURIDAD Y SALUD EN EL TRABAJO",
+        "CURSO IMPLEMENTADOR OEA",
+        "DEFENSA PERSONAL",
+        "DERECHOS HUMANOS Y DIH",
+        "DETECCION DE EXPLOSIVOS",
+        "ESPECIALIZACION EN VIGILANCIA PRIVADA",
+        "ESPECIALIZACION EN ADMINISTRACIÓN DE LA SEGURIDAD",
+        "IDENTIFICACION DE SELLOS DE SEGURIDAD",
+        "INSPECCION DE CONTENEDORES",
+        "INVESTIGADOR",
+        "INVESTIGADOR ACCIDENTES DE TRANSITO",
+        "INVESTIGADOR DE POLIZAS DE SEGUROS",
+        "MANEJO DE EMERGENCIAS",
+        "MANEJO DE EXTINGUIDORES",
+        "MANEJO DEFENSIVO (CONDUCCION DE VEHICULOS LIVIANO, SEMIPESADO Y PESADO)",
+        "MANEJO SEGURO DE ARMAS",
+        "MANEJO SUSTANCIAS PELIGROSAS",
+        "MANEJO Y RESCATE",
+        "MOTORIZADO DE SEGURIDAD",
+        "OFICIAL DE PROTECCION DE BUQUES OPB",
+        "OFICIAL DE PROTECCION DE COMPAÑÍA MARITIMA OPC",
+        "OFICIAL DE PROTECCION DE DATOS",
+        "OFICIAL DE PROTECCION INSTALACION PORTUARIAS OPIP",
+        "OMI 3.24 ",
+        "OPERADOR BASICO PARA LA SEGURIDAD AEROPORTUARIA AEROCIVIL",
+        "OPERADOR BASICO PARA LA SEGURIDAD MINERA",
+        "OPERADOR BASICO PARA LA SEGURIDAD PORTUARIA DIMAR",
+        "OPERADOR DE MEDIOS TECNOLOGICOS",
+        "OPERADOR ESCANER",
+        "PLANES DE EMERGENCIAS",
+        "PLANES DE EVACUACION",
+        "PREVENCION DE LA/FT",
+        "PREVENCION DE RIESGOS LABORALES",
+        "PRIMEROS AUXILIOS",
+        "PROFUNDIZACION EN VIGILANCIA",
+        "PROTECCION DE PERSONAS",
+        "PROTECCION EN ZONAS ESPECIALES",
+        "REENTRENAMIENTO EN VIGILANCIA",
+        "RELACIONES INTERPERSONALES",
+        "RISK MANAGER ISO 31000",
+        "SALUD OCUPACIONAL",
+        "SARLAFT",
+        "SERVICIO AL CLENTE",
+        "SIPLAFT",
+        "SUPERVISOR AVANZADO",
+        "SUPERVISOR BASICO",
+        "TECNICA ANTISECUESTRO",
+        "TRANSPORTE DE MERCANCIA",
+        "TRANSPORTE DE VALORES",
+        "TRIPULANTE DE ESCOLTA",
+        "USO DEFENSIVO DE ARMAS"
+        ],
+         tipoTituloCurso5:[
+        "ANALISIS DE RIESGOS",
+        "ANTITERRORISMO",
+        "ARMAMENTO Y TIRO",
+        "AUDITOR BASC",
+        "AUDITOR HESQ",
+        "AUDITOR ISO 18788",
+        "AUDITOR ISO 22301",
+        "AUDITOR ISO 27001",
+        "AUDITOR ISO 28000",
+        "AUDITOR ISO 37001",
+        "AUDITOR ISO 39001",
+        "AUDITOR ISO 41001",
+        "AUTIDOR ISO 45001",
+        "AUDITOR ISO 9001",
+        "AVANZADO DE ESCOLTA",
+        "AVANZADO DE VIGILANCIA",
+        "AVANZADO EN SEGURIDAD DE ARMAS",
+        "BASICO DE ESCOLTA",
+        "BASICO DE VIGILANCIA",
+        "C-TPAT",
+        "CURSO DE ALTURAS",
+        "CURSO DE SEGURIDAD Y SALUD EN EL TRABAJO",
+        "CURSO IMPLEMENTADOR OEA",
+        "DEFENSA PERSONAL",
+        "DERECHOS HUMANOS Y DIH",
+        "DETECCION DE EXPLOSIVOS",
+        "ESPECIALIZACION EN VIGILANCIA PRIVADA",
+        "ESPECIALIZACION EN ADMINISTRACIÓN DE LA SEGURIDAD",
+        "IDENTIFICACION DE SELLOS DE SEGURIDAD",
+        "INSPECCION DE CONTENEDORES",
+        "INVESTIGADOR",
+        "INVESTIGADOR ACCIDENTES DE TRANSITO",
+        "INVESTIGADOR DE POLIZAS DE SEGUROS",
+        "MANEJO DE EMERGENCIAS",
+        "MANEJO DE EXTINGUIDORES",
+        "MANEJO DEFENSIVO (CONDUCCION DE VEHICULOS LIVIANO, SEMIPESADO Y PESADO)",
+        "MANEJO SEGURO DE ARMAS",
+        "MANEJO SUSTANCIAS PELIGROSAS",
+        "MANEJO Y RESCATE",
+        "MOTORIZADO DE SEGURIDAD",
+        "OFICIAL DE PROTECCION DE BUQUES OPB",
+        "OFICIAL DE PROTECCION DE COMPAÑÍA MARITIMA OPC",
+        "OFICIAL DE PROTECCION DE DATOS",
+        "OFICIAL DE PROTECCION INSTALACION PORTUARIAS OPIP",
+        "OMI 3.24 ",
+        "OPERADOR BASICO PARA LA SEGURIDAD AEROPORTUARIA AEROCIVIL",
+        "OPERADOR BASICO PARA LA SEGURIDAD MINERA",
+        "OPERADOR BASICO PARA LA SEGURIDAD PORTUARIA DIMAR",
+        "OPERADOR DE MEDIOS TECNOLOGICOS",
+        "OPERADOR ESCANER",
+        "PLANES DE EMERGENCIAS",
+        "PLANES DE EVACUACION",
+        "PREVENCION DE LA/FT",
+        "PREVENCION DE RIESGOS LABORALES",
+        "PRIMEROS AUXILIOS",
+        "PROFUNDIZACION EN VIGILANCIA",
+        "PROTECCION DE PERSONAS",
+        "PROTECCION EN ZONAS ESPECIALES",
+        "REENTRENAMIENTO EN VIGILANCIA",
+        "RELACIONES INTERPERSONALES",
+        "RISK MANAGER ISO 31000",
+        "SALUD OCUPACIONAL",
+        "SARLAFT",
+        "SERVICIO AL CLENTE",
+        "SIPLAFT",
+        "SUPERVISOR AVANZADO",
+        "SUPERVISOR BASICO",
+        "TECNICA ANTISECUESTRO",
+        "TRANSPORTE DE MERCANCIA",
+        "TRANSPORTE DE VALORES",
+        "TRIPULANTE DE ESCOLTA",
+        "USO DEFENSIVO DE ARMAS"
+        ],
       departamentos_AMAZONAS: [
         "EL ENCANTO",
         "LA CHORRERA",
@@ -18833,4794 +19138,13 @@ export default {
         "PUERTO CARREÑO",
         "SANTA ROSALIA",
       ],
-      departamentos13_AMAZONAS: [
-        "EL ENCANTO",
-        "LA CHORRERA",
-        "LA PEDRERA",
-        "LA VICTORIA",
-        "LETICIA",
-        "MIRITI-PARANA",
-        "PUERTO ALEGRIA",
-        "PUERTO ARICA",
-        "PUERTO NARIÑO",
-        "PUERTO SANTANDER",
-        "TARAPACA",
+      vehiculos_VEHICULO_SEDAN: [
       ],
-
-      departamentos13_ANTIOQUIA: [
-        "CAUCASIA",
-        "EL BAGRE",
-        "NECHI",
-        "TARAZA",
-        "ZARAGOZA",
-        "CARACOLI",
-        "MACEO",
-        "PUERTO BERRIO",
-        "PUERTO NARE",
-        "PUERTO TRIUNFO",
-        "YONDO",
-        "AMALFI",
-        "ANORI",
-        "CISNEROS",
-        "REMEDIOS",
-        "SAN ROQUE",
-        "SANTO DOMINGO",
-        "SEGOVIA",
-        "VEGACHI",
-        "YALI",
-        "YOLOMBO",
-        "ANGOSTURA",
-        "BELMIRA",
-        "BRICEÑO",
-        "CAMPAMENTO",
-        "CAROLINA DEL PRINCIPE",
-        "DONMATIAS",
-        "ENTRERRIOS",
-        "GOMEZ PLATA",
-        "GUADALUPE",
-        "ITUANGO",
-        "SAN ANDRES DE CUERQUIA",
-        "SAN JOSE DE LA MONTAÑA",
-        "SAN PEDRO DE LOS MILAGROS",
-        "SANTA ROSA DE OSOS",
-        "TOLEDO",
-        "VALDIVIA",
-        "YARUMAL",
-        "ABRIAQUI",
-        "ANZA",
-        "ARMENIA",
-        "BURITICA",
-        "CAICEDO",
-        "CAÑASGORDAS",
-        "DABEIBA",
-        "EBEJICO",
-        "FRONTINO",
-        "GIRALDO",
-        "HELICONIA",
-        "LIBORINA",
-        "OLAYA",
-        "PEQUE",
-        "SABANALARGA",
-        "SAN JERONIMO",
-        "SANTA FE DE ANTIOQUIA",
-        "SOPETRAN",
-        "URAMITA",
-        "ABEJORRAL",
-        "ALEJANDRIA",
-        "ARGELIA",
-        "CARMEN DE VIBORAL",
-        "COCORNA",
-        "CONCEPCION",
-        "GRANADA",
-        "GUARNE",
-        "GUATAPE",
-        "LA CEJA",
-        "LA UNION",
-        "MARINILLA",
-        "NARIÑO",
-        "EL PEÑOL",
-        "EL RETIRO",
-        "RIONEGRO",
-        "SAN CARLOS",
-        "SAN FRANCISCO",
-        "SAN LUIS",
-        "SAN RAFAEL",
-        "SAN VICENTE",
-        "SANTUARIO",
-        "SONSON",
-        "AMAGA",
-        "ANDES",
-        "ANGELOPOLIS",
-        "BETANIA",
-        "BOLIVAR",
-        "BETULIA",
-        "CARAMANTA",
-        "CONCORDIA",
-        "FREDONIA",
-        "HISPANIA",
-        "JARDIN",
-        "JERICO",
-        "LA PINTADA",
-        "MONTEBELLO",
-        "PUEBLORRICO",
-        "SALGAR",
-        "SANTA BARBARA",
-        "TAMESIS",
-        "TARSO",
-        "TITIRIBI",
-        "URRAO",
-        "VALPARAISO",
-        "VENECIA",
-        "APARTADO",
-        "ARBOLETES",
-        "CAREPA",
-        "CHIGORODO",
-        "MURINDO",
-        "MUTATA",
-        "NECOCLI",
-        "SAN JUAN DE URABA",
-        "SAN PEDRO DE URABA",
-        "TURBO",
-        "VIGIA DEL FUERTE",
-        "BARBOSA",
-        "BELLO",
-        "CALDAS",
-        "COPACABANA",
-        "ENVIGADO",
-        "GIRARDOTA",
-        "ITAGÜI",
-        "LA ESTRELLA",
-        "MEDELLÍN",
-        "SABANETA",
+      vehiculos_CAMIONETA: [
       ],
-      departamentos13_ARAUCA: [
-        "ARAUCA",
-        "ARAUQUITA",
-        "CRAVO NORTE",
-        "FORTUL",
-        "PUERTO RONDON",
-        "SARAVENA",
-        "TAME",
+      vehiculos_VEHICULO_BLINDADO: [
       ],
-      departamentos13_ATLANTICO: [
-        "BARRANQUILLA",
-        "BARANOA",
-        "CAMPO DE LA CRUZ",
-        "CANDELARIA",
-        "GALAPA",
-        "JUAN DE ACOSTA",
-        "LURUACO",
-        "MALAMBO",
-        "MANATI",
-        "PALMAR DE VARELA",
-        "PIOJO",
-        "POLONUEVO",
-        "PONEDERA",
-        "PUERTO COLOMBIA",
-        "REPELON",
-        "SABANAGRANDE",
-        "SABANALARGA",
-        "SANTA LUCIA",
-        "SANTO TOMAS",
-        "SOLEDAD",
-        "SUAN",
-        "TUBARA",
-        "USIACURI",
-      ],
-      departamentos13_BOLIVAR: [
-        "ACHI",
-        "ALTOS DEL ROSARIO",
-        "ARENAL",
-        "ARJONA",
-        "ARROYOHONDO",
-        "BARRANCO DE LOBA",
-        "BRAZUELO DE PAPAYAL",
-        " CALAMAR",
-        "CANTAGALLO",
-        "EL CARMEN DE BOLIVAR",
-        "CARTAGENA DE INDIAS D.T.",
-        "CICUCO",
-        "CLEMENCIA",
-        "CORDOBA",
-        "EL GUAMO",
-        "EL PEÑON",
-        "HATILLO DE LOBA",
-        "MAGANGUE",
-        "MAHATES",
-        "MARGARITA",
-        "MARIA LA BAJA",
-        "MONTECRISTO",
-        "MORALES",
-        "NOROSI",
-        "PINILLOS",
-        "REGIDOR",
-        "RIO VIEJO",
-        "SAN CRISTOBAL",
-        "SAN ESTANISLAO",
-        "SAN FERNANDO",
-        "SAN JACINTO",
-        "SAN JACINTO DEL CAUCASAN",
-        "JUAN NEPOMUCENO",
-        "SAN MARTIN DE LOBA",
-        "SAN PABLO",
-        "SANTA CATALINA",
-        "SANTA CRUZ DE MOMPOX",
-        "SANTA ROSA",
-        "SANTA ROSA DEL SUR",
-        "SIMITI",
-        "SOPLAVIENTO",
-        "TALAIGUA NUEVO",
-        "TIQUISIO",
-        "TURBACO",
-        "TURBANA",
-        "VILLANUEVA",
-        "ZAMBRANO",
-      ],
-      departamentos13_BOYACA: [
-        "ALMEIDA",
-        "AQUITANIA",
-        "ARCABUCO",
-        "BELEN",
-        "BERBEO",
-        "BETEITIVA",
-        "BOAVITA",
-        "BOYACA",
-        "BRICEÑO",
-        "BUENAVISTA",
-        " BUSBANZA",
-        "CALDAS",
-        "CAMPOHERMOSO",
-        "CERINZA",
-        "CHINAVITA",
-        "CHIQUINQUIRA",
-        "CHIQUIZA",
-        "CHISCAS",
-        "CHITA",
-        "CHITARAQUE",
-        "CHIVATA",
-        "CHIVOR",
-        " CIENEGA",
-        "COMBITA",
-        "COPER",
-        "CORRALES",
-        "COVARACHIA",
-        "CUBARA",
-        "CUCAITA",
-        "CUITIVA",
-        "DUITAMA",
-        "EL COCUY",
-        "EL ESPINO",
-        "FIRAVITOBA",
-        "FLORESTA",
-        "GACHANTIVA",
-        "GAMEZA",
-        "GARAGOA",
-        "GUACAMAYAS",
-        "GUATEQUE",
-        "GUAYATA",
-        "GÜICAN",
-        "IZA",
-        "JENESANO",
-        "JERICO",
-        "LA CAPILLA",
-        "LA UVITA",
-        "LA VICTORIA",
-        "LABRANZAGRANDE",
-        "MACANAL",
-        "MARIPI",
-        "MIRAFLORES",
-        "MONGUA",
-        "MONGUI",
-        "MONIQUIRA",
-        "MOTAVITA",
-        "MUZO",
-        "NOBSA",
-        "NUEVO COLON",
-        "OICATA",
-        "OTANCHE",
-        "PACHAVITA",
-        "PAEZ",
-        "PAIPA",
-        "PAJARITO",
-        "PANQUEBA",
-        "PAUNA",
-        "PAYA",
-        "PAZ DE RIO",
-        "PESCA",
-        "PISBA",
-        "PUERTO BOYACA",
-        "QUIPAMA",
-        "RAMIRIQUI",
-        "RAQUIRA",
-        "RONDON",
-        "SABOYA",
-        "SACHICA",
-        "SAMACA",
-        "SAN EDUARDO",
-        "SAN JOSE DE PARE",
-        "SAN LUIS DE GACENO",
-        "SAN MATEO",
-        "SAN MIGUEL DE SEMA",
-        " SAN PABLO DE BORBUR",
-        "SANTA MARIA",
-        "SANTA ROSA DE VITERBO",
-        "SANTA SOFIA",
-        "SANTANA",
-        "SATIVANORTE",
-        "SATIVASUR",
-        "SIACHOQUE",
-        "SOATA",
-        "SOCHA",
-        "SOCOTA",
-        "SOGAMOSO",
-        "SOMONDOCO",
-        "SORA",
-        "SORACA",
-        "SOTAQUIRA",
-        "SUSACON",
-        "SUTAMARCHAN",
-        "SUTATENZA",
-        "TASCO",
-        "TENZA",
-        "TIBANA",
-        "TIBASOSA",
-        " TINJACA",
-        "TIPACOQUE",
-        "TOCA",
-        "TOGÜI",
-        "TOPAGA",
-        "TOTA",
-        "TUNJA",
-        "TUNUNGUA",
-        "TURMEQUE",
-        "TUTA",
-        "TUTAZA",
-        "UMBITA",
-        "VENTAQUEMADA",
-        "VILLA DE LEYVA",
-        "VIRACACHA",
-        "ZETAQUIRA",
-      ],
-      departamentos13_CALDAS: [
-        "AGUADAS",
-        "ANSERMA",
-        "ARANZAZU",
-        "BELALCAZAR",
-        "CHINCHINA",
-        "FILADELFIA",
-        "LA DORADA",
-        "LA MERCED",
-        "MANIZALES",
-        "MANZANARES",
-        "MARMATO",
-        "MARQUETALIA",
-        "MARULANDA",
-        "NEIRA",
-        "NORCASIA",
-        "PACORA",
-        "PALESTINA",
-        "PENSILVANIA",
-        "RIOSUCIO",
-        "RISARALDA",
-        "SALAMINA",
-        "SAMANA SAN JOSE",
-        "SUPIA",
-        "VICTORIA",
-        "VILLAMARIA",
-        "VITERBO",
-      ],
-      departamentos13_CAQUETA: [
-        "ALBANIA",
-        "BELEN DE LOS ANDAQUIES",
-        "CARTAGENA DEL CHAIRA",
-        "CURILLO",
-        "EL DONCELLO",
-        "EL PAUJIL",
-        "FLORENCIA",
-        "LA MONTAÑITA",
-        "MORELIA",
-        "PUERTO MILAN",
-        "PUERTO RICO",
-        "SAN JOSE DEL FRAGUA",
-        "SAN VICENTE DEL CAGUAN",
-        "SOLANO",
-        "SOLITA",
-        "VALPARAISO",
-      ],
-      departamentos13_CASANARE: [
-        "AGUAZUL",
-        "HATO COROZAL",
-        "CHAMEZA",
-        "PORE",
-        "LA SALINA",
-        "SACAMA",
-        "PAZ DE ARIPORO",
-        "MONTERREY",
-        "OROCUE",
-        "MANI",
-        "SAN LUIS DE PALENQUE",
-        "TRINIDAD",
-        "VILLANUEVA",
-        "YOPAL",
-        "RECETOR",
-        "SABANALARGA",
-        "TAMARA",
-        "NUNCHIA",
-        "TAURAMENA",
-      ],
-      departamentos13_CAUCA: [
-        "ALMAGUER",
-        "ARGELIA",
-        "BALBOA",
-        "BOLIVAR",
-        "BUENOS AIRES",
-        "CAJIBIO",
-        "CALDONO",
-        "CALOTO",
-        "CORINTO",
-        "EL TAMBO",
-        "FLORENCIA",
-        "GUACHENE",
-        "GUAPI",
-        "INZA",
-        "JAMBALO",
-        "LA SIERRA",
-        "LA VEGA",
-        "LOPEZ DE MICAY",
-        "MERCADERES",
-        "MIRANDA",
-        "MORALES",
-        "PADILLA",
-        "PAEZ",
-        "PATIA",
-        "PIAMONTE",
-        "PIENDAMO",
-        "POPAYAN",
-        "PUERTO TEJADA",
-        "PURACE",
-        "ROSAS",
-        "SAN SEBASTIAN",
-        "SANTA ROSA",
-        "SANTANDER DE QUILICHAO",
-        "SILVIA",
-        "SOTARA",
-        "SUAREZ",
-        "SUCRE",
-        "TIMBIO",
-        "TIMBIQUI",
-        "TORIBIO",
-        "TOTORO",
-        "VILLA RICA",
-      ],
-      departamentos13_CESAR: [
-        "AGUACHICA",
-        "ASTREA",
-        "BECERRIL",
-        "BOSCONIA",
-        "CHIMICHAGUA",
-        "CHIRIGUANA",
-        "CODAZZI",
-        "CURUMANI",
-        "EL COPEY",
-        "EL PASO GAMARRA",
-        "GONZALEZ",
-        "LA GLORIA",
-        "LA JAGUA DE IBIRICO",
-        "LA PAZ",
-        "MANAURE",
-        "BALCON DEL CESAR",
-        "PAILITAS",
-        "PELAYA",
-        "PUEBLO BELLO",
-        "RIO DE ORO",
-        " SAN ALBERTO",
-        " SAN DIEGO",
-        " SAN MARTIN",
-        " TAMALAMEQUE",
-        " VALLEDUPAR",
-      ],
-      departamentos13_CHOCO: [
-        "ACANDI",
-        "ALTO BAUDO (PIE DE PATO];",
-        "ATRATO",
-        "BAGADO",
-        "BAHIA SOLANO",
-        "BAJO BAUDO (PIZARRO];",
-        "BOJAYA (BELLAVISTA];",
-        "CANTON DE SAN PABLO",
-        "EL CARMEN DE ATRATO",
-        "CERTEGUI",
-        "CONDOTO",
-        "EL CARMEN DEL DARIEN",
-        "ISTMINA",
-        "JURADO",
-        "LITORAL DE SAN JUAN",
-        "LLORO",
-        "MEDIO ATRATO",
-        "MEDIO BAUDO",
-        "MEDIO SAN JUAN",
-        "NOVITA",
-        "NUQUI",
-        "QUIBDO",
-        "RIOSUCIO",
-        "RIO IRO",
-        "RIO QUITO",
-        "SAN JOSE DEL PALMAR",
-        "SIPI",
-        "TADO",
-        "UNGUIA",
-        "UNION PANAMERICANA",
-      ],
-      departamentos13_CORDOBA: [
-        "AYAPEL",
-        "BUENAVISTA",
-        "CANALETE",
-        "CERETE",
-        "CHIMA",
-        "CHINU",
-        "CIENAGA DE ORO",
-        "COTORRA",
-        "LA APARTADA",
-        "LOS CORDOBAS",
-        "MOMIL",
-        "MOÑITOS",
-        "MONTELIBANO",
-        "MONTERIA",
-        "PLANETA RICA",
-        "PUEBLO NUEVO",
-        "PUERTO ESCONDIDO",
-        "PUERTO LIBERTADOR",
-        "PURISIMA",
-        " SAHAGUN",
-        "SAN ANDRES DE SOTAVENTO",
-        "SAN ANTERO",
-        "SAN BERNARDO DEL VIENTO",
-        "SAN CARLOS",
-        "SAN JOSE DE URE",
-        "SAN PELAYO",
-        "SANTA CRUZ DE LORICA",
-        "TIERRALTA",
-        "TUCHIN",
-        "VALENCIA",
-      ],
-      departamentos13_CUNDINAMARCA: [
-        "AGUA DE DIOS",
-        "ALBA",
-        "ANAPOIMA",
-        "ANOLAIMA",
-        "APULO",
-        "ARBELAEZ",
-        "BELTRAN",
-        "BITUIMA",
-        "BOJACA",
-        "CABRERA",
-        "CACHIPAY",
-        "CAJICA",
-        "CAPARRAPI",
-        "CAQUEZA",
-        "CARMEN DE CARUPA",
-        "CHAGUANI",
-        "CHIA",
-        "CHIPAQUE",
-        "CHOACHI",
-        "CHOCONTA",
-        "COGUA",
-        "COTA",
-        "CUCUNUBA",
-        "EL COLEGIO",
-        "EL PEÑON",
-        "EL ROSAL",
-        "FACATATIVA",
-        "FOMEQUE",
-        "FOSCA",
-        "FUNZA",
-        "FUQUENE",
-        "FUSAGASUGA",
-        "GACHALA",
-        "GACHANCIPA",
-        "GACHETA",
-        "GAMA",
-        "GIRARDOT",
-        "GRANADA",
-        "GUACHETA",
-        "GUADUAS",
-        "GUASCA",
-        "GUATAQUI",
-        "GUATAVITA",
-        "GUAYABAL DE SIQUIMA",
-        "GUAYABETAL",
-        "GUTIERREZ",
-        "JERUSALEN",
-        "JUNIN",
-        "LA CALERA",
-        "LA MESA",
-        "LA PALMA",
-        "LA PEÑA",
-        "LA VEGA",
-        "LENGUAZAQUE",
-        "MACHETA",
-        "MADRID",
-        "MANTA",
-        "MEDINA",
-        "MOSQUERA",
-        "NARIÑO",
-        "NEMOCON",
-        "NILO",
-        "NIMAIMA",
-        "NOCAIMA",
-        "PACHO",
-        "PAIME",
-        "PANDI",
-        "PARATEBUENO",
-        "PASCA",
-        "PUERTO SALGAR",
-        "PULI",
-        "QUEBRADANEGRA",
-        "QUETAME",
-        "QUIPILE",
-        "RICAURTE",
-        "SAN ANTONIO DEL TEQUENDAMA",
-        "SAN BERNARDO",
-        "SAN CAYETANO",
-        "SAN FRANCISCO",
-        "SAN JUAN DE RIOSECO",
-        "SASAIMA",
-        "SESQUILE",
-        "SIBATE",
-        "SILVANIA",
-        "SIMIJACA",
-        "SOACHA",
-        "SOPO",
-        "SUBACHOQUE",
-        "SUESCA",
-        "SUPATA",
-        "SUSA",
-        "SUTATAUSA",
-        "TABIO",
-        "TAUSA",
-        "TENA",
-        "TENJO",
-        "TIBACUY",
-        "TIBIRITA",
-        "TOCAIMA",
-        "TOCANCIPA",
-        "TOPAIPI",
-        "UBALA",
-        "UBAQUE",
-        "UBATE",
-        "UNE",
-        "UTICA",
-        "VENECIA",
-        "VERGARA",
-        "VIANI",
-        "VILLAGOMEZ",
-        " VILLAPINZON",
-        "VILLETA",
-        "VIOTA",
-        "YACOPI",
-        "ZIPACON",
-        "ZIPAQUIRA",
-      ],
-      departamentos13_DISTRITO_CAPITAL: ["BOGOTÁ"],
-      departamentos13_GUAINIA: [
-        "BARRANCO MINAS",
-        "CACAHUAL",
-        "INIRIDA",
-        "LA GUADALUPE",
-        "MAPIRIPANA",
-        "MORICHAL",
-        "PANA PANA",
-        "PUERTO COLOMBIA",
-        "SAN FELIPE",
-      ],
-      departamentos13_GUAJIRA: [
-        "ALBANIA",
-        "BARRANCAS",
-        "DIBULLA",
-        "DISTRACCION",
-        "EL MOLINO",
-        "FONSECA",
-        "HATONUEVO",
-        "LA JAGUA DEL PILAR",
-        " MAICAO",
-        "MANAURE",
-        "RIOHACHA",
-        "SAN JUAN DEL CESAR",
-        "URIBIA",
-        "URUMITA",
-        "VILLANUEVA",
-      ],
-      departamentos13_GUAVIARE: [
-        "CALAMAR",
-        "EL RETORNO",
-        "MIRAFLORES",
-        "SAN JOSE DEL GUAVIARE",
-      ],
-      departamentos13_HUILA: [
-        "ACEVEDO",
-        "AGRADO",
-        "AIPE",
-        "ALGECIRAS",
-        "ALTAMIRA",
-        "BARAYA",
-        "CAMPOALEGRE",
-        "COLOMBIA",
-        "ELIAS",
-        "GARZON",
-        " GIGANTE",
-        "GUADALUPE",
-        "HOBO",
-        "IQUIRA",
-        "ISNOS",
-        "LA ARGENTINA",
-        "LA PLATA",
-        "NATAGA",
-        "NEIVA",
-        "OPORAPA",
-        "PAICOL",
-        "PALERMO",
-        "PALESTINA",
-        "PITAL",
-        "PITALITO",
-        "RIVERA",
-        "SALADOBLANCO",
-        "SAN AGUSTIN",
-        "SANTA MARIA",
-        "SUAZA",
-        "TARQUI",
-        "TELLO",
-        "TERUEL",
-        "TESALIA",
-        "TIMANA",
-        "VILLAVIEJA",
-        "YAGUARA",
-      ],
-      departamentos13_MAGDALENA: [
-        "ALGARROBO",
-        "ARACATACA",
-        "ARIGUANI",
-        "CERRO DE SAN ANTONIO",
-        "CHIBOLO",
-        "CIENAGA",
-        "CONCORDIA",
-        "EL BANCO",
-        "EL PIÑON",
-        "EL RETEN",
-        "FUNDACION",
-        "GUAMAL",
-        "NUEVA GRANADA",
-        "PEDRAZA",
-        "PIJIÑO DEL CARMEN",
-        "PIVIJAY",
-        "PLATO",
-        "PUEBLO VIEJO",
-        "REMOLINO",
-        "SABANAS DE SAN ANGEL",
-        "SALAMINA",
-        "SAN SEBASTIAN DE BUENAVISTA",
-        "SANTA ANA",
-        "SANTA BARBARA DE PINTO",
-        "SANTA MARTA",
-        "SAN ZENON",
-        "SITIONUEVO",
-        "TENERIFE",
-        "ZAPAYAN",
-        "ZONA BANANERA",
-      ],
-      departamentos13_META: [
-        "ACACIAS",
-        "BARRANCA DE UPIA",
-        "CABUYARO",
-        "CASTILLA LA NUEVA",
-        "CUBARRAL",
-        "CUMARAL",
-        "EL CALVARIO",
-        "EL CASTILLO",
-        "EL DORADO",
-        "FUENTE DE ORO",
-        "GRANADA",
-        "GUAMAL",
-        "LA MACARENA",
-        "LA URIBE",
-        "LEJANIAS",
-        "MAPIRIPAN",
-        "MESETAS",
-        "PUERTO CONCORDIA",
-        "PUERTO GAITAN",
-        "PUERTO LLERAS",
-        "PUERTO LOPEZ",
-        "PUERTO RICO",
-        "RESTREPO",
-        "SAN CARLOS DE GUAROA",
-        "SAN JUAN DE ARAMA",
-        "SAN JUANITO",
-        "SAN MARTIN",
-        "VILLAVICENCIO",
-        "VISTA HERMOSA",
-      ],
-      departamentos13_NARINO: [
-        "ALDANA",
-        "ANCUYA",
-        "ARBOLEDA (BERRUECOS];",
-        "BARBACOAS",
-        "BELEN",
-        "BUESACO",
-        "CHACHAGÜI",
-        "COLON (GENOVA];",
-        "CONSACA",
-        "CONTADERO",
-        "CORDOBA",
-        "CUASPUD (CARLOSAMA];",
-        "CUMBAL",
-        "CUMBITARA",
-        "EL CHARCO",
-        "EL PEÑOL",
-        "EL ROSARIO",
-        "EL TABLON DE GOMEZ",
-        "EL TAMBO",
-        "FRANCISCO PIZARRO (SALAHONDA];",
-        "FUNES",
-        "GUACHUCAL",
-        "GUAITARILLA",
-        "GUALMATAN",
-        "ILES",
-        "IMUES",
-        "IPIALES",
-        "LA CRUZ",
-        "LA FLORIDA",
-        "LA LLANADA",
-        "LA TOLA",
-        "LA UNION",
-        "LEIVA",
-        "LINARES",
-        "LOS ANDES",
-        "MAGÜI (PAYAN];",
-        "MALLAMA (PIEDRANCHA];",
-        "MOSQUERA",
-        "NARIÑO",
-        "OLAYA HERRERA (BOCAS DE SATINGA];",
-        "OSPINA",
-        "POLICARPA",
-        "POTOSI",
-        "PROVIDENCIA",
-        "PUERRES",
-        "PUPIALES",
-        "RICAURTE",
-        "ROBERTO PAYAN (SAN JOSE];",
-        "SAMANIEGO",
-        "SAN BERNARDO",
-        "SAN JOSE DE ALBAN",
-        "SAN JUAN DE PASTO",
-        "SAN LORENZO",
-        "SAN PABLO",
-        "SAN PEDRO DE CARTAGO",
-        "SANDONA",
-        "SANTA BARBARA (ISCUANDE];",
-        "SANTACRUZ (GUACHAVEZ];",
-        "SAPUYES",
-        "TAMINANGO",
-        "TANGUA",
-        "TUMACO",
-        "TUQUERRES",
-        "YACUANQUER",
-      ],
-      departamentos13_NORTE_DE_SANTANDER: [
-        "ABREGO",
-        "ARBOLEDAS",
-        "BOCHALEMA",
-        "BUCARASICA",
-        "CACHIRA",
-        "CACOTA",
-        "CHINACOTA",
-        "CHITAGA",
-        "CONVENCION",
-        "CUCUTA",
-        "CUCUTILLA",
-        "DURANIA",
-        "EL CARMEN",
-        "EL TARRA",
-        "EL ZULIA",
-        "GRAMALOTE",
-        "HACARI",
-        "HERRAN",
-        "LA ESPERANZA",
-        "LA PLAYA DE BELEN",
-        "LABATECA",
-        "LOS PATIOS",
-        "LOURDES",
-        "MUTISCUA",
-        "OCAÑA",
-        "PAMPLONA",
-        "PAMPLONITA",
-        "PUERTO SANTANDER",
-        "RAGONVALIA",
-        "SALAZAR DE LAS PALMAS",
-        "SAN CALIXTO",
-        "SAN CAYETANO",
-        "SANTIAGO",
-        "SANTO DOMINGO DE SILOS",
-        "SARDINATA",
-        "TEORAMA",
-        "TIBU",
-        "TOLEDO",
-        "VILLA CARO",
-        "VILLA DEL ROSARIO",
-      ],
-      departamentos13_PUTUMAYO: [
-        "COLON",
-        "MOCOA",
-        "ORITO",
-        "PUERTO ASIS",
-        "PUERTO CAICEDO",
-        "PUERTO GUZMAN",
-        "PUERTO LEGUIZAMO",
-        "SAN FRANCISCO",
-        "SAN MIGUEL",
-        "SANTIAGO",
-        "SIBUNDOY",
-        "VALLE DEL GUAMEZ",
-        "VILLA GARZON",
-      ],
-      departamentos13_QUINDIO: [
-        "ARMENIA",
-        "BUENAVISTA",
-        "CALARCA",
-        "CIRCASIA",
-        "CORDOBA",
-        "FILANDIA",
-        "GENOVA",
-        "LA TEBAIDA",
-        "MONTENEGRO",
-        "PIJAO",
-        "QUIMBAYA",
-        "SALENTO",
-      ],
-      departamentos13_RISARALDA: [
-        "APIA",
-        "BALBOA",
-        "BELEN DE UMBRIA",
-        "DOSQUEBRADAS",
-        "GUATICA",
-        "LA CELIA",
-        "LA VIRGINIA",
-        "MARSELLA",
-        "MISTRATO",
-        "PEREIRA",
-        "PUEBLO RICO",
-        "QUINCHIA",
-        "SANTA ROSA DE CABAL",
-        "SANTUARIO",
-      ],
-      departamentos13_SAN_ANDRES_Y_PROVIDENCIA: [
-        "PROVIDENCIA",
-        "SAN ANDRES",
-        "SANTA CATALINA",
-      ],
-      departamentos13_SANTANDER: [
-        "AGUADA",
-        "ALBANIA",
-        "ARATOCA",
-        "BARBOSA",
-        "BARICHARA",
-        "BARRANCABERMEJA",
-        "BETULIA",
-        "BOLIVAR",
-        "BUCARAMANGA",
-        "CABRERA",
-        "CALIFORNIA",
-        "CAPITANEJO",
-        "CARCASI",
-        "CEPITA",
-        "CERRITO",
-        "CHARALA",
-        "CHARTA",
-        "CHIMA",
-        "CHIPATA",
-        "CIMITARRA",
-        "CONCEPCION",
-        "CONFINES",
-        "CONTRATACION",
-        "COROMORO",
-        "CURITI",
-        "EL CARMEN DE CHUCURI",
-        "EL GUACAMAYO",
-        "EL PEÑON",
-        "EL PLAYON",
-        "ENCINO",
-        "ENCISO",
-        "FLORIAN",
-        "FLORIDABLANCA",
-        "GALAN",
-        "GAMBITA",
-        "GIRON",
-        "GUACA",
-        "GUADALUPE",
-        "GUAPOTA",
-        "GUAVATA",
-        "GÜEPSA",
-        "HATO",
-        "JESUS MARIA",
-        "JORDAN",
-        "LA BELLEZA",
-        "LA PAZ",
-        "LANDAZURI",
-        "LEBRIJA",
-        "LOS SANTOS",
-        "MACARAVITA",
-        "MALAGA",
-        "MATANZA",
-        "MOGOTES",
-        "MOLAGAVITA",
-        "OCAMONTE",
-        "OIBA",
-        "ONZAGA",
-        "PALMAR",
-        "PALMAS DEL SOCORRO",
-        "PARAMO",
-        "PIEDECUESTA",
-        "PINCHOTE",
-        "PUENTE NACIONAL",
-        "PUERTO PARRA",
-        "PUERTO WILCHES",
-        "RIONEGRO",
-        "SABANA DE TORRES",
-        "SAN ANDRES",
-        "SAN BENITO",
-        "SAN GIL",
-        "SAN JOAQUIN",
-        "SAN JOSE DE MIRANDA",
-        "SAN MIGUEL",
-        "SAN VICENTE",
-        "SANTA BARBARA",
-        "SANTA HELENA DEL OPON",
-        "SIMACOTA",
-        "SOCORRO",
-        "SUAITA",
-        "SUCRE",
-        "SURATA",
-        "TONA",
-        "VALLE DE SAN JOSE",
-        "VELEZ",
-        "VETAS",
-        "VILLANUEVA",
-        "ZAPATOCA",
-      ],
-      departamentos13_SUCRE: [
-        "BUENAVISTA",
-        "CAIMITO",
-        "CHALAN",
-        "COLOSO",
-        "COROZAL",
-        "COVEÑAS",
-        "EL ROBLE",
-        "GALERAS",
-        "GUARANDA",
-        "LA UNION",
-        "LOS PALMITOS",
-        "MAJAGUAL",
-        "MORROA",
-        "OVEJAS",
-        "PALMITO",
-        "SAMPUES",
-        "SAN BENITO ABAD",
-        "SAN JUAN DE BETULIA",
-        "SAN MARCOS",
-        "SAN ONOFRE",
-        "SAN PEDRO",
-        "SANTIAGO DE TOLU",
-        "SINCE",
-        "SINCELEJO",
-        "SUCRE",
-        "TOLUVIEJO",
-      ],
-      departamentos13_TOLIMA: [
-        "ALPUJARRA",
-        "ALVARADO",
-        "AMBALEMA",
-        "ANZOÁTEGUI",
-        "ARMERO",
-        "ATACO",
-        "CAJAMARCA",
-        "CARMEN DE APICALÁ",
-        "CASABIANCA",
-        "CHAPARRAL",
-        "COELLO",
-        "COYAIMA",
-        "CUNDAY",
-        "DOLORES",
-        "ESPINAL",
-        "FALAN",
-        "FLANDES",
-        "FRESNO",
-        "GUAMO",
-        "HERVEO",
-        "HONDA",
-        "IBAGUE",
-        "ICONONZO",
-        "LERIDA",
-        "LIBANO",
-        "MARIQUITA",
-        "MELGAR",
-        "MURILLO",
-        "NATAGAIMA",
-        "ORTEGA",
-        "PALOCABILDO",
-        "PIEDRAS",
-        "PLANADAS",
-        "PRADO",
-        "PURIFICACION",
-        "RIOBLANCO",
-        "RONCESVALLES",
-        "ROVIRA",
-        "SALDAÑA",
-        "SAN ANTONIO",
-        "SAN LUIS",
-        "SANTA ISABEL",
-        "SUAREZ",
-        "VALLE DE SAN JUAN",
-        "VENADILLO",
-        "VILLAHERMOSA",
-        "VILLARRICA",
-      ],
-      departamentos13_VALLE_DEL_CAUCA: [
-        "ALCALA",
-        "ANDALUCIA",
-        "ANSERMANUEVO",
-        "ARGELIA",
-        "BOLIVAR",
-        "BUENAVENTURA",
-        "BUGA",
-        "BUGALAGRANDE",
-        "CAICEDONIA",
-        "CALI",
-        "CANDELARIA",
-        "CARTAGO",
-        "DAGUA",
-        "DARIEN",
-        "EL AGUILA",
-        "EL CAIRO",
-        "EL CERRITO",
-        "EL DOVIO",
-        "FLORIDA",
-        "GINEBRA",
-        "GUACARI",
-        "JAMUNDI",
-        "LA CUMBRE",
-        "LA UNION",
-        "LA VICTORIA",
-        "OBANDO",
-        "PALMIRA",
-        "PRADERA",
-        "RESTREPO",
-        "RIOFRIO",
-        "ROLDANILLO",
-        "SAN PEDRO",
-        "SEVILLA",
-        "TORO",
-        "TRUJILLO",
-        "TULUA",
-        "ULLOA",
-        "VERSALLES",
-        "VIJES",
-        "YOTOCO",
-        "YUMBO",
-        "ZARZAL",
-      ],
-      departamentos13_VAUPES: [
-        "CARURU",
-        "MITU",
-        "PACOA",
-        "PAPUNAUA",
-        "TARAIRA",
-        "YAVARATE",
-      ],
-      departamentos13_VICHADA: [
-        "CUMARIBO",
-        "LA PRIMAVERA",
-        "PUERTO CARREÑO",
-        "SANTA ROSALIA",
-      ],
-      departamentos14_AMAZONAS: [
-        "EL ENCANTO",
-        "LA CHORRERA",
-        "LA PEDRERA",
-        "LA VICTORIA",
-        "LETICIA",
-        "MIRITI-PARANA",
-        "PUERTO ALEGRIA",
-        "PUERTO ARICA",
-        "PUERTO NARIÑO",
-        "PUERTO SANTANDER",
-        "TARAPACA",
-      ],
-
-      departamentos14_ANTIOQUIA: [
-        "CAUCASIA",
-        "EL BAGRE",
-        "NECHI",
-        "TARAZA",
-        "ZARAGOZA",
-        "CARACOLI",
-        "MACEO",
-        "PUERTO BERRIO",
-        "PUERTO NARE",
-        "PUERTO TRIUNFO",
-        "YONDO",
-        "AMALFI",
-        "ANORI",
-        "CISNEROS",
-        "REMEDIOS",
-        "SAN ROQUE",
-        "SANTO DOMINGO",
-        "SEGOVIA",
-        "VEGACHI",
-        "YALI",
-        "YOLOMBO",
-        "ANGOSTURA",
-        "BELMIRA",
-        "BRICEÑO",
-        "CAMPAMENTO",
-        "CAROLINA DEL PRINCIPE",
-        "DONMATIAS",
-        "ENTRERRIOS",
-        "GOMEZ PLATA",
-        "GUADALUPE",
-        "ITUANGO",
-        "SAN ANDRES DE CUERQUIA",
-        "SAN JOSE DE LA MONTAÑA",
-        "SAN PEDRO DE LOS MILAGROS",
-        "SANTA ROSA DE OSOS",
-        "TOLEDO",
-        "VALDIVIA",
-        "YARUMAL",
-        "ABRIAQUI",
-        "ANZA",
-        "ARMENIA",
-        "BURITICA",
-        "CAICEDO",
-        "CAÑASGORDAS",
-        "DABEIBA",
-        "EBEJICO",
-        "FRONTINO",
-        "GIRALDO",
-        "HELICONIA",
-        "LIBORINA",
-        "OLAYA",
-        "PEQUE",
-        "SABANALARGA",
-        "SAN JERONIMO",
-        "SANTA FE DE ANTIOQUIA",
-        "SOPETRAN",
-        "URAMITA",
-        "ABEJORRAL",
-        "ALEJANDRIA",
-        "ARGELIA",
-        "CARMEN DE VIBORAL",
-        "COCORNA",
-        "CONCEPCION",
-        "GRANADA",
-        "GUARNE",
-        "GUATAPE",
-        "LA CEJA",
-        "LA UNION",
-        "MARINILLA",
-        "NARIÑO",
-        "EL PEÑOL",
-        "EL RETIRO",
-        "RIONEGRO",
-        "SAN CARLOS",
-        "SAN FRANCISCO",
-        "SAN LUIS",
-        "SAN RAFAEL",
-        "SAN VICENTE",
-        "SANTUARIO",
-        "SONSON",
-        "AMAGA",
-        "ANDES",
-        "ANGELOPOLIS",
-        "BETANIA",
-        "BOLIVAR",
-        "BETULIA",
-        "CARAMANTA",
-        "CONCORDIA",
-        "FREDONIA",
-        "HISPANIA",
-        "JARDIN",
-        "JERICO",
-        "LA PINTADA",
-        "MONTEBELLO",
-        "PUEBLORRICO",
-        "SALGAR",
-        "SANTA BARBARA",
-        "TAMESIS",
-        "TARSO",
-        "TITIRIBI",
-        "URRAO",
-        "VALPARAISO",
-        "VENECIA",
-        "APARTADO",
-        "ARBOLETES",
-        "CAREPA",
-        "CHIGORODO",
-        "MURINDO",
-        "MUTATA",
-        "NECOCLI",
-        "SAN JUAN DE URABA",
-        "SAN PEDRO DE URABA",
-        "TURBO",
-        "VIGIA DEL FUERTE",
-        "BARBOSA",
-        "BELLO",
-        "CALDAS",
-        "COPACABANA",
-        "ENVIGADO",
-        "GIRARDOTA",
-        "ITAGÜI",
-        "LA ESTRELLA",
-        "MEDELLÍN",
-        "SABANETA",
-      ],
-      departamentos14_ARAUCA: [
-        "ARAUCA",
-        "ARAUQUITA",
-        "CRAVO NORTE",
-        "FORTUL",
-        "PUERTO RONDON",
-        "SARAVENA",
-        "TAME",
-      ],
-      departamentos14_ATLANTICO: [
-        "BARRANQUILLA",
-        "BARANOA",
-        "CAMPO DE LA CRUZ",
-        "CANDELARIA",
-        "GALAPA",
-        "JUAN DE ACOSTA",
-        "LURUACO",
-        "MALAMBO",
-        "MANATI",
-        "PALMAR DE VARELA",
-        "PIOJO",
-        "POLONUEVO",
-        "PONEDERA",
-        "PUERTO COLOMBIA",
-        "REPELON",
-        "SABANAGRANDE",
-        "SABANALARGA",
-        "SANTA LUCIA",
-        "SANTO TOMAS",
-        "SOLEDAD",
-        "SUAN",
-        "TUBARA",
-        "USIACURI",
-      ],
-      departamentos14_BOLIVAR: [
-        "ACHI",
-        "ALTOS DEL ROSARIO",
-        "ARENAL",
-        "ARJONA",
-        "ARROYOHONDO",
-        "BARRANCO DE LOBA",
-        "BRAZUELO DE PAPAYAL",
-        " CALAMAR",
-        "CANTAGALLO",
-        "EL CARMEN DE BOLIVAR",
-        "CARTAGENA DE INDIAS D.T.",
-        "CICUCO",
-        "CLEMENCIA",
-        "CORDOBA",
-        "EL GUAMO",
-        "EL PEÑON",
-        "HATILLO DE LOBA",
-        "MAGANGUE",
-        "MAHATES",
-        "MARGARITA",
-        "MARIA LA BAJA",
-        "MONTECRISTO",
-        "MORALES",
-        "NOROSI",
-        "PINILLOS",
-        "REGIDOR",
-        "RIO VIEJO",
-        "SAN CRISTOBAL",
-        "SAN ESTANISLAO",
-        "SAN FERNANDO",
-        "SAN JACINTO",
-        "SAN JACINTO DEL CAUCASAN",
-        "JUAN NEPOMUCENO",
-        "SAN MARTIN DE LOBA",
-        "SAN PABLO",
-        "SANTA CATALINA",
-        "SANTA CRUZ DE MOMPOX",
-        "SANTA ROSA",
-        "SANTA ROSA DEL SUR",
-        "SIMITI",
-        "SOPLAVIENTO",
-        "TALAIGUA NUEVO",
-        "TIQUISIO",
-        "TURBACO",
-        "TURBANA",
-        "VILLANUEVA",
-        "ZAMBRANO",
-      ],
-      departamentos14_BOYACA: [
-        "ALMEIDA",
-        "AQUITANIA",
-        "ARCABUCO",
-        "BELEN",
-        "BERBEO",
-        "BETEITIVA",
-        "BOAVITA",
-        "BOYACA",
-        "BRICEÑO",
-        "BUENAVISTA",
-        " BUSBANZA",
-        "CALDAS",
-        "CAMPOHERMOSO",
-        "CERINZA",
-        "CHINAVITA",
-        "CHIQUINQUIRA",
-        "CHIQUIZA",
-        "CHISCAS",
-        "CHITA",
-        "CHITARAQUE",
-        "CHIVATA",
-        "CHIVOR",
-        " CIENEGA",
-        "COMBITA",
-        "COPER",
-        "CORRALES",
-        "COVARACHIA",
-        "CUBARA",
-        "CUCAITA",
-        "CUITIVA",
-        "DUITAMA",
-        "EL COCUY",
-        "EL ESPINO",
-        "FIRAVITOBA",
-        "FLORESTA",
-        "GACHANTIVA",
-        "GAMEZA",
-        "GARAGOA",
-        "GUACAMAYAS",
-        "GUATEQUE",
-        "GUAYATA",
-        "GÜICAN",
-        "IZA",
-        "JENESANO",
-        "JERICO",
-        "LA CAPILLA",
-        "LA UVITA",
-        "LA VICTORIA",
-        "LABRANZAGRANDE",
-        "MACANAL",
-        "MARIPI",
-        "MIRAFLORES",
-        "MONGUA",
-        "MONGUI",
-        "MONIQUIRA",
-        "MOTAVITA",
-        "MUZO",
-        "NOBSA",
-        "NUEVO COLON",
-        "OICATA",
-        "OTANCHE",
-        "PACHAVITA",
-        "PAEZ",
-        "PAIPA",
-        "PAJARITO",
-        "PANQUEBA",
-        "PAUNA",
-        "PAYA",
-        "PAZ DE RIO",
-        "PESCA",
-        "PISBA",
-        "PUERTO BOYACA",
-        "QUIPAMA",
-        "RAMIRIQUI",
-        "RAQUIRA",
-        "RONDON",
-        "SABOYA",
-        "SACHICA",
-        "SAMACA",
-        "SAN EDUARDO",
-        "SAN JOSE DE PARE",
-        "SAN LUIS DE GACENO",
-        "SAN MATEO",
-        "SAN MIGUEL DE SEMA",
-        " SAN PABLO DE BORBUR",
-        "SANTA MARIA",
-        "SANTA ROSA DE VITERBO",
-        "SANTA SOFIA",
-        "SANTANA",
-        "SATIVANORTE",
-        "SATIVASUR",
-        "SIACHOQUE",
-        "SOATA",
-        "SOCHA",
-        "SOCOTA",
-        "SOGAMOSO",
-        "SOMONDOCO",
-        "SORA",
-        "SORACA",
-        "SOTAQUIRA",
-        "SUSACON",
-        "SUTAMARCHAN",
-        "SUTATENZA",
-        "TASCO",
-        "TENZA",
-        "TIBANA",
-        "TIBASOSA",
-        " TINJACA",
-        "TIPACOQUE",
-        "TOCA",
-        "TOGÜI",
-        "TOPAGA",
-        "TOTA",
-        "TUNJA",
-        "TUNUNGUA",
-        "TURMEQUE",
-        "TUTA",
-        "TUTAZA",
-        "UMBITA",
-        "VENTAQUEMADA",
-        "VILLA DE LEYVA",
-        "VIRACACHA",
-        "ZETAQUIRA",
-      ],
-      departamentos14_CALDAS: [
-        "AGUADAS",
-        "ANSERMA",
-        "ARANZAZU",
-        "BELALCAZAR",
-        "CHINCHINA",
-        "FILADELFIA",
-        "LA DORADA",
-        "LA MERCED",
-        "MANIZALES",
-        "MANZANARES",
-        "MARMATO",
-        "MARQUETALIA",
-        "MARULANDA",
-        "NEIRA",
-        "NORCASIA",
-        "PACORA",
-        "PALESTINA",
-        "PENSILVANIA",
-        "RIOSUCIO",
-        "RISARALDA",
-        "SALAMINA",
-        "SAMANA SAN JOSE",
-        "SUPIA",
-        "VICTORIA",
-        "VILLAMARIA",
-        "VITERBO",
-      ],
-      departamentos14_CAQUETA: [
-        "ALBANIA",
-        "BELEN DE LOS ANDAQUIES",
-        "CARTAGENA DEL CHAIRA",
-        "CURILLO",
-        "EL DONCELLO",
-        "EL PAUJIL",
-        "FLORENCIA",
-        "LA MONTAÑITA",
-        "MORELIA",
-        "PUERTO MILAN",
-        "PUERTO RICO",
-        "SAN JOSE DEL FRAGUA",
-        "SAN VICENTE DEL CAGUAN",
-        "SOLANO",
-        "SOLITA",
-        "VALPARAISO",
-      ],
-      departamentos14_CASANARE: [
-        "AGUAZUL",
-        "HATO COROZAL",
-        "CHAMEZA",
-        "PORE",
-        "LA SALINA",
-        "SACAMA",
-        "PAZ DE ARIPORO",
-        "MONTERREY",
-        "OROCUE",
-        "MANI",
-        "SAN LUIS DE PALENQUE",
-        "TRINIDAD",
-        "VILLANUEVA",
-        "YOPAL",
-        "RECETOR",
-        "SABANALARGA",
-        "TAMARA",
-        "NUNCHIA",
-        "TAURAMENA",
-      ],
-      departamentos14_CAUCA: [
-        "ALMAGUER",
-        "ARGELIA",
-        "BALBOA",
-        "BOLIVAR",
-        "BUENOS AIRES",
-        "CAJIBIO",
-        "CALDONO",
-        "CALOTO",
-        "CORINTO",
-        "EL TAMBO",
-        "FLORENCIA",
-        "GUACHENE",
-        "GUAPI",
-        "INZA",
-        "JAMBALO",
-        "LA SIERRA",
-        "LA VEGA",
-        "LOPEZ DE MICAY",
-        "MERCADERES",
-        "MIRANDA",
-        "MORALES",
-        "PADILLA",
-        "PAEZ",
-        "PATIA",
-        "PIAMONTE",
-        "PIENDAMO",
-        "POPAYAN",
-        "PUERTO TEJADA",
-        "PURACE",
-        "ROSAS",
-        "SAN SEBASTIAN",
-        "SANTA ROSA",
-        "SANTANDER DE QUILICHAO",
-        "SILVIA",
-        "SOTARA",
-        "SUAREZ",
-        "SUCRE",
-        "TIMBIO",
-        "TIMBIQUI",
-        "TORIBIO",
-        "TOTORO",
-        "VILLA RICA",
-      ],
-      departamentos14_CESAR: [
-        "AGUACHICA",
-        "ASTREA",
-        "BECERRIL",
-        "BOSCONIA",
-        "CHIMICHAGUA",
-        "CHIRIGUANA",
-        "CODAZZI",
-        "CURUMANI",
-        "EL COPEY",
-        "EL PASO GAMARRA",
-        "GONZALEZ",
-        "LA GLORIA",
-        "LA JAGUA DE IBIRICO",
-        "LA PAZ",
-        "MANAURE",
-        "BALCON DEL CESAR",
-        "PAILITAS",
-        "PELAYA",
-        "PUEBLO BELLO",
-        "RIO DE ORO",
-        " SAN ALBERTO",
-        " SAN DIEGO",
-        " SAN MARTIN",
-        " TAMALAMEQUE",
-        " VALLEDUPAR",
-      ],
-      departamentos14_CHOCO: [
-        "ACANDI",
-        "ALTO BAUDO (PIE DE PATO];",
-        "ATRATO",
-        "BAGADO",
-        "BAHIA SOLANO",
-        "BAJO BAUDO (PIZARRO];",
-        "BOJAYA (BELLAVISTA];",
-        "CANTON DE SAN PABLO",
-        "EL CARMEN DE ATRATO",
-        "CERTEGUI",
-        "CONDOTO",
-        "EL CARMEN DEL DARIEN",
-        "ISTMINA",
-        "JURADO",
-        "LITORAL DE SAN JUAN",
-        "LLORO",
-        "MEDIO ATRATO",
-        "MEDIO BAUDO",
-        "MEDIO SAN JUAN",
-        "NOVITA",
-        "NUQUI",
-        "QUIBDO",
-        "RIOSUCIO",
-        "RIO IRO",
-        "RIO QUITO",
-        "SAN JOSE DEL PALMAR",
-        "SIPI",
-        "TADO",
-        "UNGUIA",
-        "UNION PANAMERICANA",
-      ],
-      departamentos14_CORDOBA: [
-        "AYAPEL",
-        "BUENAVISTA",
-        "CANALETE",
-        "CERETE",
-        "CHIMA",
-        "CHINU",
-        "CIENAGA DE ORO",
-        "COTORRA",
-        "LA APARTADA",
-        "LOS CORDOBAS",
-        "MOMIL",
-        "MOÑITOS",
-        "MONTELIBANO",
-        "MONTERIA",
-        "PLANETA RICA",
-        "PUEBLO NUEVO",
-        "PUERTO ESCONDIDO",
-        "PUERTO LIBERTADOR",
-        "PURISIMA",
-        " SAHAGUN",
-        "SAN ANDRES DE SOTAVENTO",
-        "SAN ANTERO",
-        "SAN BERNARDO DEL VIENTO",
-        "SAN CARLOS",
-        "SAN JOSE DE URE",
-        "SAN PELAYO",
-        "SANTA CRUZ DE LORICA",
-        "TIERRALTA",
-        "TUCHIN",
-        "VALENCIA",
-      ],
-      departamentos14_CUNDINAMARCA: [
-        "AGUA DE DIOS",
-        "ALBA",
-        "ANAPOIMA",
-        "ANOLAIMA",
-        "APULO",
-        "ARBELAEZ",
-        "BELTRAN",
-        "BITUIMA",
-        "BOJACA",
-        "CABRERA",
-        "CACHIPAY",
-        "CAJICA",
-        "CAPARRAPI",
-        "CAQUEZA",
-        "CARMEN DE CARUPA",
-        "CHAGUANI",
-        "CHIA",
-        "CHIPAQUE",
-        "CHOACHI",
-        "CHOCONTA",
-        "COGUA",
-        "COTA",
-        "CUCUNUBA",
-        "EL COLEGIO",
-        "EL PEÑON",
-        "EL ROSAL",
-        "FACATATIVA",
-        "FOMEQUE",
-        "FOSCA",
-        "FUNZA",
-        "FUQUENE",
-        "FUSAGASUGA",
-        "GACHALA",
-        "GACHANCIPA",
-        "GACHETA",
-        "GAMA",
-        "GIRARDOT",
-        "GRANADA",
-        "GUACHETA",
-        "GUADUAS",
-        "GUASCA",
-        "GUATAQUI",
-        "GUATAVITA",
-        "GUAYABAL DE SIQUIMA",
-        "GUAYABETAL",
-        "GUTIERREZ",
-        "JERUSALEN",
-        "JUNIN",
-        "LA CALERA",
-        "LA MESA",
-        "LA PALMA",
-        "LA PEÑA",
-        "LA VEGA",
-        "LENGUAZAQUE",
-        "MACHETA",
-        "MADRID",
-        "MANTA",
-        "MEDINA",
-        "MOSQUERA",
-        "NARIÑO",
-        "NEMOCON",
-        "NILO",
-        "NIMAIMA",
-        "NOCAIMA",
-        "PACHO",
-        "PAIME",
-        "PANDI",
-        "PARATEBUENO",
-        "PASCA",
-        "PUERTO SALGAR",
-        "PULI",
-        "QUEBRADANEGRA",
-        "QUETAME",
-        "QUIPILE",
-        "RICAURTE",
-        "SAN ANTONIO DEL TEQUENDAMA",
-        "SAN BERNARDO",
-        "SAN CAYETANO",
-        "SAN FRANCISCO",
-        "SAN JUAN DE RIOSECO",
-        "SASAIMA",
-        "SESQUILE",
-        "SIBATE",
-        "SILVANIA",
-        "SIMIJACA",
-        "SOACHA",
-        "SOPO",
-        "SUBACHOQUE",
-        "SUESCA",
-        "SUPATA",
-        "SUSA",
-        "SUTATAUSA",
-        "TABIO",
-        "TAUSA",
-        "TENA",
-        "TENJO",
-        "TIBACUY",
-        "TIBIRITA",
-        "TOCAIMA",
-        "TOCANCIPA",
-        "TOPAIPI",
-        "UBALA",
-        "UBAQUE",
-        "UBATE",
-        "UNE",
-        "UTICA",
-        "VENECIA",
-        "VERGARA",
-        "VIANI",
-        "VILLAGOMEZ",
-        " VILLAPINZON",
-        "VILLETA",
-        "VIOTA",
-        "YACOPI",
-        "ZIPACON",
-        "ZIPAQUIRA",
-      ],
-      departamentos14_DISTRITO_CAPITAL: ["BOGOTÁ"],
-      departamentos14_GUAINIA: [
-        "BARRANCO MINAS",
-        "CACAHUAL",
-        "INIRIDA",
-        "LA GUADALUPE",
-        "MAPIRIPANA",
-        "MORICHAL",
-        "PANA PANA",
-        "PUERTO COLOMBIA",
-        "SAN FELIPE",
-      ],
-      departamentos14_GUAJIRA: [
-        "ALBANIA",
-        "BARRANCAS",
-        "DIBULLA",
-        "DISTRACCION",
-        "EL MOLINO",
-        "FONSECA",
-        "HATONUEVO",
-        "LA JAGUA DEL PILAR",
-        " MAICAO",
-        "MANAURE",
-        "RIOHACHA",
-        "SAN JUAN DEL CESAR",
-        "URIBIA",
-        "URUMITA",
-        "VILLANUEVA",
-      ],
-      departamentos14_GUAVIARE: [
-        "CALAMAR",
-        "EL RETORNO",
-        "MIRAFLORES",
-        "SAN JOSE DEL GUAVIARE",
-      ],
-      departamentos14_HUILA: [
-        "ACEVEDO",
-        "AGRADO",
-        "AIPE",
-        "ALGECIRAS",
-        "ALTAMIRA",
-        "BARAYA",
-        "CAMPOALEGRE",
-        "COLOMBIA",
-        "ELIAS",
-        "GARZON",
-        " GIGANTE",
-        "GUADALUPE",
-        "HOBO",
-        "IQUIRA",
-        "ISNOS",
-        "LA ARGENTINA",
-        "LA PLATA",
-        "NATAGA",
-        "NEIVA",
-        "OPORAPA",
-        "PAICOL",
-        "PALERMO",
-        "PALESTINA",
-        "PITAL",
-        "PITALITO",
-        "RIVERA",
-        "SALADOBLANCO",
-        "SAN AGUSTIN",
-        "SANTA MARIA",
-        "SUAZA",
-        "TARQUI",
-        "TELLO",
-        "TERUEL",
-        "TESALIA",
-        "TIMANA",
-        "VILLAVIEJA",
-        "YAGUARA",
-      ],
-      departamentos14_MAGDALENA: [
-        "ALGARROBO",
-        "ARACATACA",
-        "ARIGUANI",
-        "CERRO DE SAN ANTONIO",
-        "CHIBOLO",
-        "CIENAGA",
-        "CONCORDIA",
-        "EL BANCO",
-        "EL PIÑON",
-        "EL RETEN",
-        "FUNDACION",
-        "GUAMAL",
-        "NUEVA GRANADA",
-        "PEDRAZA",
-        "PIJIÑO DEL CARMEN",
-        "PIVIJAY",
-        "PLATO",
-        "PUEBLO VIEJO",
-        "REMOLINO",
-        "SABANAS DE SAN ANGEL",
-        "SALAMINA",
-        "SAN SEBASTIAN DE BUENAVISTA",
-        "SANTA ANA",
-        "SANTA BARBARA DE PINTO",
-        "SANTA MARTA",
-        "SAN ZENON",
-        "SITIONUEVO",
-        "TENERIFE",
-        "ZAPAYAN",
-        "ZONA BANANERA",
-      ],
-      departamentos14_META: [
-        "ACACIAS",
-        "BARRANCA DE UPIA",
-        "CABUYARO",
-        "CASTILLA LA NUEVA",
-        "CUBARRAL",
-        "CUMARAL",
-        "EL CALVARIO",
-        "EL CASTILLO",
-        "EL DORADO",
-        "FUENTE DE ORO",
-        "GRANADA",
-        "GUAMAL",
-        "LA MACARENA",
-        "LA URIBE",
-        "LEJANIAS",
-        "MAPIRIPAN",
-        "MESETAS",
-        "PUERTO CONCORDIA",
-        "PUERTO GAITAN",
-        "PUERTO LLERAS",
-        "PUERTO LOPEZ",
-        "PUERTO RICO",
-        "RESTREPO",
-        "SAN CARLOS DE GUAROA",
-        "SAN JUAN DE ARAMA",
-        "SAN JUANITO",
-        "SAN MARTIN",
-        "VILLAVICENCIO",
-        "VISTA HERMOSA",
-      ],
-      departamentos14_NARINO: [
-        "ALDANA",
-        "ANCUYA",
-        "ARBOLEDA (BERRUECOS];",
-        "BARBACOAS",
-        "BELEN",
-        "BUESACO",
-        "CHACHAGÜI",
-        "COLON (GENOVA];",
-        "CONSACA",
-        "CONTADERO",
-        "CORDOBA",
-        "CUASPUD (CARLOSAMA];",
-        "CUMBAL",
-        "CUMBITARA",
-        "EL CHARCO",
-        "EL PEÑOL",
-        "EL ROSARIO",
-        "EL TABLON DE GOMEZ",
-        "EL TAMBO",
-        "FRANCISCO PIZARRO (SALAHONDA];",
-        "FUNES",
-        "GUACHUCAL",
-        "GUAITARILLA",
-        "GUALMATAN",
-        "ILES",
-        "IMUES",
-        "IPIALES",
-        "LA CRUZ",
-        "LA FLORIDA",
-        "LA LLANADA",
-        "LA TOLA",
-        "LA UNION",
-        "LEIVA",
-        "LINARES",
-        "LOS ANDES",
-        "MAGÜI (PAYAN];",
-        "MALLAMA (PIEDRANCHA];",
-        "MOSQUERA",
-        "NARIÑO",
-        "OLAYA HERRERA (BOCAS DE SATINGA];",
-        "OSPINA",
-        "POLICARPA",
-        "POTOSI",
-        "PROVIDENCIA",
-        "PUERRES",
-        "PUPIALES",
-        "RICAURTE",
-        "ROBERTO PAYAN (SAN JOSE];",
-        "SAMANIEGO",
-        "SAN BERNARDO",
-        "SAN JOSE DE ALBAN",
-        "SAN JUAN DE PASTO",
-        "SAN LORENZO",
-        "SAN PABLO",
-        "SAN PEDRO DE CARTAGO",
-        "SANDONA",
-        "SANTA BARBARA (ISCUANDE];",
-        "SANTACRUZ (GUACHAVEZ];",
-        "SAPUYES",
-        "TAMINANGO",
-        "TANGUA",
-        "TUMACO",
-        "TUQUERRES",
-        "YACUANQUER",
-      ],
-      departamentos14_NORTE_DE_SANTANDER: [
-        "ABREGO",
-        "ARBOLEDAS",
-        "BOCHALEMA",
-        "BUCARASICA",
-        "CACHIRA",
-        "CACOTA",
-        "CHINACOTA",
-        "CHITAGA",
-        "CONVENCION",
-        "CUCUTA",
-        "CUCUTILLA",
-        "DURANIA",
-        "EL CARMEN",
-        "EL TARRA",
-        "EL ZULIA",
-        "GRAMALOTE",
-        "HACARI",
-        "HERRAN",
-        "LA ESPERANZA",
-        "LA PLAYA DE BELEN",
-        "LABATECA",
-        "LOS PATIOS",
-        "LOURDES",
-        "MUTISCUA",
-        "OCAÑA",
-        "PAMPLONA",
-        "PAMPLONITA",
-        "PUERTO SANTANDER",
-        "RAGONVALIA",
-        "SALAZAR DE LAS PALMAS",
-        "SAN CALIXTO",
-        "SAN CAYETANO",
-        "SANTIAGO",
-        "SANTO DOMINGO DE SILOS",
-        "SARDINATA",
-        "TEORAMA",
-        "TIBU",
-        "TOLEDO",
-        "VILLA CARO",
-        "VILLA DEL ROSARIO",
-      ],
-      departamentos14_PUTUMAYO: [
-        "COLON",
-        "MOCOA",
-        "ORITO",
-        "PUERTO ASIS",
-        "PUERTO CAICEDO",
-        "PUERTO GUZMAN",
-        "PUERTO LEGUIZAMO",
-        "SAN FRANCISCO",
-        "SAN MIGUEL",
-        "SANTIAGO",
-        "SIBUNDOY",
-        "VALLE DEL GUAMEZ",
-        "VILLA GARZON",
-      ],
-      departamentos14_QUINDIO: [
-        "ARMENIA",
-        "BUENAVISTA",
-        "CALARCA",
-        "CIRCASIA",
-        "CORDOBA",
-        "FILANDIA",
-        "GENOVA",
-        "LA TEBAIDA",
-        "MONTENEGRO",
-        "PIJAO",
-        "QUIMBAYA",
-        "SALENTO",
-      ],
-      departamentos14_RISARALDA: [
-        "APIA",
-        "BALBOA",
-        "BELEN DE UMBRIA",
-        "DOSQUEBRADAS",
-        "GUATICA",
-        "LA CELIA",
-        "LA VIRGINIA",
-        "MARSELLA",
-        "MISTRATO",
-        "PEREIRA",
-        "PUEBLO RICO",
-        "QUINCHIA",
-        "SANTA ROSA DE CABAL",
-        "SANTUARIO",
-      ],
-      departamentos14_SAN_ANDRES_Y_PROVIDENCIA: [
-        "PROVIDENCIA",
-        "SAN ANDRES",
-        "SANTA CATALINA",
-      ],
-      departamentos14_SANTANDER: [
-        "AGUADA",
-        "ALBANIA",
-        "ARATOCA",
-        "BARBOSA",
-        "BARICHARA",
-        "BARRANCABERMEJA",
-        "BETULIA",
-        "BOLIVAR",
-        "BUCARAMANGA",
-        "CABRERA",
-        "CALIFORNIA",
-        "CAPITANEJO",
-        "CARCASI",
-        "CEPITA",
-        "CERRITO",
-        "CHARALA",
-        "CHARTA",
-        "CHIMA",
-        "CHIPATA",
-        "CIMITARRA",
-        "CONCEPCION",
-        "CONFINES",
-        "CONTRATACION",
-        "COROMORO",
-        "CURITI",
-        "EL CARMEN DE CHUCURI",
-        "EL GUACAMAYO",
-        "EL PEÑON",
-        "EL PLAYON",
-        "ENCINO",
-        "ENCISO",
-        "FLORIAN",
-        "FLORIDABLANCA",
-        "GALAN",
-        "GAMBITA",
-        "GIRON",
-        "GUACA",
-        "GUADALUPE",
-        "GUAPOTA",
-        "GUAVATA",
-        "GÜEPSA",
-        "HATO",
-        "JESUS MARIA",
-        "JORDAN",
-        "LA BELLEZA",
-        "LA PAZ",
-        "LANDAZURI",
-        "LEBRIJA",
-        "LOS SANTOS",
-        "MACARAVITA",
-        "MALAGA",
-        "MATANZA",
-        "MOGOTES",
-        "MOLAGAVITA",
-        "OCAMONTE",
-        "OIBA",
-        "ONZAGA",
-        "PALMAR",
-        "PALMAS DEL SOCORRO",
-        "PARAMO",
-        "PIEDECUESTA",
-        "PINCHOTE",
-        "PUENTE NACIONAL",
-        "PUERTO PARRA",
-        "PUERTO WILCHES",
-        "RIONEGRO",
-        "SABANA DE TORRES",
-        "SAN ANDRES",
-        "SAN BENITO",
-        "SAN GIL",
-        "SAN JOAQUIN",
-        "SAN JOSE DE MIRANDA",
-        "SAN MIGUEL",
-        "SAN VICENTE",
-        "SANTA BARBARA",
-        "SANTA HELENA DEL OPON",
-        "SIMACOTA",
-        "SOCORRO",
-        "SUAITA",
-        "SUCRE",
-        "SURATA",
-        "TONA",
-        "VALLE DE SAN JOSE",
-        "VELEZ",
-        "VETAS",
-        "VILLANUEVA",
-        "ZAPATOCA",
-      ],
-      departamentos14_SUCRE: [
-        "BUENAVISTA",
-        "CAIMITO",
-        "CHALAN",
-        "COLOSO",
-        "COROZAL",
-        "COVEÑAS",
-        "EL ROBLE",
-        "GALERAS",
-        "GUARANDA",
-        "LA UNION",
-        "LOS PALMITOS",
-        "MAJAGUAL",
-        "MORROA",
-        "OVEJAS",
-        "PALMITO",
-        "SAMPUES",
-        "SAN BENITO ABAD",
-        "SAN JUAN DE BETULIA",
-        "SAN MARCOS",
-        "SAN ONOFRE",
-        "SAN PEDRO",
-        "SANTIAGO DE TOLU",
-        "SINCE",
-        "SINCELEJO",
-        "SUCRE",
-        "TOLUVIEJO",
-      ],
-      departamentos14_TOLIMA: [
-        "ALPUJARRA",
-        "ALVARADO",
-        "AMBALEMA",
-        "ANZOÁTEGUI",
-        "ARMERO",
-        "ATACO",
-        "CAJAMARCA",
-        "CARMEN DE APICALÁ",
-        "CASABIANCA",
-        "CHAPARRAL",
-        "COELLO",
-        "COYAIMA",
-        "CUNDAY",
-        "DOLORES",
-        "ESPINAL",
-        "FALAN",
-        "FLANDES",
-        "FRESNO",
-        "GUAMO",
-        "HERVEO",
-        "HONDA",
-        "IBAGUE",
-        "ICONONZO",
-        "LERIDA",
-        "LIBANO",
-        "MARIQUITA",
-        "MELGAR",
-        "MURILLO",
-        "NATAGAIMA",
-        "ORTEGA",
-        "PALOCABILDO",
-        "PIEDRAS",
-        "PLANADAS",
-        "PRADO",
-        "PURIFICACION",
-        "RIOBLANCO",
-        "RONCESVALLES",
-        "ROVIRA",
-        "SALDAÑA",
-        "SAN ANTONIO",
-        "SAN LUIS",
-        "SANTA ISABEL",
-        "SUAREZ",
-        "VALLE DE SAN JUAN",
-        "VENADILLO",
-        "VILLAHERMOSA",
-        "VILLARRICA",
-      ],
-      departamentos14_VALLE_DEL_CAUCA: [
-        "ALCALA",
-        "ANDALUCIA",
-        "ANSERMANUEVO",
-        "ARGELIA",
-        "BOLIVAR",
-        "BUENAVENTURA",
-        "BUGA",
-        "BUGALAGRANDE",
-        "CAICEDONIA",
-        "CALI",
-        "CANDELARIA",
-        "CARTAGO",
-        "DAGUA",
-        "DARIEN",
-        "EL AGUILA",
-        "EL CAIRO",
-        "EL CERRITO",
-        "EL DOVIO",
-        "FLORIDA",
-        "GINEBRA",
-        "GUACARI",
-        "JAMUNDI",
-        "LA CUMBRE",
-        "LA UNION",
-        "LA VICTORIA",
-        "OBANDO",
-        "PALMIRA",
-        "PRADERA",
-        "RESTREPO",
-        "RIOFRIO",
-        "ROLDANILLO",
-        "SAN PEDRO",
-        "SEVILLA",
-        "TORO",
-        "TRUJILLO",
-        "TULUA",
-        "ULLOA",
-        "VERSALLES",
-        "VIJES",
-        "YOTOCO",
-        "YUMBO",
-        "ZARZAL",
-      ],
-      departamentos14_VAUPES: [
-        "CARURU",
-        "MITU",
-        "PACOA",
-        "PAPUNAUA",
-        "TARAIRA",
-        "YAVARATE",
-      ],
-      departamentos14_VICHADA: [
-        "CUMARIBO",
-        "LA PRIMAVERA",
-        "PUERTO CARREÑO",
-        "SANTA ROSALIA",
-      ],
-      departamentos15_AMAZONAS: [
-        "EL ENCANTO",
-        "LA CHORRERA",
-        "LA PEDRERA",
-        "LA VICTORIA",
-        "LETICIA",
-        "MIRITI-PARANA",
-        "PUERTO ALEGRIA",
-        "PUERTO ARICA",
-        "PUERTO NARIÑO",
-        "PUERTO SANTANDER",
-        "TARAPACA",
-      ],
-
-      departamentos15_ANTIOQUIA: [
-        "CAUCASIA",
-        "EL BAGRE",
-        "NECHI",
-        "TARAZA",
-        "ZARAGOZA",
-        "CARACOLI",
-        "MACEO",
-        "PUERTO BERRIO",
-        "PUERTO NARE",
-        "PUERTO TRIUNFO",
-        "YONDO",
-        "AMALFI",
-        "ANORI",
-        "CISNEROS",
-        "REMEDIOS",
-        "SAN ROQUE",
-        "SANTO DOMINGO",
-        "SEGOVIA",
-        "VEGACHI",
-        "YALI",
-        "YOLOMBO",
-        "ANGOSTURA",
-        "BELMIRA",
-        "BRICEÑO",
-        "CAMPAMENTO",
-        "CAROLINA DEL PRINCIPE",
-        "DONMATIAS",
-        "ENTRERRIOS",
-        "GOMEZ PLATA",
-        "GUADALUPE",
-        "ITUANGO",
-        "SAN ANDRES DE CUERQUIA",
-        "SAN JOSE DE LA MONTAÑA",
-        "SAN PEDRO DE LOS MILAGROS",
-        "SANTA ROSA DE OSOS",
-        "TOLEDO",
-        "VALDIVIA",
-        "YARUMAL",
-        "ABRIAQUI",
-        "ANZA",
-        "ARMENIA",
-        "BURITICA",
-        "CAICEDO",
-        "CAÑASGORDAS",
-        "DABEIBA",
-        "EBEJICO",
-        "FRONTINO",
-        "GIRALDO",
-        "HELICONIA",
-        "LIBORINA",
-        "OLAYA",
-        "PEQUE",
-        "SABANALARGA",
-        "SAN JERONIMO",
-        "SANTA FE DE ANTIOQUIA",
-        "SOPETRAN",
-        "URAMITA",
-        "ABEJORRAL",
-        "ALEJANDRIA",
-        "ARGELIA",
-        "CARMEN DE VIBORAL",
-        "COCORNA",
-        "CONCEPCION",
-        "GRANADA",
-        "GUARNE",
-        "GUATAPE",
-        "LA CEJA",
-        "LA UNION",
-        "MARINILLA",
-        "NARIÑO",
-        "EL PEÑOL",
-        "EL RETIRO",
-        "RIONEGRO",
-        "SAN CARLOS",
-        "SAN FRANCISCO",
-        "SAN LUIS",
-        "SAN RAFAEL",
-        "SAN VICENTE",
-        "SANTUARIO",
-        "SONSON",
-        "AMAGA",
-        "ANDES",
-        "ANGELOPOLIS",
-        "BETANIA",
-        "BOLIVAR",
-        "BETULIA",
-        "CARAMANTA",
-        "CONCORDIA",
-        "FREDONIA",
-        "HISPANIA",
-        "JARDIN",
-        "JERICO",
-        "LA PINTADA",
-        "MONTEBELLO",
-        "PUEBLORRICO",
-        "SALGAR",
-        "SANTA BARBARA",
-        "TAMESIS",
-        "TARSO",
-        "TITIRIBI",
-        "URRAO",
-        "VALPARAISO",
-        "VENECIA",
-        "APARTADO",
-        "ARBOLETES",
-        "CAREPA",
-        "CHIGORODO",
-        "MURINDO",
-        "MUTATA",
-        "NECOCLI",
-        "SAN JUAN DE URABA",
-        "SAN PEDRO DE URABA",
-        "TURBO",
-        "VIGIA DEL FUERTE",
-        "BARBOSA",
-        "BELLO",
-        "CALDAS",
-        "COPACABANA",
-        "ENVIGADO",
-        "GIRARDOTA",
-        "ITAGÜI",
-        "LA ESTRELLA",
-        "MEDELLÍN",
-        "SABANETA",
-      ],
-      departamentos15_ARAUCA: [
-        "ARAUCA",
-        "ARAUQUITA",
-        "CRAVO NORTE",
-        "FORTUL",
-        "PUERTO RONDON",
-        "SARAVENA",
-        "TAME",
-      ],
-      departamentos15_ATLANTICO: [
-        "BARRANQUILLA",
-        "BARANOA",
-        "CAMPO DE LA CRUZ",
-        "CANDELARIA",
-        "GALAPA",
-        "JUAN DE ACOSTA",
-        "LURUACO",
-        "MALAMBO",
-        "MANATI",
-        "PALMAR DE VARELA",
-        "PIOJO",
-        "POLONUEVO",
-        "PONEDERA",
-        "PUERTO COLOMBIA",
-        "REPELON",
-        "SABANAGRANDE",
-        "SABANALARGA",
-        "SANTA LUCIA",
-        "SANTO TOMAS",
-        "SOLEDAD",
-        "SUAN",
-        "TUBARA",
-        "USIACURI",
-      ],
-      departamentos15_BOLIVAR: [
-        "ACHI",
-        "ALTOS DEL ROSARIO",
-        "ARENAL",
-        "ARJONA",
-        "ARROYOHONDO",
-        "BARRANCO DE LOBA",
-        "BRAZUELO DE PAPAYAL",
-        " CALAMAR",
-        "CANTAGALLO",
-        "EL CARMEN DE BOLIVAR",
-        "CARTAGENA DE INDIAS D.T.",
-        "CICUCO",
-        "CLEMENCIA",
-        "CORDOBA",
-        "EL GUAMO",
-        "EL PEÑON",
-        "HATILLO DE LOBA",
-        "MAGANGUE",
-        "MAHATES",
-        "MARGARITA",
-        "MARIA LA BAJA",
-        "MONTECRISTO",
-        "MORALES",
-        "NOROSI",
-        "PINILLOS",
-        "REGIDOR",
-        "RIO VIEJO",
-        "SAN CRISTOBAL",
-        "SAN ESTANISLAO",
-        "SAN FERNANDO",
-        "SAN JACINTO",
-        "SAN JACINTO DEL CAUCASAN",
-        "JUAN NEPOMUCENO",
-        "SAN MARTIN DE LOBA",
-        "SAN PABLO",
-        "SANTA CATALINA",
-        "SANTA CRUZ DE MOMPOX",
-        "SANTA ROSA",
-        "SANTA ROSA DEL SUR",
-        "SIMITI",
-        "SOPLAVIENTO",
-        "TALAIGUA NUEVO",
-        "TIQUISIO",
-        "TURBACO",
-        "TURBANA",
-        "VILLANUEVA",
-        "ZAMBRANO",
-      ],
-      departamentos15_BOYACA: [
-        "ALMEIDA",
-        "AQUITANIA",
-        "ARCABUCO",
-        "BELEN",
-        "BERBEO",
-        "BETEITIVA",
-        "BOAVITA",
-        "BOYACA",
-        "BRICEÑO",
-        "BUENAVISTA",
-        " BUSBANZA",
-        "CALDAS",
-        "CAMPOHERMOSO",
-        "CERINZA",
-        "CHINAVITA",
-        "CHIQUINQUIRA",
-        "CHIQUIZA",
-        "CHISCAS",
-        "CHITA",
-        "CHITARAQUE",
-        "CHIVATA",
-        "CHIVOR",
-        " CIENEGA",
-        "COMBITA",
-        "COPER",
-        "CORRALES",
-        "COVARACHIA",
-        "CUBARA",
-        "CUCAITA",
-        "CUITIVA",
-        "DUITAMA",
-        "EL COCUY",
-        "EL ESPINO",
-        "FIRAVITOBA",
-        "FLORESTA",
-        "GACHANTIVA",
-        "GAMEZA",
-        "GARAGOA",
-        "GUACAMAYAS",
-        "GUATEQUE",
-        "GUAYATA",
-        "GÜICAN",
-        "IZA",
-        "JENESANO",
-        "JERICO",
-        "LA CAPILLA",
-        "LA UVITA",
-        "LA VICTORIA",
-        "LABRANZAGRANDE",
-        "MACANAL",
-        "MARIPI",
-        "MIRAFLORES",
-        "MONGUA",
-        "MONGUI",
-        "MONIQUIRA",
-        "MOTAVITA",
-        "MUZO",
-        "NOBSA",
-        "NUEVO COLON",
-        "OICATA",
-        "OTANCHE",
-        "PACHAVITA",
-        "PAEZ",
-        "PAIPA",
-        "PAJARITO",
-        "PANQUEBA",
-        "PAUNA",
-        "PAYA",
-        "PAZ DE RIO",
-        "PESCA",
-        "PISBA",
-        "PUERTO BOYACA",
-        "QUIPAMA",
-        "RAMIRIQUI",
-        "RAQUIRA",
-        "RONDON",
-        "SABOYA",
-        "SACHICA",
-        "SAMACA",
-        "SAN EDUARDO",
-        "SAN JOSE DE PARE",
-        "SAN LUIS DE GACENO",
-        "SAN MATEO",
-        "SAN MIGUEL DE SEMA",
-        " SAN PABLO DE BORBUR",
-        "SANTA MARIA",
-        "SANTA ROSA DE VITERBO",
-        "SANTA SOFIA",
-        "SANTANA",
-        "SATIVANORTE",
-        "SATIVASUR",
-        "SIACHOQUE",
-        "SOATA",
-        "SOCHA",
-        "SOCOTA",
-        "SOGAMOSO",
-        "SOMONDOCO",
-        "SORA",
-        "SORACA",
-        "SOTAQUIRA",
-        "SUSACON",
-        "SUTAMARCHAN",
-        "SUTATENZA",
-        "TASCO",
-        "TENZA",
-        "TIBANA",
-        "TIBASOSA",
-        " TINJACA",
-        "TIPACOQUE",
-        "TOCA",
-        "TOGÜI",
-        "TOPAGA",
-        "TOTA",
-        "TUNJA",
-        "TUNUNGUA",
-        "TURMEQUE",
-        "TUTA",
-        "TUTAZA",
-        "UMBITA",
-        "VENTAQUEMADA",
-        "VILLA DE LEYVA",
-        "VIRACACHA",
-        "ZETAQUIRA",
-      ],
-      departamentos15_CALDAS: [
-        "AGUADAS",
-        "ANSERMA",
-        "ARANZAZU",
-        "BELALCAZAR",
-        "CHINCHINA",
-        "FILADELFIA",
-        "LA DORADA",
-        "LA MERCED",
-        "MANIZALES",
-        "MANZANARES",
-        "MARMATO",
-        "MARQUETALIA",
-        "MARULANDA",
-        "NEIRA",
-        "NORCASIA",
-        "PACORA",
-        "PALESTINA",
-        "PENSILVANIA",
-        "RIOSUCIO",
-        "RISARALDA",
-        "SALAMINA",
-        "SAMANA SAN JOSE",
-        "SUPIA",
-        "VICTORIA",
-        "VILLAMARIA",
-        "VITERBO",
-      ],
-      departamentos15_CAQUETA: [
-        "ALBANIA",
-        "BELEN DE LOS ANDAQUIES",
-        "CARTAGENA DEL CHAIRA",
-        "CURILLO",
-        "EL DONCELLO",
-        "EL PAUJIL",
-        "FLORENCIA",
-        "LA MONTAÑITA",
-        "MORELIA",
-        "PUERTO MILAN",
-        "PUERTO RICO",
-        "SAN JOSE DEL FRAGUA",
-        "SAN VICENTE DEL CAGUAN",
-        "SOLANO",
-        "SOLITA",
-        "VALPARAISO",
-      ],
-      departamentos15_CASANARE: [
-        "AGUAZUL",
-        "HATO COROZAL",
-        "CHAMEZA",
-        "PORE",
-        "LA SALINA",
-        "SACAMA",
-        "PAZ DE ARIPORO",
-        "MONTERREY",
-        "OROCUE",
-        "MANI",
-        "SAN LUIS DE PALENQUE",
-        "TRINIDAD",
-        "VILLANUEVA",
-        "YOPAL",
-        "RECETOR",
-        "SABANALARGA",
-        "TAMARA",
-        "NUNCHIA",
-        "TAURAMENA",
-      ],
-      departamentos15_CAUCA: [
-        "ALMAGUER",
-        "ARGELIA",
-        "BALBOA",
-        "BOLIVAR",
-        "BUENOS AIRES",
-        "CAJIBIO",
-        "CALDONO",
-        "CALOTO",
-        "CORINTO",
-        "EL TAMBO",
-        "FLORENCIA",
-        "GUACHENE",
-        "GUAPI",
-        "INZA",
-        "JAMBALO",
-        "LA SIERRA",
-        "LA VEGA",
-        "LOPEZ DE MICAY",
-        "MERCADERES",
-        "MIRANDA",
-        "MORALES",
-        "PADILLA",
-        "PAEZ",
-        "PATIA",
-        "PIAMONTE",
-        "PIENDAMO",
-        "POPAYAN",
-        "PUERTO TEJADA",
-        "PURACE",
-        "ROSAS",
-        "SAN SEBASTIAN",
-        "SANTA ROSA",
-        "SANTANDER DE QUILICHAO",
-        "SILVIA",
-        "SOTARA",
-        "SUAREZ",
-        "SUCRE",
-        "TIMBIO",
-        "TIMBIQUI",
-        "TORIBIO",
-        "TOTORO",
-        "VILLA RICA",
-      ],
-      departamentos15_CESAR: [
-        "AGUACHICA",
-        "ASTREA",
-        "BECERRIL",
-        "BOSCONIA",
-        "CHIMICHAGUA",
-        "CHIRIGUANA",
-        "CODAZZI",
-        "CURUMANI",
-        "EL COPEY",
-        "EL PASO GAMARRA",
-        "GONZALEZ",
-        "LA GLORIA",
-        "LA JAGUA DE IBIRICO",
-        "LA PAZ",
-        "MANAURE",
-        "BALCON DEL CESAR",
-        "PAILITAS",
-        "PELAYA",
-        "PUEBLO BELLO",
-        "RIO DE ORO",
-        " SAN ALBERTO",
-        " SAN DIEGO",
-        " SAN MARTIN",
-        " TAMALAMEQUE",
-        " VALLEDUPAR",
-      ],
-      departamentos15_CHOCO: [
-        "ACANDI",
-        "ALTO BAUDO (PIE DE PATO];",
-        "ATRATO",
-        "BAGADO",
-        "BAHIA SOLANO",
-        "BAJO BAUDO (PIZARRO];",
-        "BOJAYA (BELLAVISTA];",
-        "CANTON DE SAN PABLO",
-        "EL CARMEN DE ATRATO",
-        "CERTEGUI",
-        "CONDOTO",
-        "EL CARMEN DEL DARIEN",
-        "ISTMINA",
-        "JURADO",
-        "LITORAL DE SAN JUAN",
-        "LLORO",
-        "MEDIO ATRATO",
-        "MEDIO BAUDO",
-        "MEDIO SAN JUAN",
-        "NOVITA",
-        "NUQUI",
-        "QUIBDO",
-        "RIOSUCIO",
-        "RIO IRO",
-        "RIO QUITO",
-        "SAN JOSE DEL PALMAR",
-        "SIPI",
-        "TADO",
-        "UNGUIA",
-        "UNION PANAMERICANA",
-      ],
-      departamentos15_CORDOBA: [
-        "AYAPEL",
-        "BUENAVISTA",
-        "CANALETE",
-        "CERETE",
-        "CHIMA",
-        "CHINU",
-        "CIENAGA DE ORO",
-        "COTORRA",
-        "LA APARTADA",
-        "LOS CORDOBAS",
-        "MOMIL",
-        "MOÑITOS",
-        "MONTELIBANO",
-        "MONTERIA",
-        "PLANETA RICA",
-        "PUEBLO NUEVO",
-        "PUERTO ESCONDIDO",
-        "PUERTO LIBERTADOR",
-        "PURISIMA",
-        " SAHAGUN",
-        "SAN ANDRES DE SOTAVENTO",
-        "SAN ANTERO",
-        "SAN BERNARDO DEL VIENTO",
-        "SAN CARLOS",
-        "SAN JOSE DE URE",
-        "SAN PELAYO",
-        "SANTA CRUZ DE LORICA",
-        "TIERRALTA",
-        "TUCHIN",
-        "VALENCIA",
-      ],
-      departamentos15_CUNDINAMARCA: [
-        "AGUA DE DIOS",
-        "ALBA",
-        "ANAPOIMA",
-        "ANOLAIMA",
-        "APULO",
-        "ARBELAEZ",
-        "BELTRAN",
-        "BITUIMA",
-        "BOJACA",
-        "CABRERA",
-        "CACHIPAY",
-        "CAJICA",
-        "CAPARRAPI",
-        "CAQUEZA",
-        "CARMEN DE CARUPA",
-        "CHAGUANI",
-        "CHIA",
-        "CHIPAQUE",
-        "CHOACHI",
-        "CHOCONTA",
-        "COGUA",
-        "COTA",
-        "CUCUNUBA",
-        "EL COLEGIO",
-        "EL PEÑON",
-        "EL ROSAL",
-        "FACATATIVA",
-        "FOMEQUE",
-        "FOSCA",
-        "FUNZA",
-        "FUQUENE",
-        "FUSAGASUGA",
-        "GACHALA",
-        "GACHANCIPA",
-        "GACHETA",
-        "GAMA",
-        "GIRARDOT",
-        "GRANADA",
-        "GUACHETA",
-        "GUADUAS",
-        "GUASCA",
-        "GUATAQUI",
-        "GUATAVITA",
-        "GUAYABAL DE SIQUIMA",
-        "GUAYABETAL",
-        "GUTIERREZ",
-        "JERUSALEN",
-        "JUNIN",
-        "LA CALERA",
-        "LA MESA",
-        "LA PALMA",
-        "LA PEÑA",
-        "LA VEGA",
-        "LENGUAZAQUE",
-        "MACHETA",
-        "MADRID",
-        "MANTA",
-        "MEDINA",
-        "MOSQUERA",
-        "NARIÑO",
-        "NEMOCON",
-        "NILO",
-        "NIMAIMA",
-        "NOCAIMA",
-        "PACHO",
-        "PAIME",
-        "PANDI",
-        "PARATEBUENO",
-        "PASCA",
-        "PUERTO SALGAR",
-        "PULI",
-        "QUEBRADANEGRA",
-        "QUETAME",
-        "QUIPILE",
-        "RICAURTE",
-        "SAN ANTONIO DEL TEQUENDAMA",
-        "SAN BERNARDO",
-        "SAN CAYETANO",
-        "SAN FRANCISCO",
-        "SAN JUAN DE RIOSECO",
-        "SASAIMA",
-        "SESQUILE",
-        "SIBATE",
-        "SILVANIA",
-        "SIMIJACA",
-        "SOACHA",
-        "SOPO",
-        "SUBACHOQUE",
-        "SUESCA",
-        "SUPATA",
-        "SUSA",
-        "SUTATAUSA",
-        "TABIO",
-        "TAUSA",
-        "TENA",
-        "TENJO",
-        "TIBACUY",
-        "TIBIRITA",
-        "TOCAIMA",
-        "TOCANCIPA",
-        "TOPAIPI",
-        "UBALA",
-        "UBAQUE",
-        "UBATE",
-        "UNE",
-        "UTICA",
-        "VENECIA",
-        "VERGARA",
-        "VIANI",
-        "VILLAGOMEZ",
-        " VILLAPINZON",
-        "VILLETA",
-        "VIOTA",
-        "YACOPI",
-        "ZIPACON",
-        "ZIPAQUIRA",
-      ],
-      departamentos15_DISTRITO_CAPITAL: ["BOGOTÁ"],
-      departamentos15_GUAINIA: [
-        "BARRANCO MINAS",
-        "CACAHUAL",
-        "INIRIDA",
-        "LA GUADALUPE",
-        "MAPIRIPANA",
-        "MORICHAL",
-        "PANA PANA",
-        "PUERTO COLOMBIA",
-        "SAN FELIPE",
-      ],
-      departamentos15_GUAJIRA: [
-        "ALBANIA",
-        "BARRANCAS",
-        "DIBULLA",
-        "DISTRACCION",
-        "EL MOLINO",
-        "FONSECA",
-        "HATONUEVO",
-        "LA JAGUA DEL PILAR",
-        " MAICAO",
-        "MANAURE",
-        "RIOHACHA",
-        "SAN JUAN DEL CESAR",
-        "URIBIA",
-        "URUMITA",
-        "VILLANUEVA",
-      ],
-      departamentos15_GUAVIARE: [
-        "CALAMAR",
-        "EL RETORNO",
-        "MIRAFLORES",
-        "SAN JOSE DEL GUAVIARE",
-      ],
-      departamentos15_HUILA: [
-        "ACEVEDO",
-        "AGRADO",
-        "AIPE",
-        "ALGECIRAS",
-        "ALTAMIRA",
-        "BARAYA",
-        "CAMPOALEGRE",
-        "COLOMBIA",
-        "ELIAS",
-        "GARZON",
-        " GIGANTE",
-        "GUADALUPE",
-        "HOBO",
-        "IQUIRA",
-        "ISNOS",
-        "LA ARGENTINA",
-        "LA PLATA",
-        "NATAGA",
-        "NEIVA",
-        "OPORAPA",
-        "PAICOL",
-        "PALERMO",
-        "PALESTINA",
-        "PITAL",
-        "PITALITO",
-        "RIVERA",
-        "SALADOBLANCO",
-        "SAN AGUSTIN",
-        "SANTA MARIA",
-        "SUAZA",
-        "TARQUI",
-        "TELLO",
-        "TERUEL",
-        "TESALIA",
-        "TIMANA",
-        "VILLAVIEJA",
-        "YAGUARA",
-      ],
-      departamentos15_MAGDALENA: [
-        "ALGARROBO",
-        "ARACATACA",
-        "ARIGUANI",
-        "CERRO DE SAN ANTONIO",
-        "CHIBOLO",
-        "CIENAGA",
-        "CONCORDIA",
-        "EL BANCO",
-        "EL PIÑON",
-        "EL RETEN",
-        "FUNDACION",
-        "GUAMAL",
-        "NUEVA GRANADA",
-        "PEDRAZA",
-        "PIJIÑO DEL CARMEN",
-        "PIVIJAY",
-        "PLATO",
-        "PUEBLO VIEJO",
-        "REMOLINO",
-        "SABANAS DE SAN ANGEL",
-        "SALAMINA",
-        "SAN SEBASTIAN DE BUENAVISTA",
-        "SANTA ANA",
-        "SANTA BARBARA DE PINTO",
-        "SANTA MARTA",
-        "SAN ZENON",
-        "SITIONUEVO",
-        "TENERIFE",
-        "ZAPAYAN",
-        "ZONA BANANERA",
-      ],
-      departamentos15_META: [
-        "ACACIAS",
-        "BARRANCA DE UPIA",
-        "CABUYARO",
-        "CASTILLA LA NUEVA",
-        "CUBARRAL",
-        "CUMARAL",
-        "EL CALVARIO",
-        "EL CASTILLO",
-        "EL DORADO",
-        "FUENTE DE ORO",
-        "GRANADA",
-        "GUAMAL",
-        "LA MACARENA",
-        "LA URIBE",
-        "LEJANIAS",
-        "MAPIRIPAN",
-        "MESETAS",
-        "PUERTO CONCORDIA",
-        "PUERTO GAITAN",
-        "PUERTO LLERAS",
-        "PUERTO LOPEZ",
-        "PUERTO RICO",
-        "RESTREPO",
-        "SAN CARLOS DE GUAROA",
-        "SAN JUAN DE ARAMA",
-        "SAN JUANITO",
-        "SAN MARTIN",
-        "VILLAVICENCIO",
-        "VISTA HERMOSA",
-      ],
-      departamentos15_NARINO: [
-        "ALDANA",
-        "ANCUYA",
-        "ARBOLEDA (BERRUECOS];",
-        "BARBACOAS",
-        "BELEN",
-        "BUESACO",
-        "CHACHAGÜI",
-        "COLON (GENOVA];",
-        "CONSACA",
-        "CONTADERO",
-        "CORDOBA",
-        "CUASPUD (CARLOSAMA];",
-        "CUMBAL",
-        "CUMBITARA",
-        "EL CHARCO",
-        "EL PEÑOL",
-        "EL ROSARIO",
-        "EL TABLON DE GOMEZ",
-        "EL TAMBO",
-        "FRANCISCO PIZARRO (SALAHONDA];",
-        "FUNES",
-        "GUACHUCAL",
-        "GUAITARILLA",
-        "GUALMATAN",
-        "ILES",
-        "IMUES",
-        "IPIALES",
-        "LA CRUZ",
-        "LA FLORIDA",
-        "LA LLANADA",
-        "LA TOLA",
-        "LA UNION",
-        "LEIVA",
-        "LINARES",
-        "LOS ANDES",
-        "MAGÜI (PAYAN];",
-        "MALLAMA (PIEDRANCHA];",
-        "MOSQUERA",
-        "NARIÑO",
-        "OLAYA HERRERA (BOCAS DE SATINGA];",
-        "OSPINA",
-        "POLICARPA",
-        "POTOSI",
-        "PROVIDENCIA",
-        "PUERRES",
-        "PUPIALES",
-        "RICAURTE",
-        "ROBERTO PAYAN (SAN JOSE];",
-        "SAMANIEGO",
-        "SAN BERNARDO",
-        "SAN JOSE DE ALBAN",
-        "SAN JUAN DE PASTO",
-        "SAN LORENZO",
-        "SAN PABLO",
-        "SAN PEDRO DE CARTAGO",
-        "SANDONA",
-        "SANTA BARBARA (ISCUANDE];",
-        "SANTACRUZ (GUACHAVEZ];",
-        "SAPUYES",
-        "TAMINANGO",
-        "TANGUA",
-        "TUMACO",
-        "TUQUERRES",
-        "YACUANQUER",
-      ],
-      departamentos15_NORTE_DE_SANTANDER: [
-        "ABREGO",
-        "ARBOLEDAS",
-        "BOCHALEMA",
-        "BUCARASICA",
-        "CACHIRA",
-        "CACOTA",
-        "CHINACOTA",
-        "CHITAGA",
-        "CONVENCION",
-        "CUCUTA",
-        "CUCUTILLA",
-        "DURANIA",
-        "EL CARMEN",
-        "EL TARRA",
-        "EL ZULIA",
-        "GRAMALOTE",
-        "HACARI",
-        "HERRAN",
-        "LA ESPERANZA",
-        "LA PLAYA DE BELEN",
-        "LABATECA",
-        "LOS PATIOS",
-        "LOURDES",
-        "MUTISCUA",
-        "OCAÑA",
-        "PAMPLONA",
-        "PAMPLONITA",
-        "PUERTO SANTANDER",
-        "RAGONVALIA",
-        "SALAZAR DE LAS PALMAS",
-        "SAN CALIXTO",
-        "SAN CAYETANO",
-        "SANTIAGO",
-        "SANTO DOMINGO DE SILOS",
-        "SARDINATA",
-        "TEORAMA",
-        "TIBU",
-        "TOLEDO",
-        "VILLA CARO",
-        "VILLA DEL ROSARIO",
-      ],
-      departamentos15_PUTUMAYO: [
-        "COLON",
-        "MOCOA",
-        "ORITO",
-        "PUERTO ASIS",
-        "PUERTO CAICEDO",
-        "PUERTO GUZMAN",
-        "PUERTO LEGUIZAMO",
-        "SAN FRANCISCO",
-        "SAN MIGUEL",
-        "SANTIAGO",
-        "SIBUNDOY",
-        "VALLE DEL GUAMEZ",
-        "VILLA GARZON",
-      ],
-      departamentos15_QUINDIO: [
-        "ARMENIA",
-        "BUENAVISTA",
-        "CALARCA",
-        "CIRCASIA",
-        "CORDOBA",
-        "FILANDIA",
-        "GENOVA",
-        "LA TEBAIDA",
-        "MONTENEGRO",
-        "PIJAO",
-        "QUIMBAYA",
-        "SALENTO",
-      ],
-      departamentos15_RISARALDA: [
-        "APIA",
-        "BALBOA",
-        "BELEN DE UMBRIA",
-        "DOSQUEBRADAS",
-        "GUATICA",
-        "LA CELIA",
-        "LA VIRGINIA",
-        "MARSELLA",
-        "MISTRATO",
-        "PEREIRA",
-        "PUEBLO RICO",
-        "QUINCHIA",
-        "SANTA ROSA DE CABAL",
-        "SANTUARIO",
-      ],
-      departamentos15_SAN_ANDRES_Y_PROVIDENCIA: [
-        "PROVIDENCIA",
-        "SAN ANDRES",
-        "SANTA CATALINA",
-      ],
-      departamentos15_SANTANDER: [
-        "AGUADA",
-        "ALBANIA",
-        "ARATOCA",
-        "BARBOSA",
-        "BARICHARA",
-        "BARRANCABERMEJA",
-        "BETULIA",
-        "BOLIVAR",
-        "BUCARAMANGA",
-        "CABRERA",
-        "CALIFORNIA",
-        "CAPITANEJO",
-        "CARCASI",
-        "CEPITA",
-        "CERRITO",
-        "CHARALA",
-        "CHARTA",
-        "CHIMA",
-        "CHIPATA",
-        "CIMITARRA",
-        "CONCEPCION",
-        "CONFINES",
-        "CONTRATACION",
-        "COROMORO",
-        "CURITI",
-        "EL CARMEN DE CHUCURI",
-        "EL GUACAMAYO",
-        "EL PEÑON",
-        "EL PLAYON",
-        "ENCINO",
-        "ENCISO",
-        "FLORIAN",
-        "FLORIDABLANCA",
-        "GALAN",
-        "GAMBITA",
-        "GIRON",
-        "GUACA",
-        "GUADALUPE",
-        "GUAPOTA",
-        "GUAVATA",
-        "GÜEPSA",
-        "HATO",
-        "JESUS MARIA",
-        "JORDAN",
-        "LA BELLEZA",
-        "LA PAZ",
-        "LANDAZURI",
-        "LEBRIJA",
-        "LOS SANTOS",
-        "MACARAVITA",
-        "MALAGA",
-        "MATANZA",
-        "MOGOTES",
-        "MOLAGAVITA",
-        "OCAMONTE",
-        "OIBA",
-        "ONZAGA",
-        "PALMAR",
-        "PALMAS DEL SOCORRO",
-        "PARAMO",
-        "PIEDECUESTA",
-        "PINCHOTE",
-        "PUENTE NACIONAL",
-        "PUERTO PARRA",
-        "PUERTO WILCHES",
-        "RIONEGRO",
-        "SABANA DE TORRES",
-        "SAN ANDRES",
-        "SAN BENITO",
-        "SAN GIL",
-        "SAN JOAQUIN",
-        "SAN JOSE DE MIRANDA",
-        "SAN MIGUEL",
-        "SAN VICENTE",
-        "SANTA BARBARA",
-        "SANTA HELENA DEL OPON",
-        "SIMACOTA",
-        "SOCORRO",
-        "SUAITA",
-        "SUCRE",
-        "SURATA",
-        "TONA",
-        "VALLE DE SAN JOSE",
-        "VELEZ",
-        "VETAS",
-        "VILLANUEVA",
-        "ZAPATOCA",
-      ],
-      departamentos15_SUCRE: [
-        "BUENAVISTA",
-        "CAIMITO",
-        "CHALAN",
-        "COLOSO",
-        "COROZAL",
-        "COVEÑAS",
-        "EL ROBLE",
-        "GALERAS",
-        "GUARANDA",
-        "LA UNION",
-        "LOS PALMITOS",
-        "MAJAGUAL",
-        "MORROA",
-        "OVEJAS",
-        "PALMITO",
-        "SAMPUES",
-        "SAN BENITO ABAD",
-        "SAN JUAN DE BETULIA",
-        "SAN MARCOS",
-        "SAN ONOFRE",
-        "SAN PEDRO",
-        "SANTIAGO DE TOLU",
-        "SINCE",
-        "SINCELEJO",
-        "SUCRE",
-        "TOLUVIEJO",
-      ],
-      departamentos15_TOLIMA: [
-        "ALPUJARRA",
-        "ALVARADO",
-        "AMBALEMA",
-        "ANZOÁTEGUI",
-        "ARMERO",
-        "ATACO",
-        "CAJAMARCA",
-        "CARMEN DE APICALÁ",
-        "CASABIANCA",
-        "CHAPARRAL",
-        "COELLO",
-        "COYAIMA",
-        "CUNDAY",
-        "DOLORES",
-        "ESPINAL",
-        "FALAN",
-        "FLANDES",
-        "FRESNO",
-        "GUAMO",
-        "HERVEO",
-        "HONDA",
-        "IBAGUE",
-        "ICONONZO",
-        "LERIDA",
-        "LIBANO",
-        "MARIQUITA",
-        "MELGAR",
-        "MURILLO",
-        "NATAGAIMA",
-        "ORTEGA",
-        "PALOCABILDO",
-        "PIEDRAS",
-        "PLANADAS",
-        "PRADO",
-        "PURIFICACION",
-        "RIOBLANCO",
-        "RONCESVALLES",
-        "ROVIRA",
-        "SALDAÑA",
-        "SAN ANTONIO",
-        "SAN LUIS",
-        "SANTA ISABEL",
-        "SUAREZ",
-        "VALLE DE SAN JUAN",
-        "VENADILLO",
-        "VILLAHERMOSA",
-        "VILLARRICA",
-      ],
-      departamentos15_VALLE_DEL_CAUCA: [
-        "ALCALA",
-        "ANDALUCIA",
-        "ANSERMANUEVO",
-        "ARGELIA",
-        "BOLIVAR",
-        "BUENAVENTURA",
-        "BUGA",
-        "BUGALAGRANDE",
-        "CAICEDONIA",
-        "CALI",
-        "CANDELARIA",
-        "CARTAGO",
-        "DAGUA",
-        "DARIEN",
-        "EL AGUILA",
-        "EL CAIRO",
-        "EL CERRITO",
-        "EL DOVIO",
-        "FLORIDA",
-        "GINEBRA",
-        "GUACARI",
-        "JAMUNDI",
-        "LA CUMBRE",
-        "LA UNION",
-        "LA VICTORIA",
-        "OBANDO",
-        "PALMIRA",
-        "PRADERA",
-        "RESTREPO",
-        "RIOFRIO",
-        "ROLDANILLO",
-        "SAN PEDRO",
-        "SEVILLA",
-        "TORO",
-        "TRUJILLO",
-        "TULUA",
-        "ULLOA",
-        "VERSALLES",
-        "VIJES",
-        "YOTOCO",
-        "YUMBO",
-        "ZARZAL",
-      ],
-      departamentos15_VAUPES: [
-        "CARURU",
-        "MITU",
-        "PACOA",
-        "PAPUNAUA",
-        "TARAIRA",
-        "YAVARATE",
-      ],
-      departamentos15_VICHADA: [
-        "CUMARIBO",
-        "LA PRIMAVERA",
-        "PUERTO CARREÑO",
-        "SANTA ROSALIA",
-      ],
-      departamentos16_AMAZONAS: [
-        "EL ENCANTO",
-        "LA CHORRERA",
-        "LA PEDRERA",
-        "LA VICTORIA",
-        "LETICIA",
-        "MIRITI-PARANA",
-        "PUERTO ALEGRIA",
-        "PUERTO ARICA",
-        "PUERTO NARIÑO",
-        "PUERTO SANTANDER",
-        "TARAPACA",
-      ],
-
-      departamentos16_ANTIOQUIA: [
-        "CAUCASIA",
-        "EL BAGRE",
-        "NECHI",
-        "TARAZA",
-        "ZARAGOZA",
-        "CARACOLI",
-        "MACEO",
-        "PUERTO BERRIO",
-        "PUERTO NARE",
-        "PUERTO TRIUNFO",
-        "YONDO",
-        "AMALFI",
-        "ANORI",
-        "CISNEROS",
-        "REMEDIOS",
-        "SAN ROQUE",
-        "SANTO DOMINGO",
-        "SEGOVIA",
-        "VEGACHI",
-        "YALI",
-        "YOLOMBO",
-        "ANGOSTURA",
-        "BELMIRA",
-        "BRICEÑO",
-        "CAMPAMENTO",
-        "CAROLINA DEL PRINCIPE",
-        "DONMATIAS",
-        "ENTRERRIOS",
-        "GOMEZ PLATA",
-        "GUADALUPE",
-        "ITUANGO",
-        "SAN ANDRES DE CUERQUIA",
-        "SAN JOSE DE LA MONTAÑA",
-        "SAN PEDRO DE LOS MILAGROS",
-        "SANTA ROSA DE OSOS",
-        "TOLEDO",
-        "VALDIVIA",
-        "YARUMAL",
-        "ABRIAQUI",
-        "ANZA",
-        "ARMENIA",
-        "BURITICA",
-        "CAICEDO",
-        "CAÑASGORDAS",
-        "DABEIBA",
-        "EBEJICO",
-        "FRONTINO",
-        "GIRALDO",
-        "HELICONIA",
-        "LIBORINA",
-        "OLAYA",
-        "PEQUE",
-        "SABANALARGA",
-        "SAN JERONIMO",
-        "SANTA FE DE ANTIOQUIA",
-        "SOPETRAN",
-        "URAMITA",
-        "ABEJORRAL",
-        "ALEJANDRIA",
-        "ARGELIA",
-        "CARMEN DE VIBORAL",
-        "COCORNA",
-        "CONCEPCION",
-        "GRANADA",
-        "GUARNE",
-        "GUATAPE",
-        "LA CEJA",
-        "LA UNION",
-        "MARINILLA",
-        "NARIÑO",
-        "EL PEÑOL",
-        "EL RETIRO",
-        "RIONEGRO",
-        "SAN CARLOS",
-        "SAN FRANCISCO",
-        "SAN LUIS",
-        "SAN RAFAEL",
-        "SAN VICENTE",
-        "SANTUARIO",
-        "SONSON",
-        "AMAGA",
-        "ANDES",
-        "ANGELOPOLIS",
-        "BETANIA",
-        "BOLIVAR",
-        "BETULIA",
-        "CARAMANTA",
-        "CONCORDIA",
-        "FREDONIA",
-        "HISPANIA",
-        "JARDIN",
-        "JERICO",
-        "LA PINTADA",
-        "MONTEBELLO",
-        "PUEBLORRICO",
-        "SALGAR",
-        "SANTA BARBARA",
-        "TAMESIS",
-        "TARSO",
-        "TITIRIBI",
-        "URRAO",
-        "VALPARAISO",
-        "VENECIA",
-        "APARTADO",
-        "ARBOLETES",
-        "CAREPA",
-        "CHIGORODO",
-        "MURINDO",
-        "MUTATA",
-        "NECOCLI",
-        "SAN JUAN DE URABA",
-        "SAN PEDRO DE URABA",
-        "TURBO",
-        "VIGIA DEL FUERTE",
-        "BARBOSA",
-        "BELLO",
-        "CALDAS",
-        "COPACABANA",
-        "ENVIGADO",
-        "GIRARDOTA",
-        "ITAGÜI",
-        "LA ESTRELLA",
-        "MEDELLÍN",
-        "SABANETA",
-      ],
-      departamentos16_ARAUCA: [
-        "ARAUCA",
-        "ARAUQUITA",
-        "CRAVO NORTE",
-        "FORTUL",
-        "PUERTO RONDON",
-        "SARAVENA",
-        "TAME",
-      ],
-      departamentos16_ATLANTICO: [
-        "BARRANQUILLA",
-        "BARANOA",
-        "CAMPO DE LA CRUZ",
-        "CANDELARIA",
-        "GALAPA",
-        "JUAN DE ACOSTA",
-        "LURUACO",
-        "MALAMBO",
-        "MANATI",
-        "PALMAR DE VARELA",
-        "PIOJO",
-        "POLONUEVO",
-        "PONEDERA",
-        "PUERTO COLOMBIA",
-        "REPELON",
-        "SABANAGRANDE",
-        "SABANALARGA",
-        "SANTA LUCIA",
-        "SANTO TOMAS",
-        "SOLEDAD",
-        "SUAN",
-        "TUBARA",
-        "USIACURI",
-      ],
-      departamentos16_BOLIVAR: [
-        "ACHI",
-        "ALTOS DEL ROSARIO",
-        "ARENAL",
-        "ARJONA",
-        "ARROYOHONDO",
-        "BARRANCO DE LOBA",
-        "BRAZUELO DE PAPAYAL",
-        " CALAMAR",
-        "CANTAGALLO",
-        "EL CARMEN DE BOLIVAR",
-        "CARTAGENA DE INDIAS D.T.",
-        "CICUCO",
-        "CLEMENCIA",
-        "CORDOBA",
-        "EL GUAMO",
-        "EL PEÑON",
-        "HATILLO DE LOBA",
-        "MAGANGUE",
-        "MAHATES",
-        "MARGARITA",
-        "MARIA LA BAJA",
-        "MONTECRISTO",
-        "MORALES",
-        "NOROSI",
-        "PINILLOS",
-        "REGIDOR",
-        "RIO VIEJO",
-        "SAN CRISTOBAL",
-        "SAN ESTANISLAO",
-        "SAN FERNANDO",
-        "SAN JACINTO",
-        "SAN JACINTO DEL CAUCASAN",
-        "JUAN NEPOMUCENO",
-        "SAN MARTIN DE LOBA",
-        "SAN PABLO",
-        "SANTA CATALINA",
-        "SANTA CRUZ DE MOMPOX",
-        "SANTA ROSA",
-        "SANTA ROSA DEL SUR",
-        "SIMITI",
-        "SOPLAVIENTO",
-        "TALAIGUA NUEVO",
-        "TIQUISIO",
-        "TURBACO",
-        "TURBANA",
-        "VILLANUEVA",
-        "ZAMBRANO",
-      ],
-      departamentos16_BOYACA: [
-        "ALMEIDA",
-        "AQUITANIA",
-        "ARCABUCO",
-        "BELEN",
-        "BERBEO",
-        "BETEITIVA",
-        "BOAVITA",
-        "BOYACA",
-        "BRICEÑO",
-        "BUENAVISTA",
-        " BUSBANZA",
-        "CALDAS",
-        "CAMPOHERMOSO",
-        "CERINZA",
-        "CHINAVITA",
-        "CHIQUINQUIRA",
-        "CHIQUIZA",
-        "CHISCAS",
-        "CHITA",
-        "CHITARAQUE",
-        "CHIVATA",
-        "CHIVOR",
-        " CIENEGA",
-        "COMBITA",
-        "COPER",
-        "CORRALES",
-        "COVARACHIA",
-        "CUBARA",
-        "CUCAITA",
-        "CUITIVA",
-        "DUITAMA",
-        "EL COCUY",
-        "EL ESPINO",
-        "FIRAVITOBA",
-        "FLORESTA",
-        "GACHANTIVA",
-        "GAMEZA",
-        "GARAGOA",
-        "GUACAMAYAS",
-        "GUATEQUE",
-        "GUAYATA",
-        "GÜICAN",
-        "IZA",
-        "JENESANO",
-        "JERICO",
-        "LA CAPILLA",
-        "LA UVITA",
-        "LA VICTORIA",
-        "LABRANZAGRANDE",
-        "MACANAL",
-        "MARIPI",
-        "MIRAFLORES",
-        "MONGUA",
-        "MONGUI",
-        "MONIQUIRA",
-        "MOTAVITA",
-        "MUZO",
-        "NOBSA",
-        "NUEVO COLON",
-        "OICATA",
-        "OTANCHE",
-        "PACHAVITA",
-        "PAEZ",
-        "PAIPA",
-        "PAJARITO",
-        "PANQUEBA",
-        "PAUNA",
-        "PAYA",
-        "PAZ DE RIO",
-        "PESCA",
-        "PISBA",
-        "PUERTO BOYACA",
-        "QUIPAMA",
-        "RAMIRIQUI",
-        "RAQUIRA",
-        "RONDON",
-        "SABOYA",
-        "SACHICA",
-        "SAMACA",
-        "SAN EDUARDO",
-        "SAN JOSE DE PARE",
-        "SAN LUIS DE GACENO",
-        "SAN MATEO",
-        "SAN MIGUEL DE SEMA",
-        " SAN PABLO DE BORBUR",
-        "SANTA MARIA",
-        "SANTA ROSA DE VITERBO",
-        "SANTA SOFIA",
-        "SANTANA",
-        "SATIVANORTE",
-        "SATIVASUR",
-        "SIACHOQUE",
-        "SOATA",
-        "SOCHA",
-        "SOCOTA",
-        "SOGAMOSO",
-        "SOMONDOCO",
-        "SORA",
-        "SORACA",
-        "SOTAQUIRA",
-        "SUSACON",
-        "SUTAMARCHAN",
-        "SUTATENZA",
-        "TASCO",
-        "TENZA",
-        "TIBANA",
-        "TIBASOSA",
-        " TINJACA",
-        "TIPACOQUE",
-        "TOCA",
-        "TOGÜI",
-        "TOPAGA",
-        "TOTA",
-        "TUNJA",
-        "TUNUNGUA",
-        "TURMEQUE",
-        "TUTA",
-        "TUTAZA",
-        "UMBITA",
-        "VENTAQUEMADA",
-        "VILLA DE LEYVA",
-        "VIRACACHA",
-        "ZETAQUIRA",
-      ],
-      departamentos16_CALDAS: [
-        "AGUADAS",
-        "ANSERMA",
-        "ARANZAZU",
-        "BELALCAZAR",
-        "CHINCHINA",
-        "FILADELFIA",
-        "LA DORADA",
-        "LA MERCED",
-        "MANIZALES",
-        "MANZANARES",
-        "MARMATO",
-        "MARQUETALIA",
-        "MARULANDA",
-        "NEIRA",
-        "NORCASIA",
-        "PACORA",
-        "PALESTINA",
-        "PENSILVANIA",
-        "RIOSUCIO",
-        "RISARALDA",
-        "SALAMINA",
-        "SAMANA SAN JOSE",
-        "SUPIA",
-        "VICTORIA",
-        "VILLAMARIA",
-        "VITERBO",
-      ],
-      departamentos16_CAQUETA: [
-        "ALBANIA",
-        "BELEN DE LOS ANDAQUIES",
-        "CARTAGENA DEL CHAIRA",
-        "CURILLO",
-        "EL DONCELLO",
-        "EL PAUJIL",
-        "FLORENCIA",
-        "LA MONTAÑITA",
-        "MORELIA",
-        "PUERTO MILAN",
-        "PUERTO RICO",
-        "SAN JOSE DEL FRAGUA",
-        "SAN VICENTE DEL CAGUAN",
-        "SOLANO",
-        "SOLITA",
-        "VALPARAISO",
-      ],
-      departamentos16_CASANARE: [
-        "AGUAZUL",
-        "HATO COROZAL",
-        "CHAMEZA",
-        "PORE",
-        "LA SALINA",
-        "SACAMA",
-        "PAZ DE ARIPORO",
-        "MONTERREY",
-        "OROCUE",
-        "MANI",
-        "SAN LUIS DE PALENQUE",
-        "TRINIDAD",
-        "VILLANUEVA",
-        "YOPAL",
-        "RECETOR",
-        "SABANALARGA",
-        "TAMARA",
-        "NUNCHIA",
-        "TAURAMENA",
-      ],
-      departamentos16_CAUCA: [
-        "ALMAGUER",
-        "ARGELIA",
-        "BALBOA",
-        "BOLIVAR",
-        "BUENOS AIRES",
-        "CAJIBIO",
-        "CALDONO",
-        "CALOTO",
-        "CORINTO",
-        "EL TAMBO",
-        "FLORENCIA",
-        "GUACHENE",
-        "GUAPI",
-        "INZA",
-        "JAMBALO",
-        "LA SIERRA",
-        "LA VEGA",
-        "LOPEZ DE MICAY",
-        "MERCADERES",
-        "MIRANDA",
-        "MORALES",
-        "PADILLA",
-        "PAEZ",
-        "PATIA",
-        "PIAMONTE",
-        "PIENDAMO",
-        "POPAYAN",
-        "PUERTO TEJADA",
-        "PURACE",
-        "ROSAS",
-        "SAN SEBASTIAN",
-        "SANTA ROSA",
-        "SANTANDER DE QUILICHAO",
-        "SILVIA",
-        "SOTARA",
-        "SUAREZ",
-        "SUCRE",
-        "TIMBIO",
-        "TIMBIQUI",
-        "TORIBIO",
-        "TOTORO",
-        "VILLA RICA",
-      ],
-      departamentos16_CESAR: [
-        "AGUACHICA",
-        "ASTREA",
-        "BECERRIL",
-        "BOSCONIA",
-        "CHIMICHAGUA",
-        "CHIRIGUANA",
-        "CODAZZI",
-        "CURUMANI",
-        "EL COPEY",
-        "EL PASO GAMARRA",
-        "GONZALEZ",
-        "LA GLORIA",
-        "LA JAGUA DE IBIRICO",
-        "LA PAZ",
-        "MANAURE",
-        "BALCON DEL CESAR",
-        "PAILITAS",
-        "PELAYA",
-        "PUEBLO BELLO",
-        "RIO DE ORO",
-        " SAN ALBERTO",
-        " SAN DIEGO",
-        " SAN MARTIN",
-        " TAMALAMEQUE",
-        " VALLEDUPAR",
-      ],
-      departamentos16_CHOCO: [
-        "ACANDI",
-        "ALTO BAUDO (PIE DE PATO];",
-        "ATRATO",
-        "BAGADO",
-        "BAHIA SOLANO",
-        "BAJO BAUDO (PIZARRO];",
-        "BOJAYA (BELLAVISTA];",
-        "CANTON DE SAN PABLO",
-        "EL CARMEN DE ATRATO",
-        "CERTEGUI",
-        "CONDOTO",
-        "EL CARMEN DEL DARIEN",
-        "ISTMINA",
-        "JURADO",
-        "LITORAL DE SAN JUAN",
-        "LLORO",
-        "MEDIO ATRATO",
-        "MEDIO BAUDO",
-        "MEDIO SAN JUAN",
-        "NOVITA",
-        "NUQUI",
-        "QUIBDO",
-        "RIOSUCIO",
-        "RIO IRO",
-        "RIO QUITO",
-        "SAN JOSE DEL PALMAR",
-        "SIPI",
-        "TADO",
-        "UNGUIA",
-        "UNION PANAMERICANA",
-      ],
-      departamentos16_CORDOBA: [
-        "AYAPEL",
-        "BUENAVISTA",
-        "CANALETE",
-        "CERETE",
-        "CHIMA",
-        "CHINU",
-        "CIENAGA DE ORO",
-        "COTORRA",
-        "LA APARTADA",
-        "LOS CORDOBAS",
-        "MOMIL",
-        "MOÑITOS",
-        "MONTELIBANO",
-        "MONTERIA",
-        "PLANETA RICA",
-        "PUEBLO NUEVO",
-        "PUERTO ESCONDIDO",
-        "PUERTO LIBERTADOR",
-        "PURISIMA",
-        " SAHAGUN",
-        "SAN ANDRES DE SOTAVENTO",
-        "SAN ANTERO",
-        "SAN BERNARDO DEL VIENTO",
-        "SAN CARLOS",
-        "SAN JOSE DE URE",
-        "SAN PELAYO",
-        "SANTA CRUZ DE LORICA",
-        "TIERRALTA",
-        "TUCHIN",
-        "VALENCIA",
-      ],
-      departamentos16_CUNDINAMARCA: [
-        "AGUA DE DIOS",
-        "ALBA",
-        "ANAPOIMA",
-        "ANOLAIMA",
-        "APULO",
-        "ARBELAEZ",
-        "BELTRAN",
-        "BITUIMA",
-        "BOJACA",
-        "CABRERA",
-        "CACHIPAY",
-        "CAJICA",
-        "CAPARRAPI",
-        "CAQUEZA",
-        "CARMEN DE CARUPA",
-        "CHAGUANI",
-        "CHIA",
-        "CHIPAQUE",
-        "CHOACHI",
-        "CHOCONTA",
-        "COGUA",
-        "COTA",
-        "CUCUNUBA",
-        "EL COLEGIO",
-        "EL PEÑON",
-        "EL ROSAL",
-        "FACATATIVA",
-        "FOMEQUE",
-        "FOSCA",
-        "FUNZA",
-        "FUQUENE",
-        "FUSAGASUGA",
-        "GACHALA",
-        "GACHANCIPA",
-        "GACHETA",
-        "GAMA",
-        "GIRARDOT",
-        "GRANADA",
-        "GUACHETA",
-        "GUADUAS",
-        "GUASCA",
-        "GUATAQUI",
-        "GUATAVITA",
-        "GUAYABAL DE SIQUIMA",
-        "GUAYABETAL",
-        "GUTIERREZ",
-        "JERUSALEN",
-        "JUNIN",
-        "LA CALERA",
-        "LA MESA",
-        "LA PALMA",
-        "LA PEÑA",
-        "LA VEGA",
-        "LENGUAZAQUE",
-        "MACHETA",
-        "MADRID",
-        "MANTA",
-        "MEDINA",
-        "MOSQUERA",
-        "NARIÑO",
-        "NEMOCON",
-        "NILO",
-        "NIMAIMA",
-        "NOCAIMA",
-        "PACHO",
-        "PAIME",
-        "PANDI",
-        "PARATEBUENO",
-        "PASCA",
-        "PUERTO SALGAR",
-        "PULI",
-        "QUEBRADANEGRA",
-        "QUETAME",
-        "QUIPILE",
-        "RICAURTE",
-        "SAN ANTONIO DEL TEQUENDAMA",
-        "SAN BERNARDO",
-        "SAN CAYETANO",
-        "SAN FRANCISCO",
-        "SAN JUAN DE RIOSECO",
-        "SASAIMA",
-        "SESQUILE",
-        "SIBATE",
-        "SILVANIA",
-        "SIMIJACA",
-        "SOACHA",
-        "SOPO",
-        "SUBACHOQUE",
-        "SUESCA",
-        "SUPATA",
-        "SUSA",
-        "SUTATAUSA",
-        "TABIO",
-        "TAUSA",
-        "TENA",
-        "TENJO",
-        "TIBACUY",
-        "TIBIRITA",
-        "TOCAIMA",
-        "TOCANCIPA",
-        "TOPAIPI",
-        "UBALA",
-        "UBAQUE",
-        "UBATE",
-        "UNE",
-        "UTICA",
-        "VENECIA",
-        "VERGARA",
-        "VIANI",
-        "VILLAGOMEZ",
-        " VILLAPINZON",
-        "VILLETA",
-        "VIOTA",
-        "YACOPI",
-        "ZIPACON",
-        "ZIPAQUIRA",
-      ],
-      departamentos16_DISTRITO_CAPITAL: ["BOGOTÁ"],
-      departamentos16_GUAINIA: [
-        "BARRANCO MINAS",
-        "CACAHUAL",
-        "INIRIDA",
-        "LA GUADALUPE",
-        "MAPIRIPANA",
-        "MORICHAL",
-        "PANA PANA",
-        "PUERTO COLOMBIA",
-        "SAN FELIPE",
-      ],
-      departamentos16_GUAJIRA: [
-        "ALBANIA",
-        "BARRANCAS",
-        "DIBULLA",
-        "DISTRACCION",
-        "EL MOLINO",
-        "FONSECA",
-        "HATONUEVO",
-        "LA JAGUA DEL PILAR",
-        " MAICAO",
-        "MANAURE",
-        "RIOHACHA",
-        "SAN JUAN DEL CESAR",
-        "URIBIA",
-        "URUMITA",
-        "VILLANUEVA",
-      ],
-      departamentos16_GUAVIARE: [
-        "CALAMAR",
-        "EL RETORNO",
-        "MIRAFLORES",
-        "SAN JOSE DEL GUAVIARE",
-      ],
-      departamentos16_HUILA: [
-        "ACEVEDO",
-        "AGRADO",
-        "AIPE",
-        "ALGECIRAS",
-        "ALTAMIRA",
-        "BARAYA",
-        "CAMPOALEGRE",
-        "COLOMBIA",
-        "ELIAS",
-        "GARZON",
-        " GIGANTE",
-        "GUADALUPE",
-        "HOBO",
-        "IQUIRA",
-        "ISNOS",
-        "LA ARGENTINA",
-        "LA PLATA",
-        "NATAGA",
-        "NEIVA",
-        "OPORAPA",
-        "PAICOL",
-        "PALERMO",
-        "PALESTINA",
-        "PITAL",
-        "PITALITO",
-        "RIVERA",
-        "SALADOBLANCO",
-        "SAN AGUSTIN",
-        "SANTA MARIA",
-        "SUAZA",
-        "TARQUI",
-        "TELLO",
-        "TERUEL",
-        "TESALIA",
-        "TIMANA",
-        "VILLAVIEJA",
-        "YAGUARA",
-      ],
-      departamentos16_MAGDALENA: [
-        "ALGARROBO",
-        "ARACATACA",
-        "ARIGUANI",
-        "CERRO DE SAN ANTONIO",
-        "CHIBOLO",
-        "CIENAGA",
-        "CONCORDIA",
-        "EL BANCO",
-        "EL PIÑON",
-        "EL RETEN",
-        "FUNDACION",
-        "GUAMAL",
-        "NUEVA GRANADA",
-        "PEDRAZA",
-        "PIJIÑO DEL CARMEN",
-        "PIVIJAY",
-        "PLATO",
-        "PUEBLO VIEJO",
-        "REMOLINO",
-        "SABANAS DE SAN ANGEL",
-        "SALAMINA",
-        "SAN SEBASTIAN DE BUENAVISTA",
-        "SANTA ANA",
-        "SANTA BARBARA DE PINTO",
-        "SANTA MARTA",
-        "SAN ZENON",
-        "SITIONUEVO",
-        "TENERIFE",
-        "ZAPAYAN",
-        "ZONA BANANERA",
-      ],
-      departamentos16_META: [
-        "ACACIAS",
-        "BARRANCA DE UPIA",
-        "CABUYARO",
-        "CASTILLA LA NUEVA",
-        "CUBARRAL",
-        "CUMARAL",
-        "EL CALVARIO",
-        "EL CASTILLO",
-        "EL DORADO",
-        "FUENTE DE ORO",
-        "GRANADA",
-        "GUAMAL",
-        "LA MACARENA",
-        "LA URIBE",
-        "LEJANIAS",
-        "MAPIRIPAN",
-        "MESETAS",
-        "PUERTO CONCORDIA",
-        "PUERTO GAITAN",
-        "PUERTO LLERAS",
-        "PUERTO LOPEZ",
-        "PUERTO RICO",
-        "RESTREPO",
-        "SAN CARLOS DE GUAROA",
-        "SAN JUAN DE ARAMA",
-        "SAN JUANITO",
-        "SAN MARTIN",
-        "VILLAVICENCIO",
-        "VISTA HERMOSA",
-      ],
-      departamentos16_NARINO: [
-        "ALDANA",
-        "ANCUYA",
-        "ARBOLEDA (BERRUECOS];",
-        "BARBACOAS",
-        "BELEN",
-        "BUESACO",
-        "CHACHAGÜI",
-        "COLON (GENOVA];",
-        "CONSACA",
-        "CONTADERO",
-        "CORDOBA",
-        "CUASPUD (CARLOSAMA];",
-        "CUMBAL",
-        "CUMBITARA",
-        "EL CHARCO",
-        "EL PEÑOL",
-        "EL ROSARIO",
-        "EL TABLON DE GOMEZ",
-        "EL TAMBO",
-        "FRANCISCO PIZARRO (SALAHONDA];",
-        "FUNES",
-        "GUACHUCAL",
-        "GUAITARILLA",
-        "GUALMATAN",
-        "ILES",
-        "IMUES",
-        "IPIALES",
-        "LA CRUZ",
-        "LA FLORIDA",
-        "LA LLANADA",
-        "LA TOLA",
-        "LA UNION",
-        "LEIVA",
-        "LINARES",
-        "LOS ANDES",
-        "MAGÜI (PAYAN];",
-        "MALLAMA (PIEDRANCHA];",
-        "MOSQUERA",
-        "NARIÑO",
-        "OLAYA HERRERA (BOCAS DE SATINGA];",
-        "OSPINA",
-        "POLICARPA",
-        "POTOSI",
-        "PROVIDENCIA",
-        "PUERRES",
-        "PUPIALES",
-        "RICAURTE",
-        "ROBERTO PAYAN (SAN JOSE];",
-        "SAMANIEGO",
-        "SAN BERNARDO",
-        "SAN JOSE DE ALBAN",
-        "SAN JUAN DE PASTO",
-        "SAN LORENZO",
-        "SAN PABLO",
-        "SAN PEDRO DE CARTAGO",
-        "SANDONA",
-        "SANTA BARBARA (ISCUANDE];",
-        "SANTACRUZ (GUACHAVEZ];",
-        "SAPUYES",
-        "TAMINANGO",
-        "TANGUA",
-        "TUMACO",
-        "TUQUERRES",
-        "YACUANQUER",
-      ],
-      departamentos16_NORTE_DE_SANTANDER: [
-        "ABREGO",
-        "ARBOLEDAS",
-        "BOCHALEMA",
-        "BUCARASICA",
-        "CACHIRA",
-        "CACOTA",
-        "CHINACOTA",
-        "CHITAGA",
-        "CONVENCION",
-        "CUCUTA",
-        "CUCUTILLA",
-        "DURANIA",
-        "EL CARMEN",
-        "EL TARRA",
-        "EL ZULIA",
-        "GRAMALOTE",
-        "HACARI",
-        "HERRAN",
-        "LA ESPERANZA",
-        "LA PLAYA DE BELEN",
-        "LABATECA",
-        "LOS PATIOS",
-        "LOURDES",
-        "MUTISCUA",
-        "OCAÑA",
-        "PAMPLONA",
-        "PAMPLONITA",
-        "PUERTO SANTANDER",
-        "RAGONVALIA",
-        "SALAZAR DE LAS PALMAS",
-        "SAN CALIXTO",
-        "SAN CAYETANO",
-        "SANTIAGO",
-        "SANTO DOMINGO DE SILOS",
-        "SARDINATA",
-        "TEORAMA",
-        "TIBU",
-        "TOLEDO",
-        "VILLA CARO",
-        "VILLA DEL ROSARIO",
-      ],
-      departamentos16_PUTUMAYO: [
-        "COLON",
-        "MOCOA",
-        "ORITO",
-        "PUERTO ASIS",
-        "PUERTO CAICEDO",
-        "PUERTO GUZMAN",
-        "PUERTO LEGUIZAMO",
-        "SAN FRANCISCO",
-        "SAN MIGUEL",
-        "SANTIAGO",
-        "SIBUNDOY",
-        "VALLE DEL GUAMEZ",
-        "VILLA GARZON",
-      ],
-      departamentos16_QUINDIO: [
-        "ARMENIA",
-        "BUENAVISTA",
-        "CALARCA",
-        "CIRCASIA",
-        "CORDOBA",
-        "FILANDIA",
-        "GENOVA",
-        "LA TEBAIDA",
-        "MONTENEGRO",
-        "PIJAO",
-        "QUIMBAYA",
-        "SALENTO",
-      ],
-      departamentos16_RISARALDA: [
-        "APIA",
-        "BALBOA",
-        "BELEN DE UMBRIA",
-        "DOSQUEBRADAS",
-        "GUATICA",
-        "LA CELIA",
-        "LA VIRGINIA",
-        "MARSELLA",
-        "MISTRATO",
-        "PEREIRA",
-        "PUEBLO RICO",
-        "QUINCHIA",
-        "SANTA ROSA DE CABAL",
-        "SANTUARIO",
-      ],
-      departamentos16_SAN_ANDRES_Y_PROVIDENCIA: [
-        "PROVIDENCIA",
-        "SAN ANDRES",
-        "SANTA CATALINA",
-      ],
-      departamentos16_SANTANDER: [
-        "AGUADA",
-        "ALBANIA",
-        "ARATOCA",
-        "BARBOSA",
-        "BARICHARA",
-        "BARRANCABERMEJA",
-        "BETULIA",
-        "BOLIVAR",
-        "BUCARAMANGA",
-        "CABRERA",
-        "CALIFORNIA",
-        "CAPITANEJO",
-        "CARCASI",
-        "CEPITA",
-        "CERRITO",
-        "CHARALA",
-        "CHARTA",
-        "CHIMA",
-        "CHIPATA",
-        "CIMITARRA",
-        "CONCEPCION",
-        "CONFINES",
-        "CONTRATACION",
-        "COROMORO",
-        "CURITI",
-        "EL CARMEN DE CHUCURI",
-        "EL GUACAMAYO",
-        "EL PEÑON",
-        "EL PLAYON",
-        "ENCINO",
-        "ENCISO",
-        "FLORIAN",
-        "FLORIDABLANCA",
-        "GALAN",
-        "GAMBITA",
-        "GIRON",
-        "GUACA",
-        "GUADALUPE",
-        "GUAPOTA",
-        "GUAVATA",
-        "GÜEPSA",
-        "HATO",
-        "JESUS MARIA",
-        "JORDAN",
-        "LA BELLEZA",
-        "LA PAZ",
-        "LANDAZURI",
-        "LEBRIJA",
-        "LOS SANTOS",
-        "MACARAVITA",
-        "MALAGA",
-        "MATANZA",
-        "MOGOTES",
-        "MOLAGAVITA",
-        "OCAMONTE",
-        "OIBA",
-        "ONZAGA",
-        "PALMAR",
-        "PALMAS DEL SOCORRO",
-        "PARAMO",
-        "PIEDECUESTA",
-        "PINCHOTE",
-        "PUENTE NACIONAL",
-        "PUERTO PARRA",
-        "PUERTO WILCHES",
-        "RIONEGRO",
-        "SABANA DE TORRES",
-        "SAN ANDRES",
-        "SAN BENITO",
-        "SAN GIL",
-        "SAN JOAQUIN",
-        "SAN JOSE DE MIRANDA",
-        "SAN MIGUEL",
-        "SAN VICENTE",
-        "SANTA BARBARA",
-        "SANTA HELENA DEL OPON",
-        "SIMACOTA",
-        "SOCORRO",
-        "SUAITA",
-        "SUCRE",
-        "SURATA",
-        "TONA",
-        "VALLE DE SAN JOSE",
-        "VELEZ",
-        "VETAS",
-        "VILLANUEVA",
-        "ZAPATOCA",
-      ],
-      departamentos16_SUCRE: [
-        "BUENAVISTA",
-        "CAIMITO",
-        "CHALAN",
-        "COLOSO",
-        "COROZAL",
-        "COVEÑAS",
-        "EL ROBLE",
-        "GALERAS",
-        "GUARANDA",
-        "LA UNION",
-        "LOS PALMITOS",
-        "MAJAGUAL",
-        "MORROA",
-        "OVEJAS",
-        "PALMITO",
-        "SAMPUES",
-        "SAN BENITO ABAD",
-        "SAN JUAN DE BETULIA",
-        "SAN MARCOS",
-        "SAN ONOFRE",
-        "SAN PEDRO",
-        "SANTIAGO DE TOLU",
-        "SINCE",
-        "SINCELEJO",
-        "SUCRE",
-        "TOLUVIEJO",
-      ],
-      departamentos16_TOLIMA: [
-        "ALPUJARRA",
-        "ALVARADO",
-        "AMBALEMA",
-        "ANZOÁTEGUI",
-        "ARMERO",
-        "ATACO",
-        "CAJAMARCA",
-        "CARMEN DE APICALÁ",
-        "CASABIANCA",
-        "CHAPARRAL",
-        "COELLO",
-        "COYAIMA",
-        "CUNDAY",
-        "DOLORES",
-        "ESPINAL",
-        "FALAN",
-        "FLANDES",
-        "FRESNO",
-        "GUAMO",
-        "HERVEO",
-        "HONDA",
-        "IBAGUE",
-        "ICONONZO",
-        "LERIDA",
-        "LIBANO",
-        "MARIQUITA",
-        "MELGAR",
-        "MURILLO",
-        "NATAGAIMA",
-        "ORTEGA",
-        "PALOCABILDO",
-        "PIEDRAS",
-        "PLANADAS",
-        "PRADO",
-        "PURIFICACION",
-        "RIOBLANCO",
-        "RONCESVALLES",
-        "ROVIRA",
-        "SALDAÑA",
-        "SAN ANTONIO",
-        "SAN LUIS",
-        "SANTA ISABEL",
-        "SUAREZ",
-        "VALLE DE SAN JUAN",
-        "VENADILLO",
-        "VILLAHERMOSA",
-        "VILLARRICA",
-      ],
-      departamentos16_VALLE_DEL_CAUCA: [
-        "ALCALA",
-        "ANDALUCIA",
-        "ANSERMANUEVO",
-        "ARGELIA",
-        "BOLIVAR",
-        "BUENAVENTURA",
-        "BUGA",
-        "BUGALAGRANDE",
-        "CAICEDONIA",
-        "CALI",
-        "CANDELARIA",
-        "CARTAGO",
-        "DAGUA",
-        "DARIEN",
-        "EL AGUILA",
-        "EL CAIRO",
-        "EL CERRITO",
-        "EL DOVIO",
-        "FLORIDA",
-        "GINEBRA",
-        "GUACARI",
-        "JAMUNDI",
-        "LA CUMBRE",
-        "LA UNION",
-        "LA VICTORIA",
-        "OBANDO",
-        "PALMIRA",
-        "PRADERA",
-        "RESTREPO",
-        "RIOFRIO",
-        "ROLDANILLO",
-        "SAN PEDRO",
-        "SEVILLA",
-        "TORO",
-        "TRUJILLO",
-        "TULUA",
-        "ULLOA",
-        "VERSALLES",
-        "VIJES",
-        "YOTOCO",
-        "YUMBO",
-        "ZARZAL",
-      ],
-      departamentos16_VAUPES: [
-        "CARURU",
-        "MITU",
-        "PACOA",
-        "PAPUNAUA",
-        "TARAIRA",
-        "YAVARATE",
-      ],
-      departamentos16_VICHADA: [
-        "CUMARIBO",
-        "LA PRIMAVERA",
-        "PUERTO CARREÑO",
-        "SANTA ROSALIA",
-      ],
-      vehiculos_Vehiculo_Sedan: [
-        "900",
-        "1000",
-        "1100",
-        "1150",
-        "1250",
-        "1500",
-        "1750",
-        "2000",
-        "2200",
-        "2250",
-        "Mayor de 2250",
-      ],
-      vehiculos_Camoineta: [
-        "300",
-        "1000",
-        "1100",
-        "1150",
-        "1250",
-        "1500",
-        "1750",
-        "2000",
-        "2200",
-        "2250",
-        "Mayor de 2500",
-      ],
-      vehiculos_Vehiculo_Blindado: [
-        "500",
-        "1000",
-        "1100",
-        "1150",
-        "1250",
-        "1500",
-        "1750",
-        "2000",
-        "2200",
-        "2250",
-        "Mayor de 2500",
-      ],
-      vehiculos_Motocicleta: [
+      vehiculos_MOTOCICLETA: [
         "90",
         "100",
         "110",
@@ -23631,196 +19155,210 @@ export default {
         "200",
         "220",
         "225",
-        "Mayor de 225",
+        "MAYOR DE 225",
       ],
-      vehiculos_Motocicleta: [
-        "90",
-        "100",
-        "110",
-        "115",
-        "125",
-        "150",
-        "175",
-        "200",
-        "220",
-        "225",
-        "Mayor de 225",
+      zona_Urbano: [
+        "NORTE",
+        "CENTRO",
+        "SUR",
+        "OCCIDENTE",
+        "ORIENTE",
+        "NORORIENTE",
+        "NOROCCIDENTE",
+        "SUR",
+        "SURORIENTE",
+        "SUROCCIDENTE",
       ],
-      institucion_Ejercito_Nacional: [
-        "Capitán",
-        "Teniente",
-        "Subteniente",
-        "Sargento Mayor de Comando Conjunto",
-        "Sargento Mayor de Comando",
-        "Sargento Mayor",
-        "Sargento Primero",
-        "Sargento Viceprimero",
-        "Sargento Segundo",
-        "Cabo Primero",
-        "Cabo Segundo",
-        "Cabo Tercero",
-        "Dragoneante",
-        "Soldado Profesional",
-        "Soldado Regular",
-        "Soldado Bachiller",
+        zona_Rural: [
       ],
-      institucion_Armada_Nacional: [
-        "Almirante",
-        "Almirante de Escuadra",
-        "Vicealmirante",
-        "Contraalmirante",
-        "Capitán de Navío",
-        "Capitán de Fragata",
-        "Capitán de Corbeta",
-        "Teniente de Navío",
-        "Teniente de Fragata",
-        "Teniente de Corbeta",
-        "Suboficial Jefe Técnico de Comando Conjunto",
-        "Suboficial Jefe Técnico de Comando",
-        "Suboficial Jefe Técnico",
-        "Suboficial Jefe",
-        "Suboficial Primero",
-        "Suboficial Segundo",
-        "Suboficial Tercero",
-        "Marinero Primero",
-        "Marinero Segundo",
-        "Marinero Tercero",
+      institucion_EJERCITO_NACIONAL: [
+        "CAPITÁN",
+        "TENIENTE",
+        "SUBTENIENTE",
+        "SARGENTO MAYOR DE COMANDO CONJUNTO",
+        "SARGENTO MAYOR DE COMANDO",
+        "SARGENTO MAYOR",
+        "SARGENTO PRIMERO",
+        "SARGENTO VICEPRIMERO",
+        "SARGENTO SEGUNDO",
+        "CABO PRIMERO",
+        "CABO SEGUNDO",
+        "CABO TERCERO",
+        "DRAGONEANTE",
+        "SOLDADO PROFESIONAL",
+        "SOLDADO REGULAR",
+        "SOLDADO BACHILLER",
       ],
-      institucion_Infanteria_Marina: [
-        "General",
-        "Teniente General",
-        "Mayor General",
-        "Brigadier General",
-        "Coronel",
-        "Teniente Coronel",
-        "Mayor",
-        "Capitán",
-        "Teniente",
-        "Subteniente",
-        "Sargento Mayor de Comando Conjunto",
-        "Sargento Mayor de Comando",
-        "Sargento Mayor",
-        "Sargento Primero",
-        "Sargento Vice Primero",
-        "Sargento Segundo",
-        "Cabo Primero",
-        "Cabo Segundo",
-        "Cabo Tercero",
-        "Infante de Marina Profesional",
-        "Infanteria de Marina Regular",
+      institucion_ARMADA_NACIONAL: [
+        "ALMIRANTE",
+        "ALMIRANTE DE ESCUADRA",
+        "VICEALMIRANTE",
+        "CONTRAALMIRANTE",
+        "CAPITÁN DE NAVÍO",
+        "CAPITÁN DE FRAGATA",
+        "CAPITÁN DE CORBETA",
+        "TENIENTE DE NAVÍO",
+        "TENIENTE DE FRAGATA",
+        "TENIENTE DE CORBETA",
+        "SUBOFICIAL JEFE TÉCNICO DE COMANDO CONJUNTO",
+        "SUBOFICIAL JEFE TÉCNICO DE COMANDO",
+        "SUBOFICIAL JEFE TÉCNICO",
+        "SUBOFICIAL JEFE",
+        "SUBOFICIAL PRIMERO",
+        "SUBOFICIAL SEGUNDO",
+        "SUBOFICIAL TERCERO",
+        "MARINERO PRIMERO",
+        "MARINERO SEGUNDO",
+        "MARINERO TERCERO",
       ],
-      institucion_Policia_Nacional: [
-        "General",
-        "Teniente General",
-        "Mayor General",
-        "Brigadier General",
-        "Coronel",
-        "Teniente Coronel",
-        "Mayor",
-        "Capitán",
-        "Teniente",
-        "Subteniente",
-        "Sargento Mayor",
-        "Sargento Primero",
-        "Sargento Vice Primero",
-        "Sargento Segundo",
-        "Dragoneante",
-        "Agente",
-        "Comisario",
-        "Subcomisario",
-        "Intendente Jefe",
-        "Intendente",
-        "Subintendente",
-        "Patrullero",
-        "Auxiliar de Policía Regular",
-        "Auxiliar de Policía Bachiller",
+      institucion_INFANTERIA_MARINA: [
+        "GENERAL",
+        "TENIENTE GENERAL",
+        "MAYOR GENERAL",
+        "BRIGADIER GENERAL",
+        "CORONEL",
+        "TENIENTE CORONEL",
+        "MAYOR",
+        "CAPITÁN",
+        "TENIENTE",
+        "SUBTENIENTE",
+        "SARGENTO MAYOR DE COMANDO CONJUNTO",
+        "SARGENTO MAYOR DE COMANDO",
+        "SARGENTO MAYOR",
+        "SARGENTO PRIMERO",
+        "SARGENTO VICE PRIMERO",
+        "SARGENTO SEGUNDO",
+        "CABO PRIMERO",
+        "CABO SEGUNDO",
+        "CABO TERCERO",
+        "INFANTE DE MARINA PROFESIONAL",
+        "INFANTERIA DE MARINA REGULAR",
       ],
-      institucion_Fuerza_Aerea: [
-        "General del Aire",
-        "Teniente General del Aire",
-        "Mayor General del Aire",
-        "Brigadier General del Aire",
-        "Coronel del Aire",
-        "Teniente Coronel del Aire",
-        "Mayor del Aire",
-        "Capitán del Aire",
-        "Teniente del Aire",
-        "Subteniente del Aire",
-        "Técnico Jefe de Comando",
-        "Técnico Jefe",
-        "Técnico Subjefe",
-        "Técnico Primero",
-        "Técnico Segundo",
-        "Técnico Tercero",
-        "Técnico Cuarto",
-        "Aerotécnico",
+      institucion_POLICIA_NACIONAL: [
+        "GENERAL",
+        "TENIENTE GENERAL",
+        "MAYOR GENERAL",
+        "BRIGADIER GENERAL",
+        "CORONEL",
+        "TENIENTE CORONEL",
+        "MAYOR",
+        "CAPITÁN",
+        "TENIENTE",
+        "SUBTENIENTE",
+        "SARGENTO MAYOR",
+        "SARGENTO PRIMERO",
+        "SARGENTO VICE PRIMERO",
+        "SARGENTO SEGUNDO",
+        "DRAGONEANTE",
+        "AGENTE",
+        "AGENTE PROFESIONAL",
+        "COMISARIO",
+        "SUBCOMISARIO",
+        "INTENDENTE JEFE",
+        "INTENDENTE",
+        "SUBINTENDENTE",
+        "PATRULLERO",
+        "AUXILIAR DE POLICÍA REGULAR",
+        "AUXILIAR DE POLICÍA BACHILLER",
+      ],
+      institucion_FUERZA_AEREA: [
+        "GENERAL DEL AIRE",
+        "TENIENTE GENERAL DEL AIRE",
+        "MAYOR GENERAL DEL AIRE",
+        "BRIGADIER GENERAL DEL AIRE",
+        "CORONEL DEL AIRE",
+        "TENIENTE CORONEL DEL AIRE",
+        "MAYOR DEL AIRE",
+        "CAPITÁN DEL AIRE",
+        "TENIENTE DEL AIRE",
+        "SUBTENIENTE DEL AIRE",
+        "TÉCNICO JEFE DE COMANDO",
+        "TÉCNICO JEFE",
+        "TÉCNICO SUBJEFE",
+        "TÉCNICO PRIMERO",
+        "TÉCNICO SEGUNDO",
+        "TÉCNICO TERCERO",
+        "TÉCNICO CUARTO",
+        "AEROTÉCNICO",
       ],
       institucion_DAS: [
-        "Profesional Operativo del Grado 6 al 20",
-        "Oficial de Inteligencia del Grado 6 al 20",
-        "Oficial de Protección del del Grado 6 al 20",
-        "Detective del Grado 6 al 20",
-        "Criminalistico del Grado 6 al 20",
-        "Detective Profesional del Grado 6 al 20",
-        "Detective Especializado del Grado 6 al 20",
-        "Técnico",
-        "Técnico Administrativo",
-        "Agente Escolta",
-        "Agente Secreto",
-        "Secretario",
-        "Secretario Ejecutivo",
-        "Auxiliar Administrativo",
-        "Mecánico",
-        "Conductor",
+        "PROFESIONAL OPERATIVO DEL GRADO 6 AL 20",
+        "OFICIAL DE INTELIGENCIA DEL GRADO 6 AL 20",
+        "OFICIAL DE PROTECCIÓN DEL DEL GRADO 6 AL 20",
+        "DETECTIVE DEL GRADO 6 AL 20",
+        "CRIMINALISTICO DEL GRADO 6 AL 20",
+        "DETECTIVE PROFESIONAL DEL GRADO 6 AL 20",
+        "DETECTIVE ESPECIALIZADO DEL GRADO 6 AL 20",
+        "TÉCNICO",
+        "TÉCNICO ADMINISTRATIVO",
+        "AGENTE ESCOLTA",
+        "AGENTE SECRETO",
+        "SECRETARIO",
+        "SECRETARIO EJECUTIVO",
+        "AUXILIAR ADMINISTRATIVO",
+        "MECÁNICO",
+        "CONDUCTOR",
       ],
-      institucion_Migracion_Colombia: [
-        "Profesional Especializado",
-        "Profesional Universitario",
-        "Oficial de Migración",
-        "Técnico Administrativo",
-        "Agente de Seguridad",
-        "Conductor Mecánico",
-        "Secretario Ejecutivo",
-        "Auxilar Administrativo",
+      institucion_MIGRACION_COLOMBIA: [
+        "PROFESIONAL ESPECIALIZADO",
+        "PROFESIONAL UNIVERSITARIO",
+        "OFICIAL DE MIGRACIÓN",
+        "TÉCNICO ADMINISTRATIVO",
+        "AGENTE DE SEGURIDAD",
+        "CONDUCTOR MECÁNICO",
+        "SECRETARIO EJECUTIVO",
+        "AUXILAR ADMINISTRATIVO",
       ],
       institucion_CTI: [
-        "Consejero Judicial",
-        "Director Nacional I",
-        "Director Nacional II",
-        "Director Estratégico I",
-        "Director Estratégico II",
-        "Director Especializado",
-        "Director Seccional de Fiscalía",
-        "Jefe de Departamento",
-        "Subdirector Nacional",
-        "Subdirector Seccional",
-        "Asesor I",
-        "Asesor II",
-        "Asesor de Despacho",
-        "Agente de Protección y Seguridad I",
-        "Agente de Protección y Seguridad II",
-        "Agente de Protección y Seguridad III",
-        "Agente de Protección y Seguridad IV",
-        "Técnico I",
-        "Técnico II",
-        "Técnico III",
-        "Técnico Investigador I",
-        "Técnico Investigador II",
-        "Técnico Investigador III",
-        "Técnico Investigador IV",
-        "Asistente I",
-        "Asistente II",
-        "Auxiliar I",
-        "Auxiliar II",
-        "Conductor I",
-        "Conductor II",
-        "Conductor III",
-        "Secretario Administrativo I",
-        "Secretario Administrativo II",
-        "Secretario Administrativo III",
+        "CONSEJERO JUDICIAL",
+        "DIRECTOR NACIONAL I",
+        "DIRECTOR NACIONAL II",
+        "DIRECTOR ESTRATÉGICO I",
+        "DIRECTOR ESTRATÉGICO II",
+        "DIRECTOR ESPECIALIZADO",
+        "DIRECTOR SECCIONAL DE FISCALÍA",
+        "JEFE DE DEPARTAMENTO",
+        "SUBDIRECTOR NACIONAL",
+        "SUBDIRECTOR SECCIONAL",
+        "ASESOR I",
+        "ASESOR II",
+        "ASESOR DE DESPACHO",
+        "AGENTE DE PROTECCIÓN Y SEGURIDAD I",
+        "AGENTE DE PROTECCIÓN Y SEGURIDAD II",
+        "AGENTE DE PROTECCIÓN Y SEGURIDAD III",
+        "AGENTE DE PROTECCIÓN Y SEGURIDAD IV",
+        "TÉCNICO I",
+        "TÉCNICO II",
+        "TÉCNICO III",
+        "TÉCNICO INVESTIGADOR I",
+        "TÉCNICO INVESTIGADOR II",
+        "TÉCNICO INVESTIGADOR III",
+        "TÉCNICO INVESTIGADOR IV",
+        "ASISTENTE I",
+        "ASISTENTE II",
+        "AUXILIAR I",
+        "AUXILIAR II",
+        "CONDUCTOR I",
+        "CONDUCTOR II",
+        "CONDUCTOR III",
+        "SECRETARIO ADMINISTRATIVO I",
+        "SECRETARIO ADMINISTRATIVO II",
+        "SECRETARIO ADMINISTRATIVO III",
       ],
-      arma_Pistola: ["9mm", "7,65mm"],
-      arma_Revolver: ["32L", "32", "38 Corto", "38 Largo"],
+      institucion_INPEC: [
+        "COMANDANTE SUPERIOR",
+        "MAYOR",
+        "CAPITÁN",
+        "TENIENTE",
+        "INSPECTOR JEFE",
+        "INSPECTOR",
+        "DRAGONEANTE",
+        "DISTINGUIDO",
+        "SERVICIO MILITAR DE BACHILLERES",
+      ],
+      
+      arma_PISTOLA: ["9mm", "7,65mm"],
+      arma_REVOLVER: ["32L", "32", "38 CORTO", "38 LARGO"],
       usuario: {
         primernombre: "",
         segundonombre: "",
@@ -23835,6 +19373,7 @@ export default {
         pais: "",
         departamento: "",
         zona: "",
+        sector:"",
         municipio: "",
         direccionResidencia: "",
         viviendaResidencia: "",
@@ -23867,10 +19406,20 @@ export default {
         fechaFinal: "",
         retiro: "",
         idiomas: "",
+        idiomas2: "",
+        idiomas3: "",
         nivelEscritura: "",
+        nivelEscritura2: "",
+        nivelEscritura3: "",
         nivelLectura: "",
+        nivelLectura2: "",
+        nivelLectura3: "",
         nivelConversacional: "",
+        nivelConversacional2: "",
+        nivelConversacional3: "",
         observaciones: "",
+        observaciones2: "",
+        observaciones3: "",
         salario: "",
         nombrePadre: "",
         fallecidoPadre: "",
@@ -23894,68 +19443,38 @@ export default {
         claseLibreta: "",
         fechaLibreta: "",
         licenciaConduccion: "",
+        poseeLicencia:"",
         numeroLicencia: "",
-        categoriaLicencia: "",
         nombreFamiliar1: "",
         nombreFamiliar2: "",
-        nombreFamiliar3: "",
-        nombreFamiliar4: "",
         municipioFamiliar1: "",
         municipioFamiliar2: "",
-        municipioFamiliar3: "",
         departamentoFamiliar1:"",
         departamentoFamiliar2:"",
-        departamentoFamiliar3:"",
-        departamentoFamiliar4:"",
-        municipioFamiliar4: "",
         direccionFamiliar1: "",
         direccionFamiliar2: "",
-        direccionFamiliar3: "",
-        direccionFamiliar4: "",
         parentescoFamiliar1: "",
         parentescoFamiliar2: "",
-        parentescoFamiliar3: "",
-        parentescoFamiliar4: "",
         telefonoFijoFamiliar1: "",
         telefonoFijoFamiliar2: "",
-        telefonoFijoFamiliar3: "",
-        telefonoFijoFamiliar4: "",
         celularFamiliar1: "",
         celularFamiliar2: "",
-        celularFamiliar3: "",
-        celularFamiliar4: "",
         telefonoOficinaFamiliar1: "",
         telefonoOficinaFamiliar2: "",
-        telefonoOficinaFamiliar3: "",
-        telefonoOficinaFamiliar4: "",
         nombrePersonal1: "",
         nombrePersonal2: "",
-        nombrePersonal3: "",
-        nombrePersonal4: "",
         municipioPersonal1: "",
         municipioPersonal2: "",
-        municipioPersonal3: "",
-        municipioPersonal4: "",
         departamentoPersonal1:"",
         departamentoPersonal2:"",
-        departamentoPersonal3:"",
-        departamentoPersonal4:"",
         direccionPersonal1: "",
         direccionPersonal2: "",
-        direccionPersonal3: "",
-        direccionPersonal4: "",
         telefonoFijoPersonal1: "",
         telefonoFijoPersonal2: "",
-        telefonoFijoPersonal3: "",
-        telefonoFijoPersonal4: "",
         celularPersonal1: "",
         celularPersonal2: "",
-        celularPersonal3: "",
-        celularPersonal4: "",
         telefonoOficinaPersonal1: "",
         telefonoOficinaPersonal2: "",
-        telefonoOficinaPersonal3: "",
-        telefonoOficinaPersonal4: "",
         empresa1: "",
         empresa2: "",
         empresa3: "",
@@ -23986,11 +19505,11 @@ export default {
         fechaFinalLaboral3: "",
         fechaFinalLaboral4: "",
         fechaFinalLaboral5: "",
-        servicioPrestado1: "",
-        servicioPrestado2: "",
-        servicioPrestado3: "",
-        servicioPrestado4: "",
-        servicioPrestado5: "",
+        especialidad1:"",
+        especialidad2:"",
+        especialidad3:"",
+        especialidad4:"",
+        especialidad5:"",
         cargoActual1: "",
         cargoActual2: "",
         cargoActual3: "",
@@ -24194,7 +19713,8 @@ export default {
       var i = 0;
       var dpt3;
       dpt3 = document.getElementById("vehiculos").value;
-      if (dpt3 != "") {
+      if (dpt3 == "MOTOCICLETA") {
+        this.esHablitadoCilindraje= false;
         var mi_cilindraje = eval("this." + "vehiculos_" + dpt3);
         var num_cilindraje = mi_cilindraje.length;
         document.f3.cilindraje.length = num_cilindraje;
@@ -24203,9 +19723,57 @@ export default {
           document.f3.cilindraje.options[i].text = mi_cilindraje[i];
         }
       } else {
+        this.esHablitadoCilindraje= true;
         document.f3.cilindraje.length = 1;
         document.f3.cilindraje.options[0].value = "";
-        document.f3.cilindraje.options[0].text = "SIN ASIGNAR";
+        document.f3.cilindraje.options[0].text = "";
+      }
+    },
+    seguridad_privada() {
+       var respE;
+      respE = document.getElementById("experiencia").value;
+      if (respE == "NO") {
+       this.esHablitadoExperiencia= true
+      } else{
+        this.esHablitadoExperiencia= false
+      }
+    },
+     licencia_conduccion() {
+       var respLi;
+      respLi= document.getElementById("licencia").value;
+      if (respLi == "NO") {
+       this.esHablitadoLicencia= true
+      } else{
+        this.esHablitadoLicencia= false
+      }
+    },
+    estado_laboral() {
+       var respL;
+      respL = document.getElementById("estado").value;
+      if (respL == "ACTIVO") {
+       this.esHabilitadoMotivo= true
+      } else{
+        this.esHabilitadoMotivo= false
+      }
+    },
+     zona_residencia() {
+       var i = 0;
+       var respZ;
+      respZ = document.getElementById("zona").value;
+      if (respZ == "Urbano") {
+       this.esHablitadoZona= false;
+       var mi_zona = eval("this." + "zona_" + respZ);
+        var num_zona = mi_zona.length;
+        document.f1.sector.length = num_zona;
+        for (i = 0; i < num_zona; i++) {
+          document.f1.sector.options[i].value = mi_zona[i];
+          document.f1.sector.options[i].text = mi_zona[i];
+        }
+      } else{
+        this.esHablitadoZona= true;
+        document.f1.sector.length = 1;
+        document.f1.sector.options[0].value = "";
+        document.f1.sector.options[0].text = "";
       }
     },
     institucion() {
@@ -24334,48 +19902,12 @@ export default {
         document.f7.municipioFamiliar2.options[0].text = "SIN ASIGNAR";
       }
     },
-    municipiosFamiliar3() {
-      var i = 0;
-      var dpt10;
-      dpt10 = document.getElementById("departamentos6").value;
-      if (dpt10 != "") {
-        var mis_municipios = eval("this." + "departamentos6_" + dpt10);
-        var num_municipios = mis_municipios.length;
-        document.f8.municipioFamiliar3.length = num_municipios;
-        for (i = 0; i < num_municipios; i++) {
-          document.f8.municipioFamiliar3.options[i].value = mis_municipios[i];
-          document.f8.municipioFamiliar3.options[i].text = mis_municipios[i];
-        }
-      } else {
-        document.f8.municipioFamiliar3.length = 1;
-        document.f8.municipioFamiliar3.options[0].value = "";
-        document.f8.municipioFamiliar3.options[0].text = "SIN ASIGNAR";
-      }
-    },
-    municipiosFamiliar4() {
-      var i = 0;
-      var dpt11;
-      dpt11 = document.getElementById("departamentos7").value;
-      if (dpt11 != "") {
-        var mis_municipios = eval("this." + "departamentos7_" + dpt11);
-        var num_municipios = mis_municipios.length;
-        document.f9.municipioFamiliar4.length = num_municipios;
-        for (i = 0; i < num_municipios; i++) {
-          document.f9.municipioFamiliar4.options[i].value = mis_municipios[i];
-          document.f9.municipioFamiliar4.options[i].text = mis_municipios[i];
-        }
-      } else {
-        document.f9.municipioFamiliar4.length = 1;
-        document.f9.municipioFamiliar4.options[0].value = "";
-        document.f9.municipioFamiliar4.options[0].text = "SIN ASIGNAR";
-      }
-    },
       municipiosPersonal1() {
       var i = 0;
       var dpt12;
-      dpt12 = document.getElementById("departamentos8").value;
+      dpt12 = document.getElementById("departamentos6").value;
       if (dpt12 != "") {
-        var mis_municipios = eval("this." + "departamentos8_" + dpt12);
+        var mis_municipios = eval("this." + "departamentos6_" + dpt12);
         var num_municipios = mis_municipios.length;
         document.f10.municipioPersonal1.length = num_municipios;
         for (i = 0; i < num_municipios; i++) {
@@ -24391,9 +19923,9 @@ export default {
       municipiosPersonal2() {
       var i = 0;
       var dpt13;
-      dpt13 = document.getElementById("departamentos9").value;
+      dpt13 = document.getElementById("departamentos7").value;
       if (dpt13 != "") {
-        var mis_municipios = eval("this." + "departamentos9_" + dpt13);
+        var mis_municipios = eval("this." + "departamentos7_" + dpt13);
         var num_municipios = mis_municipios.length;
         document.f10.municipioPersonal2.length = num_municipios;
         for (i = 0; i < num_municipios; i++) {
@@ -24406,48 +19938,12 @@ export default {
         document.f10.municipioPersonal2.options[0].text = "SIN ASIGNAR";
       }
     },
-      municipiosPersonal3() {
-      var i = 0;
-      var dpt14;
-      dpt14 = document.getElementById("departamentos10").value;
-      if (dpt14 != "") {
-        var mis_municipios = eval("this." + "departamentos10_" + dpt14);
-        var num_municipios = mis_municipios.length;
-        document.f11.municipioPersonal3.length = num_municipios;
-        for (i = 0; i < num_municipios; i++) {
-          document.f11.municipioPersonal3.options[i].value = mis_municipios[i];
-          document.f11.municipioPersonal3.options[i].text = mis_municipios[i];
-        }
-      } else {
-        document.f11.municipioPersonal3.length = 1;
-        document.f11.municipioPersonal3.options[0].value = "";
-        document.f11.municipioPersonal3.options[0].text = "SIN ASIGNAR";
-      }
-    },
-      municipiosPersonal4() {
-      var i = 0;
-      var dpt15;
-      dpt15 = document.getElementById("departamentos11").value;
-      if (dpt15 != "") {
-        var mis_municipios = eval("this." + "departamentos11_" + dpt15);
-        var num_municipios = mis_municipios.length;
-        document.f12.municipioPersonal4.length = num_municipios;
-        for (i = 0; i < num_municipios; i++) {
-          document.f12.municipioPersonal4.options[i].value = mis_municipios[i];
-          document.f12.municipioPersonal4.options[i].text = mis_municipios[i];
-        }
-      } else {
-        document.f12.municipioPersonal4.length = 1;
-        document.f12.municipioPersonal4.options[0].value = "";
-        document.f12.municipioPersonal4.options[0].text = "SIN ASIGNAR";
-      }
-    },
      municipiosLaboral1() {
       var i = 0;
       var dpt16;
-      dpt16 = document.getElementById("departamentos12").value;
+      dpt16 = document.getElementById("departamentos8").value;
       if (dpt16 != "") {
-        var mis_municipios = eval("this." + "departamentos12_" + dpt16);
+        var mis_municipios = eval("this." + "departamentos8_" + dpt16);
         var num_municipios = mis_municipios.length;
         document.f13.municipioLaboral1.length = num_municipios;
         for (i = 0; i < num_municipios; i++) {
@@ -24463,9 +19959,9 @@ export default {
       municipiosLaboral2() {
       var i = 0;
       var dpt17;
-      dpt17 = document.getElementById("departamentos13").value;
+      dpt17 = document.getElementById("departamentos9").value;
       if (dpt17 != "") {
-        var mis_municipios = eval("this." + "departamentos13_" + dpt17);
+        var mis_municipios = eval("this." + "departamentos9_" + dpt17);
         var num_municipios = mis_municipios.length;
         document.f14.municipioLaboral2.length = num_municipios;
         for (i = 0; i < num_municipios; i++) {
@@ -24481,9 +19977,9 @@ export default {
       municipiosLaboral3() {
       var i = 0;
       var dpt18;
-      dpt18 = document.getElementById("departamentos14").value;
+      dpt18 = document.getElementById("departamentos10").value;
       if (dpt18 != "") {
-        var mis_municipios = eval("this." + "departamentos14_" + dpt18);
+        var mis_municipios = eval("this." + "departamentos10_" + dpt18);
         var num_municipios = mis_municipios.length;
         document.f15.municipioLaboral3.length = num_municipios;
         for (i = 0; i < num_municipios; i++) {
@@ -24499,9 +19995,9 @@ export default {
       municipiosLaboral4() {
       var i = 0;
       var dpt19;
-      dpt19 = document.getElementById("departamentos15").value;
+      dpt19 = document.getElementById("departamentos11").value;
       if (dpt19 != "") {
-        var mis_municipios = eval("this." + "departamentos15_" + dpt19);
+        var mis_municipios = eval("this." + "departamentos11_" + dpt19);
         var num_municipios = mis_municipios.length;
         document.f16.municipioLaboral4.length = num_municipios;
         for (i = 0; i < num_municipios; i++) {
@@ -24517,9 +20013,9 @@ export default {
     municipiosLaboral5() {
       var i = 0;
       var dpt20;
-      dpt20 = document.getElementById("departamentos16").value;
+      dpt20 = document.getElementById("departamentos12").value;
       if (dpt20 != "") {
-        var mis_municipios = eval("this." + "departamentos16_" + dpt20);
+        var mis_municipios = eval("this." + "departamentos12_" + dpt20);
         var num_municipios = mis_municipios.length;
         document.f17.municipioLaboral5.length = num_municipios;
         for (i = 0; i < num_municipios; i++) {
@@ -24536,7 +20032,6 @@ export default {
     onFormSubmit(event) {
       event.preventDefault();
               console.log(global.banderaImagen, "Documentos " + global.banderaDocumento)
-      if(global.banderaImagen==1 && global.banderaDocumento==1){
       db.collection("usuarios")
         .add({
           primernombre: this.usuario.primernombre,
@@ -24554,6 +20049,7 @@ export default {
           departamento: this.usuario.departamento,
           municipio: this.usuario.municipio,
           zona: this.usuario.zona,
+          sector: this.usuario.sector,
           pais: this.usuario.pais,
           direccionResidencia: this.usuario.direccionResidencia,
           viviendaResidencia: this.usuario.viviendaResidencia,
@@ -24564,6 +20060,8 @@ export default {
           telefono: this.usuario.telefono,
           vivienda: this.usuario.vivienda,
           propietario: this.usuario.propietario,
+          departamentoPropiedad: this.usuario.departamentoPropiedad,
+          ciudadPropiedad: this.usuario.ciudadPropiedad,
           modalidad: this.usuario.modalidad,
           telefonoVivienda: this.usuario.telefonoVivienda,
           vehiculo: this.usuario.vehiculo,
@@ -24582,10 +20080,20 @@ export default {
           fechaFinal: this.usuario.fechaFinal,
           retiro: this.usuario.retiro,
           idiomas: this.usuario.idiomas,
+          idiomas2: this.usuario.idiomas2,
+          idiomas3: this.usuario.idiomas3,
           nivelEscritura: this.usuario.nivelEscritura,
+          nivelEscritura2: this.usuario.nivelEscritura2,
+          nivelEscritura3: this.usuario.nivelEscritura3,
           nivelLectura: this.usuario.nivelLectura,
+          nivelLectura2: this.usuario.nivelLectura2,
+          nivelLectura3: this.usuario.nivelLectura3,
           nivelConversacional: this.usuario.nivelConversacional,
+          nivelConversacional2: this.usuario.nivelConversacional2,
+          nivelConversacional3: this.usuario.nivelConversacional3,
           observaciones: this.usuario.observaciones,
+          observaciones2: this.usuario.observaciones2,
+          observaciones3: this.usuario.observaciones3,
           salario: this.usuario.salario,
           nombrePadre: this.usuario.nombrePadre,
           fallecidoPadre: this.usuario.fallecidoPadre,
@@ -24608,69 +20116,39 @@ export default {
           numeroLibreta: this.usuario.numeroLibreta,
           claseLibreta: this.usuario.claseLibreta,
           fechaLibreta: this.usuario.fechaLibreta,
+          poseeLicencia: this.usuario.poseeLicencia,
           licenciaConduccion: this.usuario.licenciaConduccion,
           numeroLicencia: this.usuario.numeroLicencia,
-          categoriaLicencia: this.usuario.categoriaLicencia,
           nombreFamiliar1: this.usuario.nombreFamiliar1,
           nombreFamiliar2: this.usuario.nombreFamiliar2,
-          nombreFamiliar3: this.usuario.nombreFamiliar3,
-          nombreFamiliar4: this.usuario.nombreFamiliar4,
           municipioFamiliar1: this.usuario.municipioFamiliar1,
           municipioFamiliar2: this.usuario.municipioFamiliar2,
-          municipioFamiliar3: this.usuario.municipioFamiliar3,
-          municipioFamiliar4: this.usuario.municipioFamiliar4,
           departamentoFamiliar1: this.usuario.departamentoFamiliar1,
           departamentoFamiliar2: this.usuario.departamentoFamiliar2,
-          departamentoFamiliar3: this.usuario.departamentoFamiliar3,
-          departamentoFamiliar4: this.usuario.departamentoFamiliar4,
           direccionFamiliar1: this.usuario.direccionFamiliar1,
           direccionFamiliar2: this.usuario.direccionFamiliar2,
-          direccionFamiliar3: this.usuario.direccionFamiliar3,
-          direccionFamiliar4: this.usuario.direccionFamiliar4,
           parentescoFamiliar1: this.usuario.parentescoFamiliar1,
           parentescoFamiliar2: this.usuario.parentescoFamiliar2,
-          parentescoFamiliar3: this.usuario.parentescoFamiliar3,
-          parentescoFamiliar4: this.usuario.parentescoFamiliar4,
           telefonoFijoFamiliar1: this.usuario.telefonoFijoFamiliar1,
           telefonoFijoFamiliar2: this.usuario.telefonoFijoFamiliar2,
-          telefonoFijoFamiliar3: this.usuario.telefonoFijoFamiliar3,
-          telefonoFijoFamiliar4: this.usuario.telefonoFijoFamiliar4,
           celularFamiliar1: this.usuario.celularFamiliar1,
           celularFamiliar2: this.usuario.celularFamiliar2,
-          celularFamiliar3: this.usuario.celularFamiliar3,
-          celularFamiliar4: this.usuario.celularFamiliar4,
           telefonoOficinaFamiliar1: this.usuario.telefonoOficinaFamiliar1,
           telefonoOficinaFamiliar2: this.usuario.telefonoOficinaFamiliar2,
-          telefonoOficinaFamiliar3: this.usuario.telefonoOficinaFamiliar3,
-          telefonoOficinaFamiliar4: this.usuario.telefonoOficinaFamiliar4,
           nombrePersonal1: this.usuario.nombrePersonal1,
           nombrePersonal2: this.usuario.nombrePersonal2,
-          nombrePersonal3: this.usuario.nombrePersonal3,
-          nombrePersonal4: this.usuario.nombrePersonal4,
           municipioPersonal1: this.usuario.municipioPersonal1,
           municipioPersonal2: this.usuario.municipioPersonal2,
-          municipioPersonal3: this.usuario.municipioPersonal3,
-          municipioPersonal4: this.usuario.municipioPersonal4,
           departamentoPersonal1: this.usuario.departamentoPersonal1,
           departamentoPersonal2: this.usuario.departamentoPersonal2,
-          departamentoPersonal3: this.usuario.departamentoPersonal3,
-          departamentoPersonal4: this.usuario.departamentoPersonal4,
           direccionPersonal1: this.usuario.direccionPersonal1,
           direccionPersonal2: this.usuario.direccionPersonal2,
-          direccionPersonal3: this.usuario.direccionPersonal3,
-          direccionPersonal4: this.usuario.direccionPersonal4,
           telefonoFijoPersonal1: this.usuario.telefonoFijoPersonal1,
           telefonoFijoPersonal2: this.usuario.telefonoFijoPersonal2,
-          telefonoFijoPersonal3: this.usuario.telefonoFijoPersonal3,
-          telefonoFijoPersonal4: this.usuario.telefonoFijoPersonal4,
           celularPersonal1: this.usuario.celularPersonal1,
           celularPersonal2: this.usuario.celularPersonal2,
-          celularPersonal3: this.usuario.celularPersonal3,
-          celularPersonal4: this.usuario.celularPersonal4,
           telefonoOficinaPersonal1: this.usuario.telefonoOficinaPersonal1,
           telefonoOficinaPersonal2: this.usuario.telefonoOficinaPersonal2,
-          telefonoOficinaPersonal3: this.usuario.telefonoOficinaPersonal3,
-          telefonoOficinaPersonal4: this.usuario.telefonoOficinaPersonal4,
           empresa1: this.usuario.empresa1,
           empresa2: this.usuario.empresa2,
           empresa3: this.usuario.empresa3,
@@ -24701,11 +20179,11 @@ export default {
           fechaFinalLaboral3: this.usuario.fechaFinalLaboral3,
           fechaFinalLaboral4: this.usuario.fechaFinalLaboral4,
           fechaFinalLaboral5: this.usuario.fechaFinalLaboral5,
-          servicioPrestado1: this.usuario.servicioPrestado1,
-          servicioPrestado2: this.usuario.servicioPrestado2,
-          servicioPrestado3: this.usuario.servicioPrestado3,
-          servicioPrestado4: this.usuario.servicioPrestado4,
-          servicioPrestado5: this.usuario.servicioPrestado5,
+          especialidad1: this.usuario.especialidad1,
+          especialidad2: this.usuario.especialidad2,
+          especialidad3: this.usuario.especialidad3,
+          especialidad4: this.usuario.especialidad4,
+          especialidad5: this.usuario.especialidad5,
           cargoActual1: this.usuario.cargoActual1,
           cargoActual2: this.usuario.cargoActual2,
           cargoActual3: this.usuario.cargoActual3,
@@ -24750,8 +20228,8 @@ export default {
           fotoFamilia: this.imagenFamilia.name,
           fotoVivenda: this.imagenVivienda.name,
           certificadoLaboral: this.archivoCerLaboral.name,
-          certificadoCursos: this.archivoCerAcademico.name,
-          certificadoLaboral: this.archivoCerCursos.name,
+          certificadoAcademico: this.archivoCerAcademico.name,
+          certificadoCursos: this.archivoCerCursos.name,
           certificadoExperiencias: this.archivoCerExperiencias.name,
         })
         .then(() => {
@@ -24783,14 +20261,7 @@ export default {
         .catch((error) => {
           console.log(error);
         });
-        }
-        else {
-           Swal.fire(
-            "¡Atención!",
-            "¡Antes de guardar debe subir documentos e imagenes !",
-            "info"
-          );
-        }
+        
     },
   },
 };
@@ -24844,5 +20315,8 @@ export default {
   .continuar:hover{
     opacity: 0.9;
     text-decoration: none;
+  }
+  .contenido{
+    margin: -10%, -10% , -10%, -10%;
   }
 </style>

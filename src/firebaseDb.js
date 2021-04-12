@@ -2,13 +2,12 @@ import firebase from 'firebase'
 import 'firebase/storage'
 
 const firebaseConfig = {
-    apiKey: "AIzaSyADOeFq2piy-ruHgryG9rpTNAdiPrJK2GM",
-    authDomain: "security-c0ba0.firebaseapp.com",
-    databaseURL: "https://security-c0ba0-default-rtdb.firebaseio.com",
-    projectId: "security-c0ba0",
-    storageBucket: "security-c0ba0.appspot.com",
-    messagingSenderId: "154469694463",
-    appId: "1:154469694463:web:711ea366aa0bb6632bc5ca"
+    apiKey: "AIzaSyC14LCkvpg73jA6hEItnpEffYf9amVQv3o",
+    authDomain: "security-7fc89.firebaseapp.com",
+    projectId: "security-7fc89",
+    storageBucket: "security-7fc89.appspot.com",
+    messagingSenderId: "1085465386919",
+    appId: "1:1085465386919:web:0e4790fe9fc5a1a6946082"
 }
 
 const firebaseApp = firebase.initializeApp(firebaseConfig);
