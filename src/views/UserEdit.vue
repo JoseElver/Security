@@ -14,75 +14,68 @@
                   ></v-expansion-panel-header
                 >
                 <v-expansion-panel-content>
-                  <form
+                  <form @submit.prevent="onUpdateForm"
                     name="f1"
                     id="f1"
                   >
                     <div class="form-group">
-                      <label>Primer Nombre</label>
+                      <label class="negrita">Primer Nombre</label>
                       <input
                         type="text"
                         class="UpperCase form-control"
                         v-model="usuario.primernombre"
-                        required
                         autofocus
                       />
                     </div>
                     <div class="form-group">
-                      <label>Segundo Nombre</label>
+                      <label class="negrita">Segundo Nombre</label>
                       <input
                         type="text"
                         class="UpperCase form-control"
                         v-model="usuario.segundonombre"
-                        required
                       />
                     </div>
                     <div class="form-group">
-                      <label>Primer Apellido</label>
+                      <label class="negrita">Primer Apellido</label>
                       <input
                         type="text"
                         class="UpperCase form-control"
                         v-model="usuario.primerapellido"
-                        required
                       />
                     </div>
                     <div class="form-group">
-                      <label>Segundo Apellido</label>
+                      <label class="negrita">Segundo Apellido</label>
                       <input
                         type="text"
                         class="UpperCase form-control"
                         v-model="usuario.segundoapellido"
-                        required
                       />
                     </div>
-                    <label>Tipo de documento</label>
+                    <label class="negrita">Tipo de documento</label>
                     <v-select
                       v-model="usuario.tipodocumento"
                       :items="tipos"
-                      required
                       dense
                       solo
                     ></v-select>
                     <div class="form-group">
-                      <label>Documento</label>
+                      <label class="negrita">Documento</label>
                       <input type="number" 
                       class="form-control"
                       v-model="usuario.documento"
-                      required
                       oninput="this.value = this.value.replace(/[^0-9.]/g, ''); this.value = this.value.replace(/(\..*)\./g, '$1');" 
                       onKeyDown="if(this.value.length==15 && event.keyCode!=8) return false;"
                       >
                     </div>
-                    <label>Género</label>
+                    <label class="negrita">Género</label>
                     <v-select
                       v-model="usuario.genero"
                       :items="tipoGenero"
-                      required
                       dense
                       solo
                     ></v-select>
                     <div class="form-group">
-                      <label>Altura</label>
+                      <label class="negrita">Altura</label>
                       <v-layout>
                         <v-flex xs12 sm2>
                          
@@ -90,7 +83,6 @@
                       type="number" 
                       class="form-control"
                       v-model="usuario.altura"
-                      required
                       oninput="this.value = this.value.replace(/[^0-9.]/g, ''); this.value = this.value.replace(/(\..*)\./g, '$1');" 
                       onKeyDown="if(this.value.length==3 && event.keyCode!=8) return false;"
                       min="140"
@@ -102,56 +94,50 @@
                       </v-layout>
                     </div>
                     <div class="form-group">
-                      <label>Fecha de Nacimiento</label>
+                      <label class="negrita">Fecha de Nacimiento</label>
                       <v-flex xs12 sm2>
                         <input
                           type="date"
                           class="form-control"
                           v-model="usuario.nacimiento"
                           pattern="\d{4}-\d{2}-\d{2}"
-                          required
                         />
                       </v-flex>
                     </div>
-                    <label>Estado Civil</label>
+                    <label class="negrita">Estado Civil</label>
                     <v-select
                       v-model="usuario.civil"
                       :items="tipoCivil"
-                      required
                       dense
                       solo
                     ></v-select>
                     <div class="form-group">
-                      <label>Celular</label>
+                      <label class="negrita">Celular</label>
                       <input type="number" 
                       class="form-control"
                       v-model="usuario.telefono"
-                      required
                       oninput="this.value = this.value.replace(/[^0-9.]/g, ''); this.value = this.value.replace(/(\..*)\./g, '$1');" 
                       onKeyDown="if(this.value.length==10 && event.keyCode!=8) return false;"
                       >
                     </div>
                     <div class="form-group">
-                      <label>Correo electrónico</label>
+                      <label class="negrita">Correo electrónico</label>
                       <input
                         type="email"
                         class="form-control"
                         v-model="usuario.email"
-                        required
                       />
                     </div>
 
-                    <label>País de residencia</label>
+                    <label class="negrita">País de residencia</label>
                     <v-select
                       v-model="usuario.pais"
                       :items="tipoPais"
-                      required
                       dense
                       solo
                     ></v-select>
-                    <label>Departamento de residencia</label>
+                    <label class="negrita">Departamento de residencia</label>
                     <select
-                      required
                       class="form-control"
                       id="departamentos"
                       @click="municipios()"
@@ -196,18 +182,22 @@
                       <option value="VAUPES">VAUPÉS</option>
                       <option value="VICHADA">VICHADA</option>
                     </select>
-                    <label>Municipio de residencia</label>
+                    <label class="negrita">Municipio de residencia</label>
+                    <v-text-field
+                    class="color"
+            v-model="usuario.municipio"
+            readonly
+          ></v-text-field>
+          <label class="negrita">Por favor seleccionar dato a actualizar</label>
                     <select
-                      required
                       id="municipios"
                       class="form-control"
                       v-model="usuario.municipio"
                     >
                       <option value="0"></option>
                     </select>
-                    <label>Zona de residencia</label>
+                    <label class="negrita">Zona de residencia</label>
                       <select
-                      required
                       class="form-control"
                       id="zona"
                       @click="zona_residencia()"
@@ -217,10 +207,15 @@
                       <option value="Urbano">Urbano</option>
                       <option value="Rural">Rural</option>
                     </select>
-                    <label>Sector de residencia</label>
+                    <label class="negrita">Sector de residencia</label>
+                    <v-text-field
+                    class="color"
+            v-model="usuario.sector"
+            readonly
+          ></v-text-field>
+          <label class="negrita">Por favor seleccionar dato a actualizar</label>
                     <select
                       v-bind:disabled="esHablitadoZona"
-                      required
                       id="sector"
                       class="form-control"
                       v-model="usuario.sector"
@@ -233,28 +228,24 @@
                         type="text"
                         class="UpperCase form-control"
                         v-model="usuario.direccionResidencia"
-                        required
                       />
                     </div>
-                    <label>Tipo de vivienda</label>
+                    <label class="negrita">Tipo de vivienda</label>
                     <v-select
                       v-model="usuario.viviendaResidencia"
                       :items="tipoViviendaResidencia"
-                      required
                       dense
                       solo
                     ></v-select>
-                    <label>Modalidad</label>
+                    <label class="negrita">Modalidad</label>
                     <v-select
                       v-model="usuario.modalidadResidencia"
                       :items="tipoModalidadResidencia"
-                      required
                       dense
                       solo
                     ></v-select>
-                    <label>Experiencia en Seguridad Privada</label>
+                    <label class="negrita">Experiencia en Seguridad Privada</label>
                     <select
-                      required
                       class="form-control"
                       id="experiencia"
                       @click="seguridad_privada()"
@@ -264,7 +255,7 @@
                       <option value="SI">SI</option>
                       <option value="NO">NO</option>
                     </select>
-                    <label>Tiempo de experiencia</label>
+                    <label class="negrita">Tiempo de experiencia</label>
                     <v-layout>
                       <v-flex xs12 sm2>
                         <v-select
@@ -291,6 +282,9 @@
                         <label class="centimetros">Meses</label>
                       </v-flex>
                     </v-layout>
+                    <div class="form-group">
+                    <button class="continuar">Actualizar datos</button>
+                </div>
                   </form>
                 </v-expansion-panel-content>
               </v-expansion-panel>
@@ -303,17 +297,16 @@
                   ></v-expansion-panel-header
                 >
                 <v-expansion-panel-content>
-                  <form name="f2" id="f2">
-                    <label>Tipo de vivienda</label>
+                  <form @submit.prevent="onUpdateForm" name="f2" id="f2">
+                    <label class="negrita">Tipo de vivienda</label>
                     <v-select
                       v-model="usuario.vivienda"
                       :items="tipoVivienda"
-                      required
                       dense
                       solo
                     ></v-select>
                     <div class="form-group">
-                      <label>Propietario</label>
+                      <label class="negrita">Propietario</label>
                       <input
                         type="text"
                         class="UpperCase form-control"
@@ -321,7 +314,7 @@
                         required
                       />
                     </div>
-                    <label>Modalidad</label>
+                    <label class="negrita">Modalidad</label>
                     <v-select
                       v-model="usuario.modalidad"
                       :items="tipoModalidad"
@@ -330,7 +323,7 @@
                       solo
                     ></v-select>
                     <div class="form-group">
-                      <label>Teléfono</label>
+                      <label class="negrita">Teléfono</label>
                       <input 
                       type="number" 
                       class="form-control"
@@ -340,7 +333,7 @@
                       onKeyDown="if(this.value.length==10 && event.keyCode!=8) return false;"
                       >
                     </div>
-                    <label>Departamento de residencia</label>
+                    <label class="negrita">Departamento de residencia</label>
                     <select
                       required
                       class="form-control"
@@ -387,15 +380,23 @@
                       <option value="VAUPES">VAUPÉS</option>
                       <option value="VICHADA">VICHADA</option>
                     </select>
-                    <label>Municipio de residencia</label>
+                    <label class="negrita">Municipio de residencia</label>
+                     <v-text-field
+                    class="color"
+            v-model="usuario.ciudadPropiedad"
+            readonly
+          ></v-text-field>
+          <label class="negrita">Por favor seleccionar dato a actualizar</label>
                     <select
-                      required
                       id="municipios2"
                       class="form-control"
                       v-model="usuario.ciudadPropiedad"
                     >
                       <option value="0"></option>
-                    </select>
+                    </select><br/>
+                    <div class="form-group">
+                    <button class="continuar">Actualizar datos</button>
+                </div>
                   </form>
                 </v-expansion-panel-content>
               </v-expansion-panel>
@@ -406,10 +407,9 @@
                   ><strong>Vehículo</strong></v-expansion-panel-header
                 >
                 <v-expansion-panel-content>
-                  <form name="f3" id="f3">
-                    <label>Tipo de Vehiculo</label>
+                  <form @submit.prevent="onUpdateForm" name="f3" id="f3">
+                    <label class="negrita">Tipo de Vehiculo</label>
                     <select
-                      required
                       class="form-control"
                       id="vehiculos"
                       @click="vehiculos()"
@@ -424,31 +424,34 @@
                       <option value="MOTOCICLETA">MOTOCICLETA</option>
                     </select>
                     <div class="form-group">
-                      <label>Marca</label>
+                      <label class="negrita">Marca</label>
                       <input
                         type="text"
                         class="UpperCase form-control"
                         v-model="usuario.marca"
-                        required
                       />
                     </div>
                     <div class="form-group">
-                      <label>Placa</label>
+                      <label class="negrita">Placa</label>
                       <input
                         type="text"
                         class="UpperCase form-control"
                         v-model="usuario.placa"
-                        required
                         maxlength="8"
                       />
                     </div>
                     <div class="form-group">
-                      <label>Cilindraje</label>
+                      <label class="negrita">Cilindraje</label>
+                      <v-text-field
+                    class="color"
+            v-model="usuario.cilindraje"
+            readonly
+          ></v-text-field>
+          <label class="negrita">Por favor seleccionar dato a actualizar</label>
                       <v-layout>
                         <v-flex xs12 sm2>
                           <select
                             v-bind:disabled="esHablitadoCilindraje"
-                            required
                             id="cilindraje"
                             class="form-control"
                             v-model="usuario.cilindraje"
@@ -461,14 +464,16 @@
                         </v-flex>
                       </v-layout>
                     </div>
-                    <label>Modelo</label>
+                    <label class="negrita">Modelo</label>
                     <v-select
                       v-model="usuario.modeloVehiculo"
                       :items="tipoModeloVehiculo"
-                      required
                       dense
                       solo
                     ></v-select>
+                    <div class="form-group">
+                    <button class="continuar">Actualizar datos</button>
+                </div>
                   </form>
                 </v-expansion-panel-content>
               </v-expansion-panel>
@@ -481,10 +486,9 @@
                   ></v-expansion-panel-header
                 >
                 <v-expansion-panel-content>
-                  <form name="f4" id="f4">
-                    <label>Institución</label>
+                  <form @submit.prevent="onUpdateForm" name="f4" id="f4">
+                    <label class="negrita">Institución</label>
                     <select
-                      required
                       class="form-control"
                       id="institucion"
                       @click="institucion()"
@@ -506,19 +510,23 @@
                       </option>
                       <option value="CTI">CTI</option>
                       <option value="INPEC">INPEC</option>
-                    </select>
-                    <label>Último grado obtenido</label>
+                    </select><br/>
+                    <label class="negrita">Último grado obtenido</label>
+                    <v-text-field
+                    class="color"
+            v-model="usuario.ultimoGrado"
+            readonly
+          ></v-text-field>
+          <label class="negrita">Por favor seleccionar dato a actualizar</label>
                     <select
-                      required
                       id="grado"
                       class="form-control"
                       v-model="usuario.ultimoGrado"
                     >
                       <option value="0"></option>
-                    </select>
-                    <label>Estado</label>
+                    </select><br/>
+                    <label class="negrita">Estado</label>
                     <select
-                      required
                       class="form-control"
                       id="estado"
                       @click="estado_laboral()"
@@ -529,43 +537,44 @@
                       <option value="RETIRADO">RETIRADO</option>
                     </select>
                     <div class="form-group">
-                      <label>Fecha Incial</label>
+                      <label class="negrita">Fecha Incial</label>
                       <v-flex xs12 sm2>
                         <input
                           type="date"
                           class="form-control"
                           id="inicial"
+                          oninput="inp=document.getElementById('inicial').value;"
                           v-model="usuario.fechaIncial"
                           pattern="\d{4}-\d{2}-\d{2}"
-                          required
                         />
                       </v-flex>
                     </div>
                     <div class="form-group">
-                      <label>Fecha Final</label>
+                      <label class="negrita">Fecha Final</label>
                       <v-flex xs12 sm2>
                         <input
                           type="date"
                           class="form-control"
                           id="final"
-                          oninput="inp1 = document.getElementById('inicial').value; inp2 = document.getElementById('final').value; if(inp1 > inp2){alert('Error, la fecha inicial es mayor que la fecha final. Por favor corregir');};"
+                          oninput="inp1 = document.getElementById('inicial').value; inp2 = document.getElementById('final').value; if(inp1 > inp2){alert('Error, la fecha inicial es mayor que la fecha final. Por favor corregir');  console.log('valor de ' + inp + ' el segundo valor de ' + inp2); document.getElementById('final').value=''; document.getElementById('inicial').value='';} ;"
                           v-model="usuario.fechaFinal"
                           pattern="\d{4}-\d{2}-\d{2}"
-                          required
                         />
                       </v-flex>
                     </div>
                     <div class="form-group">
-                      <label>Motivo de retiro</label>
+                      <label class="negrita">Motivo de retiro</label>
                       <v-select
                         v-bind:disabled="esHabilitadoMotivo"
                         v-model="usuario.retiro"
                         :items="tipoRetiro"
-                        required
                         dense
                         solo
                       ></v-select>
                     </div>
+                    <div class="form-group">
+                    <button class="continuar">Actualizar datos</button>
+                </div>
                   </form>
                 </v-expansion-panel-content>
               </v-expansion-panel>
@@ -576,45 +585,40 @@
                   ><strong>Idiomas</strong></v-expansion-panel-header
                 >
                 <v-expansion-panel-content>
-                  <form>
-                    <label>Primer idioma</label>
+                  <form @submit.prevent="onUpdateForm">
+                    <label class="negrita">Primer idioma</label>
                     <v-select
                       v-model="usuario.idiomas"
                       :items="tipoIdiomas"
-                      required
                       dense
                       solo
                     ></v-select>
-                    <label>Nivel de escritura</label>
+                    <label class="negrita">Nivel de escritura</label>
                     <v-select
                       v-model="usuario.nivelEscritura"
                       :items="tipoNivelEscritura"
-                      required
                       dense
                       solo
                     ></v-select>
-                    <label>Nivel de lectura</label>
+                    <label class="negrita">Nivel de lectura</label>
                     <v-select
                       v-model="usuario.nivelLectura"
                       :items="tipoNivelLectura"
-                      required
                       dense
                       solo
                     ></v-select>
-                    <label>Nivel Conversacional</label>
+                    <label class="negrita">Nivel Conversacional</label>
                     <v-select
                       v-model="usuario.nivelConversacional"
                       :items="tipoNivelConversacional"
-                      required
                       dense
                       solo
                     ></v-select>
                     <div class="form-group">
-                      <label>Observaciones</label>
+                      <label class="negrita">Observaciones</label>
                       <textarea
                         class="form-control"
                         v-model="usuario.observaciones"
-                        required
                       ></textarea>
                       <br>
                       <v-expansion-panels focusable>
@@ -624,44 +628,39 @@
                         >
                         <v-expansion-panel-content>
                           <form>
-                            <label>Otro idioma</label>
+                            <label class="negrita">Otro idioma</label>
                     <v-select
                       v-model="usuario.idiomas2"
                       :items="tipoIdiomas"
-                      required
                       dense
                       solo
                     ></v-select>
-                    <label>Nivel de escritura</label>
+                    <label class="negrita">Nivel de escritura</label>
                     <v-select
                       v-model="usuario.nivelEscritura2"
                       :items="tipoNivelEscritura"
-                      required
                       dense
                       solo
                     ></v-select>
-                    <label>Nivel de lectura</label>
+                    <label class="negrita">Nivel de lectura</label>
                     <v-select
                       v-model="usuario.nivelLectura2"
                       :items="tipoNivelLectura"
-                      required
                       dense
                       solo
                     ></v-select>
-                    <label>Nivel Conversacional</label>
+                    <label class="negrita">Nivel Conversacional</label>
                     <v-select
                       v-model="usuario.nivelConversacional2"
                       :items="tipoNivelConversacional"
-                      required
                       dense
                       solo
                     ></v-select>
                     <div class="form-group">
-                      <label>Observaciones</label>
+                      <label class="negrita">Observaciones</label>
                       <textarea
                         class="form-control"
                         v-model="usuario.observaciones2"
-                        required
                       ></textarea>
                     </div>
                           </form>
@@ -675,44 +674,39 @@
                         >
                         <v-expansion-panel-content>
                           <form>
-                            <label>Otro idioma</label>
+                            <label class="negrita">Otro idioma</label>
                     <v-select
                       v-model="usuario.idiomas3"
                       :items="tipoIdiomas"
-                      required
                       dense
                       solo
                     ></v-select>
-                    <label>Nivel de escritura</label>
+                    <label class="negrita">Nivel de escritura</label>
                     <v-select
                       v-model="usuario.nivelEscritura3"
                       :items="tipoNivelEscritura"
-                      required
                       dense
                       solo
                     ></v-select>
-                    <label>Nivel de lectura</label>
+                    <label class="negrita">Nivel de lectura</label>
                     <v-select
                       v-model="usuario.nivelLectura3"
                       :items="tipoNivelLectura"
-                      required
                       dense
                       solo
                     ></v-select>
-                    <label>Nivel Conversacional</label>
+                    <label class="negrita">Nivel Conversacional</label>
                     <v-select
                       v-model="usuario.nivelConversacional3"
                       :items="tipoNivelConversacional"
-                      required
                       dense
                       solo
                     ></v-select>
                     <div class="form-group">
-                      <label>Observaciones</label>
+                      <label class="negrita">Observaciones</label>
                       <textarea
                         class="form-control"
                         v-model="usuario.observaciones3"
-                        required
                       ></textarea>
                     </div>
                           </form>
@@ -720,6 +714,9 @@
                       </v-expansion-panel>
                     </v-expansion-panels>
                     </div>
+                    <div class="form-group">
+                    <button class="continuar">Actualizar datos</button>
+                </div>
                   </form>
                 </v-expansion-panel-content>
               </v-expansion-panel>
@@ -730,10 +727,9 @@
                   ><strong>Arma</strong></v-expansion-panel-header
                 >
                 <v-expansion-panel-content>
-                  <form name="f5" id="f5">
-                    <label>Tipo de arma</label>
+                  <form @submit.prevent="onUpdateForm" name="f5" id="f5">
+                    <label class="negrita">Tipo de arma</label>
                     <select
-                      required
                       class="form-control"
                       id="arma"
                       @click="armas()"
@@ -743,14 +739,20 @@
                       <option value="PISTOLA">PISTOLA</option>
                       <option value="REVOLVER">REVOLVER</option>
                     </select>
-                    <label>Modalidad</label>
+                    <label class="negrita">Modalidad</label>
                     <v-select
                       v-model="usuario.modalidadArma"
                       :items="tipoModalidadArma"
                       dense
                       solo
                     ></v-select>
-                    <label>Calibre</label>
+                    <label class="negrita">Calibre</label>
+                     <v-text-field
+                    class="color"
+            v-model="usuario.calibre"
+            readonly
+          ></v-text-field>
+          <label class="negrita">Por favor seleccionar dato a actualizar</label>
                     <select
                       id="calibre"
                       class="form-control"
@@ -759,13 +761,16 @@
                       <option value="0"></option>
                     </select>
                     <div class="form-group">
-                      <label>Número del arma</label>
+                      <label class="negrita">Número del arma</label>
                       <input
                         type="text"
                         class="form-control"
                         v-model="usuario.numeroArma"
                       />
                     </div>
+                    <div class="form-group">
+                    <button class="continuar">Actualizar datos</button>
+                </div>
                   </form>
                 </v-expansion-panel-content>
               </v-expansion-panel>
@@ -776,14 +781,17 @@
                   ><strong>Estimación salarial</strong></v-expansion-panel-header
                 >
                 <v-expansion-panel-content>
-                  <form>
-                    <label>Salario estimado</label>
+                  <form @submit.prevent="onUpdateForm">
+                    <label class="negrita">Salario estimado</label>
                     <v-select
                       v-model="usuario.salario"
                       :items="tipoSalario"
                       dense
                       solo
                     ></v-select>
+                    <div class="form-group">
+                    <button class="continuar">Actualizar datos</button>
+                </div>
                   </form>
                 </v-expansion-panel-content>
               </v-expansion-panel>
@@ -797,22 +805,21 @@
                 >
                 <v-expansion-panel-content>
                   <form
+                    @submit.prevent="onUpdateForm"
                     name="f6"
                     id="f6"
                   >
                     <div class="form-group">
-                      <label>Nombre y Apellidos del Padre</label>
+                      <label class="negrita">Nombre y Apellidos del Padre</label>
                       <input
                         type="text"
                         class="UpperCase form-control"
                         v-model="usuario.nombrePadre"
-                        required
                         autofocus
                       />
                     </div>
-                    <label>Fallecido</label>
+                    <label class="negrita">Fallecido</label>
                     <select
-                      required
                       id="respuesta"
                       @click="respuesta()"
                       class="form-control"
@@ -822,18 +829,16 @@
                       <option value="SI">SI</option>
                       <option value="NO">NO</option>
                     </select>
-                    <label>País de residencia</label>
+                    <label class="negrita">País de residencia</label>
                     <v-select
                      v-bind:disabled="esHablitado"
                       v-model="usuario.paisPadre"
                       :items="tipoPaisPadre"
-                      required
                       dense
                       solo
                     ></v-select>
-                    <label>Departamento de residencia</label>
+                    <label class="negrita">Departamento de residencia</label>
                     <select
-                      required
                       v-bind:disabled="esHablitado"
                       class="form-control"
                       id="departamentos2"
@@ -879,9 +884,14 @@
                       <option value="VAUPES">VAUPÉS</option>
                       <option value="VICHADA">VICHADA</option>
                     </select>
-                    <label>Ciudad / Municipio</label>
+                    <label class="negrita">Ciudad / Municipio</label>
+                    <v-text-field
+                    class="color"
+            v-model="usuario.municipioPadre"
+            readonly
+          ></v-text-field>
+          <label class="negrita">Por favor seleccionar dato a actualizar</label>
                     <select
-                      required
                       v-bind:disabled="esHablitado"
                       id="municipiosPadre"
                       class="form-control"
@@ -890,51 +900,46 @@
                       <option value="0"></option>
                     </select>
                     <div class="form-group">
-                      <label>Teléfono</label>
+                      <label class="negrita">Teléfono</label>
                       <input
                         v-bind:disabled="esHablitado"
                         type="number"
                         class="form-control"
                         v-model="usuario.telefonoPadre"
-                        required
                         oninput="this.value = this.value.replace(/[^0-9.]/g, ''); this.value = this.value.replace(/(\..*)\./g, '$1');" 
                         onKeyDown="if(this.value.length==10 && event.keyCode!=8) return false;"
                       />
                     </div>
                     <div class="form-group">
-                      <label>Dirección del padre</label>
+                      <label class="negrita">Dirección del padre</label>
                       <input 
                         v-bind:disabled="esHablitado"
                         type="text"
                         class="form-control"
                         v-model="usuario.direccionPadre"
-                        required
                       />
                     </div>
                     <div class="form-group">
-                      <label>Ocupación del padre</label>
+                      <label class="negrita">Ocupación del padre</label>
                       <input
                         v-bind:disabled="esHablitado"
                         type="text"
                         class="form-control"
                         v-model="usuario.ocupacionPadre"
-                        required
                       />
                     </div>
 
                     <div class="form-group">
-                      <label>Nombre y Apellidos de la Madre</label>
+                      <label class="negrita">Nombre y Apellidos de la Madre</label>
                       <input
                         type="text"
                         class="UpperCase form-control"
                         v-model="usuario.nombreMadre"
-                        required
                         autofocus
                       />
                     </div>
-                    <label>Fallecido</label>
+                    <label class="negrita">Fallecido</label>
                     <select
-                      required
                       id="respuestaMadre"
                       @click="respuestaMadre()"
                       class="form-control"
@@ -944,18 +949,16 @@
                       <option value="SI">SI</option>
                       <option value="NO">NO</option>
                     </select>
-                    <label>País de residencia</label>
+                    <label class="negrita">País de residencia</label>
                     <v-select
                       v-bind:disabled="esHablitadoMadre"
                       v-model="usuario.paisMadre"
                       :items="tipoPaisMadre"
-                      required
                       dense
                       solo
                     ></v-select>
-                    <label>Departamento de residencia</label>
+                    <label class="negrita">Departamento de residencia</label>
                     <select
-                      required
                       v-bind:disabled="esHablitadoMadre"
                       class="form-control"
                       id="departamentos3"
@@ -1001,9 +1004,14 @@
                       <option value="VAUPES">VAUPÉS</option>
                       <option value="VICHADA">VICHADA</option>
                     </select>
-                    <label>Ciudad / Municipio</label>
+                    <label class="negrita">Ciudad / Municipio</label>
+                    <v-text-field
+                    class="color"
+            v-model="usuario.municipioMadre"
+            readonly
+          ></v-text-field>
+          <label class="negrita">Por favor seleccionar dato a actualizar</label>
                     <select
-                      required
                       v-bind:disabled="esHablitadoMadre"
                       id="municipiosMadre"
                       class="form-control"
@@ -1012,37 +1020,37 @@
                       <option value="0"></option>
                     </select>
                     <div class="form-group">
-                      <label>Teléfono</label>
+                      <label class="negrita">Teléfono</label>
                       <input
                         v-bind:disabled="esHablitadoMadre"
                         type="number"
                         class="form-control"
                         v-model="usuario.telefonoMadre"
-                        required
                         oninput="this.value = this.value.replace(/[^0-9.]/g, ''); this.value = this.value.replace(/(\..*)\./g, '$1');" 
                         onKeyDown="if(this.value.length==10 && event.keyCode!=8) return false;"
                       />
                     </div>
                     <div class="form-group">
-                      <label>Dirección del madre</label>
+                      <label class="negrita">Dirección del madre</label>
                       <input
                         v-bind:disabled="esHablitadoMadre"
                         type="text"
                         class="form-control"
                         v-model="usuario.direccionMadre"
-                        required
                       />
                     </div>
                     <div class="form-group">
-                      <label>Ocupación del madre</label>
+                      <label class="negrita">Ocupación del madre</label>
                       <input
                         v-bind:disabled="esHablitadoMadre"
                         type="text"
                         class="form-control"
                         v-model="usuario.ocupacionMadre"
-                        required
                       />
                     </div>
+                    <div class="form-group">
+                    <button class="continuar">Actualizar datos</button>
+                </div>
                   </form>
                 </v-expansion-panel-content>
               </v-expansion-panel>
@@ -1055,57 +1063,51 @@
                   ></v-expansion-panel-header
                 >
                 <v-expansion-panel-content>
-                  <form>
-                    <label>Reservista</label>
+                  <form @submit.prevent="onUpdateForm">
+                    <label class="negrita">Reservista</label>
                     <v-select
                       v-model="usuario.reservista"
                       :items="tipoReservista"
-                      required
                       dense
                       solo
                     ></v-select>
-                    <label>Institución</label>
+                    <label class="negrita">Institución</label>
                     <v-select
                       v-model="usuario.institucionLibreta"
                       :items="tipoInstitucionLibreta"
-                      required
                       dense
                       solo
                     ></v-select>
                     <div class="form-group">
-                      <label>Nro. de la libreta Militar</label>
+                      <label class="negrita">Nro. de la libreta Militar</label>
                       <input
                         type="number"
                         class="form-control"
                         v-model="usuario.numeroLibreta"
-                        required
                         oninput="this.value = this.value.replace(/[^0-9.]/g, ''); this.value = this.value.replace(/(\..*)\./g, '$1');" 
                         onKeyDown="if(this.value.length==15 && event.keyCode!=8) return false;"
                       />
                     </div>
-                    <label>Clase de la libreta militar</label>
+                    <label class="negrita">Clase de la libreta militar</label>
                     <v-select
                       v-model="usuario.claseLibreta"
                       :items="tipoClaseLibreta"
-                      required
                       dense
                       solo
                     ></v-select>
                     <div class="form-group">
-                      <label>Fecha de expedición</label>
+                      <label class="negrita">Fecha de expedición</label>
                       <v-flex xs12 sm2>
                         <input
                           type="date"
                           class="form-control"
                           v-model="usuario.fechaLibreta"
                           pattern="\d{4}-\d{2}-\d{2}"
-                          required
                         />
                       </v-flex>
                     </div>
-                     <label>Licencia de conducción</label>
+                     <label class="negrita">Licencia de conducción</label>
                     <select
-                      required
                       class="form-control"
                       id="licencia"
                       @click="licencia_conduccion()"
@@ -1115,28 +1117,29 @@
                       <option value="SI">SI</option>
                       <option value="NO">NO</option>
                     </select>
-                    <label>Clase de licencia de conducción</label>
-                    <v-select
-                      v-bind:disabled="esHablitadoLicencia"
-                      v-model="usuario.licenciaConduccion"
-                      :items="tipoLicenciaConduccion"
-                      required
-                      dense
-                      solo
-                      multiple
-                    ></v-select>
+                    <label class="negrita">Clase de licencia de conducción</label>
+                    <v-combobox
+                     v-bind:disabled="esHablitadoLicencia"
+                     v-model="usuario.licenciaConduccion"
+                     :items="tipoLicenciaConduccion"
+                     multiple
+                     solo
+                     dense
+                  ></v-combobox>
                     <div class="form-group">
-                      <label>Número de licencia</label>
+                      <label class="negrita">Número de licencia</label>
                       <input
                         v-bind:disabled="esHablitadoLicencia"
                         type="text"
                         class="form-control"
                         v-model="usuario.numeroLicencia"
-                        required
                         oninput="this.value = this.value.replace(/[^0-9.]/g, ''); this.value = this.value.replace(/(\..*)\./g, '$1');" 
                         onKeyDown="if(this.value.length==16 && event.keyCode!=8) return false;"
                       />
                     </div>
+                    <div class="form-group">
+                    <button class="continuar">Actualizar datos</button>
+                </div>
                   </form>
                 </v-expansion-panel-content>
               </v-expansion-panel>
@@ -1150,25 +1153,24 @@
                 >
                 <v-expansion-panel-content>
                   <form
+                    @submit.prevent="onUpdateForm"
                     name="f7"
                     id="f7"
                   >
                     <br />
-                    <h6>Primera referencia familiar (mínimo 2)</h6>
+                    <h6 class="negrita">Primera referencia familiar (mínimo 2)</h6>
                     <br />
                     <div class="form-group">
-                      <label>Nombre completo</label>
+                      <label class="negrita">Nombre completo</label>
                       <input
                         type="text"
                         class="UpperCase form-control"
                         v-model="usuario.nombreFamiliar1"
-                        required
                         autofocus
                       />
                     </div>
-                    <label>Departamento de residencia</label>
+                    <label class="negrita">Departamento de residencia</label>
                     <select
-                      required
                       class="form-control"
                       id="departamentos4"
                       @click="municipiosFamiliar1()"
@@ -1214,8 +1216,13 @@
                       <option value="VICHADA">VICHADA</option>
                     </select>
                     <label>Ciudad / Municipio</label>
+                    <v-text-field
+                    class="color"
+            v-model="usuario.municipioFamiliar1"
+            readonly
+          ></v-text-field>
+          <label class="negrita">Por favor seleccionar dato a actualizar</label>
                     <select
-                      required
                       id="municipioFamiliar1"
                       class="form-control"
                       v-model="usuario.municipioFamiliar1"
@@ -1223,24 +1230,22 @@
                       <option value="0"></option>
                     </select>
                     <div class="form-group">
-                      <label>Dirección</label>
+                      <label class="negrita">Dirección</label>
                       <input
                         type="text"
                         class="UpperCase form-control"
                         v-model="usuario.direccionFamiliar1"
-                        required
                       />
                     </div>
-                    <label>Parentesco</label>
+                    <label class="negrita">Parentesco</label>
                     <v-select
                       v-model="usuario.parentescoFamiliar1"
                       :items="tipoParentescoFamiliar1"
-                      required
                       dense
                       solo
                     ></v-select>
                     <div class="form-group">
-                      <label>Teléfono fijo</label>
+                      <label class="negrita">Teléfono fijo</label>
                       <input
                         type="number"
                         class="form-control"
@@ -1250,18 +1255,17 @@
                       />
                     </div>
                     <div class="form-group">
-                      <label>Celular</label>
+                      <label class="negrita">Celular</label>
                       <input
                         type="number"
                         class="form-control"
                         v-model="usuario.celularFamiliar1"
-                        required
                         oninput="this.value = this.value.replace(/[^0-9.]/g, ''); this.value = this.value.replace(/(\..*)\./g, '$1');" 
                         onKeyDown="if(this.value.length==10 && event.keyCode!=8) return false;"
                       />
                     </div>
                     <div class="form-group">
-                      <label>Teléfono Oficina</label>
+                      <label class="negrita">Teléfono Oficina</label>
                       <input
                         type="number"
                         class="form-control"
@@ -1271,21 +1275,19 @@
                       />
                     </div>
                     <br />
-                    <h6>Segunda referencia familiar</h6>
+                    <h6 class="negrita">Segunda referencia familiar</h6>
                     <br />
                     <div class="form-group">
-                      <label>Nombre completo</label>
+                      <label class="negrita">Nombre completo</label>
                       <input
                         type="text"
                         class="UpperCase form-control"
                         v-model="usuario.nombreFamiliar2"
-                        required
                         autofocus
                       />
                     </div>
-                    <label>Departamento de residencia</label>
+                    <label class="negrita">Departamento de residencia</label>
                     <select
-                      required
                       class="form-control"
                       id="departamentos5"
                       @click="municipiosFamiliar2()"
@@ -1330,9 +1332,14 @@
                       <option value="VAUPES">VAUPÉS</option>
                       <option value="VICHADA">VICHADA</option>
                     </select>
-                    <label>Ciudad / Municipio</label>
+                    <label class="negrita">Ciudad / Municipio</label>
+                    <v-text-field
+                    class="color"
+            v-model="usuario.municipioFamiliar2"
+            readonly
+          ></v-text-field>
+          <label class="negrita">Por favor seleccionar dato a actualizar</label>
                     <select
-                      required
                       id="municipioFamiliar2"
                       class="form-control"
                       v-model="usuario.municipioFamiliar2"
@@ -1340,24 +1347,22 @@
                       <option value="0"></option>
                     </select>
                     <div class="form-group">
-                      <label>Dirección</label>
+                      <label class="negrita">Dirección</label>
                       <input
                         type="text"
                         class="UpperCase form-control"
                         v-model="usuario.direccionFamiliar2"
-                        required
                       />
                     </div>
-                    <label>Parentesco</label>
+                    <label class="negrita">Parentesco</label>
                     <v-select
                       v-model="usuario.parentescoFamiliar2"
                       :items="tipoParentescoFamiliar2"
-                      required
                       dense
                       solo
                     ></v-select>
                     <div class="form-group">
-                      <label>Teléfono fijo</label>
+                      <label class="negrita">Teléfono fijo</label>
                       <input
                         type="number"
                         class="form-control"
@@ -1367,18 +1372,17 @@
                       />
                     </div>
                     <div class="form-group">
-                      <label>Celular</label>
+                      <label class="negrita">Celular</label>
                       <input
                         type="number"
                         class="form-control"
                         v-model="usuario.celularFamiliar2"
-                        required
                         oninput="this.value = this.value.replace(/[^0-9.]/g, ''); this.value = this.value.replace(/(\..*)\./g, '$1');" 
                         onKeyDown="if(this.value.length==10 && event.keyCode!=8) return false;"
                       />
                     </div>
                     <div class="form-group">
-                      <label>Teléfono Oficina</label>
+                      <label class="negrita">Teléfono Oficina</label>
                       <input
                         type="number"
                         class="form-control"
@@ -1387,6 +1391,9 @@
                         onKeyDown="if(this.value.length==10 && event.keyCode!=8) return false;"
                       />
                     </div>
+                    <div class="form-group">
+                    <button class="continuar">Actualizar datos</button>
+                </div>
                   </form>
                 </v-expansion-panel-content>
               </v-expansion-panel>
@@ -1400,29 +1407,28 @@
                 >
                 <v-expansion-panel-content>
                   <form
+                    @submit.prevent="onUpdateForm"
                     name="f10"
                     id="f10"
                   >
                     <br />
-                    <h6>Primera referencia personal (mínimo 2)</h6>
+                    <h6 class="negrita">Primera referencia personal (mínimo 2)</h6>
                     <br />
                     <div class="form-group">
-                      <label>Nombre completo</label>
+                      <label class="negrita">Nombre completo</label>
                       <input
                         type="text"
                         class="UpperCase form-control"
                         v-model="usuario.nombrePersonal1"
-                        required
                         autofocus
                       />
                     </div>
-                    <label>Departamento de residencia</label>
+                    <label class="negrita">Departamento de residencia</label>
                     <select
                       class="form-control"
                       id="departamentos6"
                       @click="municipiosPersonal1()"
                       v-model="usuario.departamentoPersonal1"
-                      required
                     > 
                       <option value="0">Seleccione...</option>
                       <option value="AMAZONAS">AMAZONAS</option>
@@ -1463,26 +1469,30 @@
                       <option value="VAUPES">VAUPÉS</option>
                       <option value="VICHADA">VICHADA</option>
                     </select>
-                    <label>Ciudad / Municipio</label>
+                    <label class="negrita">Ciudad / Municipio</label>
+                    <v-text-field
+                    class="color"
+            v-model="usuario.municipioPersonal1"
+            readonly
+          ></v-text-field>
+          <label class="negrita">Por favor seleccionar dato a actualizar</label>
                     <select
                       id="municipioPersonal1"
                       class="form-control"
                       v-model="usuario.municipioPersonal1"
-                      required
                     >
                       <option value="0"></option>
                     </select>
                     <div class="form-group">
-                      <label>Dirección</label>
+                      <label class="negrita">Dirección</label>
                       <input
                         type="text"
                         class="UpperCase form-control"
                         v-model="usuario.direccionPersonal1"
-                        required
                       />
                     </div>
                     <div class="form-group">
-                      <label>Teléfono fijo</label>
+                      <label class="negrita">Teléfono fijo</label>
                       <input
                         type="number"
                         class="form-control"
@@ -1492,18 +1502,17 @@
                       />
                     </div>
                     <div class="form-group">
-                      <label>Celular</label>
+                      <label class="negrita">Celular</label>
                       <input
                         type="number"
                         class="form-control"
                         v-model="usuario.celularPersonal1"
-                        required
                         oninput="this.value = this.value.replace(/[^0-9.]/g, ''); this.value = this.value.replace(/(\..*)\./g, '$1');" 
                         onKeyDown="if(this.value.length==10 && event.keyCode!=8) return false;"
                       />
                     </div>
                     <div class="form-group">
-                      <label>Teléfono Oficina</label>
+                      <label class="negrita">Teléfono Oficina</label>
                       <input
                         type="number"
                         class="form-control"
@@ -1513,25 +1522,23 @@
                       />
                     </div>
                     <br />
-                    <h6>Segunda referencia Personal</h6>
+                    <h6 class="negrita">Segunda referencia Personal</h6>
                     <br />
                     <div class="form-group">
-                      <label>Nombre completo</label>
+                      <label class="negrita">Nombre completo</label>
                       <input
                         type="text"
                         class="UpperCase form-control"
                         v-model="usuario.nombrePersonal2"
-                        required
                         autofocus
                       />
                     </div>
-                    <label>Departamento de residencia</label>
+                    <label class="negrita">Departamento de residencia</label>
                     <select
                       class="form-control"
                       id="departamentos7"
                       @click="municipiosPersonal2()"
                       v-model="usuario.departamentoPersonal2"
-                      required
                     >
                       <option value="0">Seleccione...</option>
                       <option value="AMAZONAS">AMAZONAS</option>
@@ -1572,26 +1579,30 @@
                       <option value="VAUPES">VAUPÉS</option>
                       <option value="VICHADA">VICHADA</option>
                     </select>
-                    <label>Ciudad / Municipio</label>
+                    <label class="negrita">Ciudad / Municipio</label>
+                    <v-text-field
+                    class="color"
+            v-model="usuario.municipioPersonal2"
+            readonly
+          ></v-text-field>
+          <label class="negrita">Por favor seleccionar dato a actualizar</label>
                     <select
                       id="municipioPersonal2"
                       class="form-control"
                       v-model="usuario.municipioPersonal2"
-                      required
                     >
                       <option value="0"></option>
                     </select>
                     <div class="form-group">
-                      <label>Dirección</label>
+                      <label class="negrita">Dirección</label>
                       <input
                         type="text"
                         class="UpperCase form-control"
                         v-model="usuario.direccionPersonal2"
-                        required
                       />
                     </div>
                     <div class="form-group">
-                      <label>Teléfono fijo</label>
+                      <label class="negrita">Teléfono fijo</label>
                       <input
                         type="number"
                         class="form-control"
@@ -1601,18 +1612,17 @@
                       />
                     </div>
                     <div class="form-group">
-                      <label>Celular</label>
+                      <label class="negrita">Celular</label>
                       <input
                         type="number"
                         class="form-control"
                         v-model="usuario.celularPersonal2"
-                        required
                         oninput="this.value = this.value.replace(/[^0-9.]/g, ''); this.value = this.value.replace(/(\..*)\./g, '$1');" 
                         onKeyDown="if(this.value.length==10 && event.keyCode!=8) return false;"
                       />
                     </div>
                     <div class="form-group">
-                      <label>Teléfono Oficina</label>
+                      <label class="negrita">Teléfono Oficina</label>
                       <input
                         type="number"
                         class="form-control"
@@ -1621,6 +1631,9 @@
                         onKeyDown="if(this.value.length==10 && event.keyCode!=8) return false;"
                       />
                     </div>
+                    <div class="form-group">
+                    <button class="continuar">Actualizar datos</button>
+                </div>
                   </form>
                 </v-expansion-panel-content>
               </v-expansion-panel>
@@ -1633,34 +1646,31 @@
                   ></v-expansion-panel-header
                 >
                 <v-expansion-panel-content>
-                  <form name="f13" id="f13">
+                  <form @submit.prevent="onUpdateForm" name="f13" id="f13">
                     <div class="form-group">
                       <br />
-                      <h6>Primera referencia laboral (mínimo 1)</h6>
+                      <h6 class="negrita">Primera referencia laboral (mínimo 1)</h6>
                       <br />
-                      <label>Empresa</label>
+                      <label class="negrita">Empresa</label>
                       <input
                         type="text"
                         class="UpperCase form-control"
                         v-model="usuario.empresa1"
-                        required
                       />
                     </div>
-                    <label>Labora actualmente</label>
+                    <label class="negrita">Labora actualmente</label>
                     <v-select
                       v-model="usuario.labora1"
                       :items="tipoLabora1"
-                      required
                       dense
                       solo
                     ></v-select>
-                    <label>Departamento</label>
+                    <label class="negrita">Departamento</label>
                     <select
                       class="form-control"
                       id="departamentos8"
                       @click="municipiosLaboral1()"
                       v-model="usuario.departamentoLaboral1"
-                      required
                     >
                       <option value="0">Seleccione...</option>
                       <option value="AMAZONAS">AMAZONAS</option>
@@ -1701,55 +1711,56 @@
                       <option value="VAUPES">VAUPÉS</option>
                       <option value="VICHADA">VICHADA</option>
                     </select>
-                    <label>Ciudad / Municipio</label>
+                    <label class="negrita">Ciudad / Municipio</label>
+                    <v-text-field
+                    class="color"
+            v-model="usuario.municipioLaboral1"
+            readonly
+          ></v-text-field>
+          <label class="negrita">Por favor seleccionar dato a actualizar</label>
                     <select
                       id="municipioLaboral1"
                       class="form-control"
                       v-model="usuario.municipioLaboral1"
-                      required
                     >
                       <option value="0"></option>
                     </select>
                     <div class="form-group">
-                      <label>Fecha Incial</label>
+                      <label class="negrita">Fecha Incial</label>
                       <v-flex xs12 sm2>
                         <input
                           type="date"
                           class="form-control"
                           v-model="usuario.fechaIncialLaboral1"
                           pattern="\d{4}-\d{2}-\d{2}"
-                          required
                           id="fechaIncial"
                         />
                       </v-flex>
                     </div>
                     <div class="form-group">
-                      <label>Fecha Final</label>
+                      <label class="negrita">Fecha Final</label>
                       <v-flex xs12 sm2>
                         <input
                           type="date"
                           class="form-control"
                           v-model="usuario.fechaFinalLaboral1"
                           pattern="\d{4}-\d{2}-\d{2}"
-                          required
                           id="fechaFinal"
-                          oninput="inp1 = document.getElementById('fechaIncial').value; inp2 = document.getElementById('fechaFinal').value; if(inp1 > inp2){alert('Error, la fecha inicial es mayor que la fecha final. Por favor corregir');};" 
+                          oninput="inp1 = document.getElementById('fechaIncial').value; inp2 = document.getElementById('fechaFinal').value; if(inp1 > inp2){alert('Error, la fecha inicial es mayor que la fecha final. Por favor corregir');  console.log('valor de ' + inp + ' el segundo valor de ' + inp2); document.getElementById('fechaFinal').value=''; document.getElementById('fechaIncial').value='';} ;" 
                         />
                       </v-flex>
                     </div>
-                      <label>Cargo</label>
+                      <label class="negrita">Cargo</label>
                       <v-select
                               v-model="usuario.cargoActual1"
                               :items="tipoCargo1"
-                              required
                               dense
                               solo
                             ></v-select>
-                    <label>Especialidad</label>
+                    <label class="negrita">Especialidad</label>
                       <v-select
                               v-model="usuario.especialidad1"
                               :items="tipoEspecialidad1"
-                              required
                               dense
                               solo
                             ></v-select>
@@ -1761,29 +1772,26 @@
                         <v-expansion-panel-content>
                           <form name="f14" id="f14">
                             <div class="form-group">
-                              <label>Empresa</label>
+                              <label class="negrita">Empresa</label>
                               <input
                                 type="text"
                                 class="UpperCase form-control"
                                 v-model="usuario.empresa2"
-                                required
                               />
                             </div>
-                            <label>Labora actualmente</label>
+                            <label class="negrita">Labora actualmente</label>
                             <v-select
                               v-model="usuario.labora2"
                               :items="tipoLabora2"
-                              required
                               dense
                               solo
                             ></v-select>
-                            <label>Departamento</label>
+                            <label class="negrita">Departamento</label>
                             <select
                               class="form-control"
                               id="departamentos9"
                               @click="municipiosLaboral2()"
                               v-model="usuario.departamentoLaboral2"
-                              required
                             >
                               <option value="0">Seleccione...</option>
                               <option value="AMAZONAS">AMAZONAS</option>
@@ -1828,55 +1836,56 @@
                               <option value="VAUPES">VAUPÉS</option>
                               <option value="VICHADA">VICHADA</option>
                             </select>
-                            <label>Ciudad / Municipio</label>
+                            <label class="negrita">Ciudad / Municipio</label>
+                            <v-text-field
+                    class="color"
+            v-model="usuario.municipioLaboral2"
+            readonly
+          ></v-text-field>
+          <label class="negrita">Por favor seleccionar dato a actualizar</label>
                             <select
                               id="municipioLaboral2"
                               class="form-control"
                               v-model="usuario.municipioLaboral2"
-                              required
                             >
                               <option value="0"></option>
                             </select>
                             <div class="form-group">
-                              <label>Fecha Incial</label>
+                              <label class="negrita">Fecha Incial</label>
                               <v-flex xs12 sm2>
                                 <input
                                   type="date"
                                   class="form-control"
                                   v-model="usuario.fechaIncialLaboral2"
                                   pattern="\d{4}-\d{2}-\d{2}"
-                                  required
                                   id="fechaIncial2"
                                 />
                               </v-flex>
                             </div>
                             <div class="form-group">
-                              <label>Fecha Final</label>
+                              <label class="negrita">Fecha Final</label>
                               <v-flex xs12 sm2>
                                 <input
                                   type="date"
                                   class="form-control"
                                   v-model="usuario.fechaFinalLaboral2"
                                   pattern="\d{4}-\d{2}-\d{2}"
-                                  required
                                   id="fechaFinal2"
-                                  oninput="inp1 = document.getElementById('fechaIncial2').value; inp2 = document.getElementById('fechaFinal2').value; if(inp1 > inp2){alert('Error, la fecha inicial es mayor que la fecha final. Por favor corregir');};" 
-                                />
+                                  oninput="inp1 = document.getElementById('fechaIncial2').value; inp2 = document.getElementById('fechaFinal2').value; if(inp1 > inp2){alert('Error, la fecha inicial es mayor que la fecha final. Por favor corregir');  console.log('valor de ' + inp + ' el segundo valor de ' + inp2); document.getElementById('fechaFinal2').value=''; document.getElementById('fechaIncial2').value='';} ;"
+                                 />
                               </v-flex>
                             </div>
-                           <label>Cargo</label>
+                           <label class="negrita">Cargo</label>
                       <v-select
                               v-model="usuario.cargoActual2"
                               :items="tipoCargo2"
-                              required
                               dense
                               solo
                             ></v-select>
-                    <label>Especialidad</label>
+                    <label class="negrita">Especialidad</label>
                       <v-select
                               v-model="usuario.especialidad2"
                               :items="tipoEspecialidad2"
-                              required
                               dense
                               solo
                             ></v-select>
@@ -1892,29 +1901,26 @@
                         <v-expansion-panel-content>
                           <form name="f15" id="f15">
                             <div class="form-group">
-                              <label>Empresa</label>
+                              <label class="negrita">Empresa</label>
                               <input
                                 type="text"
                                 class="UpperCase form-control"
                                 v-model="usuario.empresa3"
-                                required
                               />
                             </div>
-                            <label>Labora actualmente</label>
+                            <label class="negrita">Labora actualmente</label>
                             <v-select
                               v-model="usuario.labora3"
                               :items="tipoLabora3"
-                              required
                               dense
                               solo
                             ></v-select>
-                            <label>Departamento</label>
+                            <label class="negrita">Departamento</label>
                             <select
                               class="form-control"
                               id="departamentos10"
                               @click="municipiosLaboral3()"
                               v-model="usuario.departamentoLaboral3"
-                              required
                             >
                               <option value="0">Seleccione...</option>
                               <option value="AMAZONAS">AMAZONAS</option>
@@ -1959,55 +1965,56 @@
                               <option value="VAUPES">VAUPÉS</option>
                               <option value="VICHADA">VICHADA</option>
                             </select>
-                            <label>Ciudad / Municipio</label>
+                            <label class="negrita">Ciudad / Municipio</label>
+                            <v-text-field
+                    class="color"
+            v-model="usuario.municipioLaboral3"
+            readonly
+          ></v-text-field>
+          <label class="negrita">Por favor seleccionar dato a actualizar</label>
                             <select
                               id="municipioLaboral3"
                               class="form-control"
                               v-model="usuario.municipioLaboral3"
-                              required
                             >
                               <option value="0"></option>
                             </select>
                             <div class="form-group">
-                              <label>Fecha Incial</label>
+                              <label class="negrita">Fecha Incial</label>
                               <v-flex xs12 sm2>
                                 <input
                                   type="date"
                                   class="form-control"
                                   v-model="usuario.fechaIncialLaboral3"
                                   pattern="\d{4}-\d{2}-\d{2}"
-                                  required
                                   id="fechaIncial3"
                                 />
                               </v-flex>
                             </div>
                             <div class="form-group">
-                              <label>Fecha Final</label>
+                              <label class="negrita">Fecha Final</label>
                               <v-flex xs12 sm2>
                                 <input
                                   type="date"
                                   class="form-control"
                                   v-model="usuario.fechaFinalLaboral3"
                                   pattern="\d{4}-\d{2}-\d{2}"
-                                  required
                                   id="fechaFinal3"
-                                 oninput="inp1 = document.getElementById('fechaIncial3').value; inp2 = document.getElementById('fechaFinal3').value; if(inp1 > inp2){alert('Error, la fecha inicial es mayor que la fecha final. Por favor corregir');};" 
+                                  oninput="inp1 = document.getElementById('fechaIncial3').value; inp2 = document.getElementById('fechaFinal3').value; if(inp1 > inp2){alert('Error, la fecha inicial es mayor que la fecha final. Por favor corregir');  console.log('valor de ' + inp + ' el segundo valor de ' + inp2); document.getElementById('fechaFinal3').value=''; document.getElementById('fechaIncial3').value='';} ;"
                                 />
                               </v-flex>
                             </div>
-                    <label>Cargo</label>
+                    <label class="negrita">Cargo</label>
                       <v-select
                               v-model="usuario.cargoActual3"
                               :items="tipoCargo3"
-                              required
                               dense
                               solo
                             ></v-select>
-                    <label>Especialidad</label>
+                    <label class="negrita">Especialidad</label>
                       <v-select
                               v-model="usuario.especialidad3"
                               :items="tipoEspecialidad3"
-                              required
                               dense
                               solo
                             ></v-select>
@@ -2023,29 +2030,26 @@
                         <v-expansion-panel-content>
                           <form name="f16" id="f16">
                             <div class="form-group">
-                              <label>Empresa</label>
+                              <label class="negrita">Empresa</label>
                               <input
                                 type="text"
                                 class="UpperCase form-control"
                                 v-model="usuario.empresa4"
-                                required
                               />
                             </div>
-                            <label>Labora actualmente</label>
+                            <label class="negrita">Labora actualmente</label>
                             <v-select
                               v-model="usuario.labora4"
                               :items="tipoLabora4"
-                              required
                               dense
                               solo
                             ></v-select>
-                            <label>Departamento</label>
+                            <label class="negrita">Departamento</label>
                             <select
                               class="form-control"
                               id="departamentos11"
                               @click="municipiosLaboral4()"
                               v-model="usuario.departamentoLaboral4"
-                              required
                             >
                               <option value="0">Seleccione...</option>
                               <option value="AMAZONAS">AMAZONAS</option>
@@ -2090,55 +2094,56 @@
                               <option value="VAUPES">VAUPÉS</option>
                               <option value="VICHADA">VICHADA</option>
                             </select>
-                            <label>Ciudad / Municipio</label>
+                            <label class="negrita">Ciudad / Municipio</label>
+                            <v-text-field
+                    class="color"
+            v-model="usuario.municipioLaboral4"
+            readonly
+          ></v-text-field>
+          <label class="negrita">Por favor seleccionar dato a actualizar</label>
                             <select
                               id="municipioLaboral4"
                               class="form-control"
                               v-model="usuario.municipioLaboral4"
-                              required
                             >
                               <option value="0"></option>
                             </select>
                             <div class="form-group">
-                              <label>Fecha Incial</label>
+                              <label class="negrita">Fecha Incial</label>
                               <v-flex xs12 sm2>
                                 <input
                                   type="date"
                                   class="form-control"
                                   v-model="usuario.fechaIncialLaboral4"
                                   pattern="\d{4}-\d{2}-\d{2}"
-                                  required
                                   id="fechaIncial4"
                                 />
                               </v-flex>
                             </div>
                             <div class="form-group">
-                              <label>Fecha Final</label>
+                              <label class="negrita">Fecha Final</label>
                               <v-flex xs12 sm2>
                                 <input
                                   type="date"
                                   class="form-control"
                                   v-model="usuario.fechaFinalLaboral4"
                                   pattern="\d{4}-\d{2}-\d{2}"
-                                  required
                                   id="fechaFinal4"
-                          oninput="inp1 = document.getElementById('fechaIncial4').value; inp2 = document.getElementById('fechaFinal4').value; if(inp1 > inp2){alert('Error, la fecha inicial es mayor que la fecha final. Por favor corregir');};" 
+                                 oninput="inp1 = document.getElementById('fechaIncial4').value; inp2 = document.getElementById('fechaFinal4').value; if(inp1 > inp2){alert('Error, la fecha inicial es mayor que la fecha final. Por favor corregir');  console.log('valor de ' + inp + ' el segundo valor de ' + inp2); document.getElementById('fechaFinal4').value=''; document.getElementById('fechaIncial4').value='';} ;"
                                 />
                               </v-flex>
                             </div>
-                            <label>Cargo</label>
+                            <label class="negrita">Cargo</label>
                       <v-select
                               v-model="usuario.cargoActual4"
                               :items="tipoCargo4"
-                              required
                               dense
                               solo
                             ></v-select>
-                    <label>Especialidad</label>
+                    <label class="negrita">Especialidad</label>
                       <v-select
                               v-model="usuario.especialidad4"
                               :items="tipoEspecialidad4"
-                              required
                               dense
                               solo
                             ></v-select>
@@ -2154,29 +2159,26 @@
                         <v-expansion-panel-content>
                           <form name="f17" id="f17">
                             <div class="form-group">
-                              <label>Empresa</label>
+                              <label class="negrita">Empresa</label>
                               <input
                                 type="text"
                                 class="UpperCase form-control"
                                 v-model="usuario.empresa5"
-                                required
                               />
                             </div>
-                            <label>Labora actualmente</label>
+                            <label class="negrita">Labora actualmente</label>
                             <v-select
                               v-model="usuario.labora5"
                               :items="tipoLabora5"
-                              required
                               dense
                               solo
                             ></v-select>
-                            <label>Departamento</label>
+                            <label class="negrita">Departamento</label>
                             <select
                               class="form-control"
                               id="departamentos12"
                               @click="municipiosLaboral5()"
                               v-model="usuario.departamentoLaboral5"
-                              required
                             >
                               <option value="0">Seleccione...</option>
                               <option value="AMAZONAS">AMAZONAS</option>
@@ -2221,62 +2223,66 @@
                               <option value="VAUPES">VAUPÉS</option>
                               <option value="VICHADA">VICHADA</option>
                             </select>
-                            <label>Ciudad / Municipio</label>
+                            <label class="negrita">Ciudad / Municipio</label>
+                            <v-text-field
+                    class="color"
+            v-model="usuario.municipioLaboral5"
+            readonly
+          ></v-text-field>
+          <label class="negrita">Por favor seleccionar dato a actualizar</label>
                             <select
                               id="municipioLaboral5"
                               class="form-control"
                               v-model="usuario.municipioLaboral5"
-                              required
                             >
                               <option value="0"></option>
                             </select>
                             <div class="form-group">
-                              <label>Fecha Incial</label>
+                              <label class="negrita">Fecha Incial</label>
                               <v-flex xs12 sm2>
                                 <input
                                   type="date"
                                   class="form-control"
                                   v-model="usuario.fechaIncialLaboral5"
                                   pattern="\d{4}-\d{2}-\d{2}"
-                                  required
                                   id="fechaIncial5"
                                 />
                               </v-flex>
                             </div>
                             <div class="form-group">
-                              <label>Fecha Final</label>
+                              <label class="negrita">Fecha Final</label>
                               <v-flex xs12 sm2>
                                 <input
                                   type="date"
                                   class="form-control"
                                   v-model="usuario.fechaFinalLaboral5"
                                   pattern="\d{4}-\d{2}-\d{2}"
-                                  required
                                   id="fechaFinal5"
-                                  oninput="inp1 = document.getElementById('fechaIncial5').value; inp2 = document.getElementById('fechaFinal5').value; if(inp1 > inp2){alert('Error, la fecha inicial es mayor que la fecha final. Por favor corregir');};" 
+                                  oninput="inp1 = document.getElementById('fechaIncial5').value; inp2 = document.getElementById('fechaFinal5').value; if(inp1 > inp2){alert('Error, la fecha inicial es mayor que la fecha final. Por favor corregir');  console.log('valor de ' + inp + ' el segundo valor de ' + inp2); document.getElementById('fechaFinal5').value=''; document.getElementById('fechaIncial5').value='';} ;"
                                 />
                               </v-flex>
                             </div>
-                            <label>Cargo</label>
+                            <label class="negrita">Cargo</label>
                       <v-select
                               v-model="usuario.cargoActual5"
                               :items="tipoCargo5"
-                              required
                               dense
                               solo
                             ></v-select>
-                    <label>Especialidad</label>
+                    <label class="negrita">Especialidad</label>
                       <v-select
                               v-model="usuario.especialidad5"
                               :items="tipoEspecialidad5"
-                              required
                               dense
                               solo
                             ></v-select>
                           </form>
                         </v-expansion-panel-content>
                       </v-expansion-panel>
-                    </v-expansion-panels>
+                    </v-expansion-panels><br/>
+                    <div class="form-group">
+                    <button class="continuar">Actualizar datos</button>
+                </div>
                   </form>
                 </v-expansion-panel-content>
               </v-expansion-panel>
@@ -2289,41 +2295,37 @@
                   ></v-expansion-panel-header
                 >
                 <v-expansion-panel-content>
-                  <form>
+                  <form @submit.prevent="onUpdateForm">
                     <div class="form-group">
-                      <label>Institución</label>
+                      <label class="negrita">Institución</label>
                       <input
                         type="text"
                         class="UpperCase form-control"
                         v-model="usuario.institucionAcademica1"
-                        required
                       />
                     </div>
                     <div class="form-group">
-                      <label>Fecha título</label>
+                      <label class="negrita">Fecha título</label>
                       <v-flex xs12 sm2>
                         <input
                           type="date"
                           class="form-control"
                           v-model="usuario.fechaAcademica1"
                           pattern="\d{4}-\d{2}-\d{2}"
-                          required
                         />
                       </v-flex>
                     </div>
-                    <label>Título obtenido</label>
+                    <label class="negrita">Título obtenido</label>
                     <input
                       type="text"
                       class="UpperCase form-control"
                       v-model="usuario.titulo1"
-                      required
                     />
 
-                    <label>Nivel Académico</label>
+                    <label class="negrita">Nivel Académico</label>
                     <v-select
                       v-model="usuario.nivelAcademico1"
                       :items="tipoNivelAcademico1"
-                      required
                       dense
                       solo
                     ></v-select>
@@ -2335,39 +2337,35 @@
                         <v-expansion-panel-content>
                           <form>
                             <div class="form-group">
-                              <label>Institución</label>
+                              <label class="negrita">Institución</label>
                               <input
                                 type="text"
                                 class="UpperCase form-control"
                                 v-model="usuario.institucionAcademica2"
-                                required
                               />
                             </div>
                             <div class="form-group">
-                              <label>Fecha título</label>
+                              <label class="negrita">Fecha título</label>
                               <v-flex xs12 sm2>
                                 <input
                                   type="date"
                                   class="form-control"
                                   v-model="usuario.fechaAcademica2"
                                   pattern="\d{4}-\d{2}-\d{2}"
-                                  required
                                 />
                               </v-flex>
                             </div>
-                            <label>Título obtenido</label>
+                            <label class="negrita">Título obtenido</label>
                             <input
                               type="text"
                               class="UpperCase form-control"
                               v-model="usuario.titulo2"
-                              required
                             />
 
-                            <label>Nivel Académico</label>
+                            <label class="negrita">Nivel Académico</label>
                             <v-select
                               v-model="usuario.nivelAcademico2"
                               :items="tipoNivelAcademico2"
-                              required
                               dense
                               solo
                             ></v-select>
@@ -2383,39 +2381,35 @@
                         <v-expansion-panel-content>
                           <form>
                             <div class="form-group">
-                              <label>Institución</label>
+                              <label class="negrita">Institución</label>
                               <input
                                 type="text"
                                 class="UpperCase form-control"
                                 v-model="usuario.institucionAcademica3"
-                                required
                               />
                             </div>
                             <div class="form-group">
-                              <label>Fecha título</label>
+                              <label class="negrita">Fecha título</label>
                               <v-flex xs12 sm2>
                                 <input
                                   type="date"
                                   class="form-control"
                                   v-model="usuario.fechaAcademica3"
                                   pattern="\d{4}-\d{2}-\d{2}"
-                                  required
                                 />
                               </v-flex>
                             </div>
-                            <label>Título obtenido</label>
+                            <label class="negrita">Título obtenido</label>
                             <input
                               type="text"
                               class="UpperCase form-control"
                               v-model="usuario.titulo3"
-                              required
                             />
 
-                            <label>Nivel Académico</label>
+                            <label class="negrita">Nivel Académico</label>
                             <v-select
                               v-model="usuario.nivelAcademico3"
                               :items="tipoNivelAcademico3"
-                              required
                               dense
                               solo
                             ></v-select>
@@ -2431,39 +2425,35 @@
                         <v-expansion-panel-content>
                           <form>
                             <div class="form-group">
-                              <label>Institución</label>
+                              <label class="negrita">Institución</label>
                               <input
                                 type="text"
                                 class="UpperCase form-control"
                                 v-model="usuario.institucionAcademica4"
-                                required
                               />
                             </div>
                             <div class="form-group">
-                              <label>Fecha título</label>
+                              <label class="negrita">Fecha título</label>
                               <v-flex xs12 sm2>
                                 <input
                                   type="date"
                                   class="form-control"
                                   v-model="usuario.fechaAcademica4"
                                   pattern="\d{4}-\d{2}-\d{2}"
-                                  required
                                 />
                               </v-flex>
                             </div>
-                            <label>Título obtenido</label>
+                            <label class="negrita">Título obtenido</label>
                             <input
                               type="text"
                               class="UpperCase form-control"
                               v-model="usuario.titulo4"
-                              required
                             />
 
-                            <label>Nivel Académico</label>
+                            <label class="negrita">Nivel Académico</label>
                             <v-select
                               v-model="usuario.nivelAcademico4"
                               :items="tipoNivelAcademico4"
-                              required
                               dense
                               solo
                             ></v-select>
@@ -2479,46 +2469,45 @@
                         <v-expansion-panel-content>
                           <form>
                             <div class="form-group">
-                              <label>Institución</label>
+                              <label class="negrita">Institución</label>
                               <input
                                 type="text"
                                 class="UpperCase form-control"
                                 v-model="usuario.institucionAcademica5"
-                                required
                               />
                             </div>
                             <div class="form-group">
-                              <label>Fecha título</label>
+                              <label class="negrita">Fecha título</label>
                               <v-flex xs12 sm2>
                                 <input
                                   type="date"
                                   class="form-control"
                                   v-model="usuario.fechaAcademica5"
                                   pattern="\d{4}-\d{2}-\d{2}"
-                                  required
                                 />
                               </v-flex>
                             </div>
-                            <label>Título obtenido</label>
+                            <label class="negrita">Título obtenido</label>
                             <input
                               type="text"
                               class="UpperCase form-control"
                               v-model="usuario.titulo5"
-                              required
                             />
 
-                            <label>Nivel Académico</label>
+                            <label class="negrita">Nivel Académico</label>
                             <v-select
                               v-model="usuario.nivelAcademico5"
                               :items="tipoNivelAcademico5"
-                              required
                               dense
                               solo
                             ></v-select>
                           </form>
                         </v-expansion-panel-content>
                       </v-expansion-panel>
-                    </v-expansion-panels>
+                    </v-expansion-panels><br/>
+                    <div class="form-group">
+                    <button class="continuar">Actualizar datos</button>
+                </div>
                   </form>
                 </v-expansion-panel-content>
               </v-expansion-panel>
@@ -2529,33 +2518,30 @@
                   ><strong>Cursos</strong></v-expansion-panel-header
                 >
                 <v-expansion-panel-content>
-                  <form>
+                  <form @submit.prevent="onUpdateForm">
                     <div class="form-group">
-                      <label>Institución</label>
+                      <label class="negrita">Institución</label>
                       <input
                         type="text"
                         class="UpperCase form-control"
                         v-model="usuario.institucionCurso1"
-                        required
                       />
                     </div>
                     <div class="form-group">
-                      <label>Fecha título</label>
+                      <label class="negrita">Fecha título</label>
                       <v-flex xs12 sm2>
                         <input
                           type="date"
                           class="form-control"
                           v-model="usuario.fechaCurso1"
                           pattern="\d{4}-\d{2}-\d{2}"
-                          required
                         />
                       </v-flex>
                     </div>
-                    <label>Título obtenido</label>
+                    <label class="negrita">Título obtenido</label>
                     <v-select
                               v-model="usuario.tituloCurso1"
                               :items="tipoTituloCurso1"
-                              required
                               dense
                               solo
                             ></v-select>
@@ -2567,31 +2553,28 @@
                         <v-expansion-panel-content>
                           <form>
                             <div class="form-group">
-                              <label>Institución</label>
+                              <label class="negrita">Institución</label>
                               <input
                                 type="text"
                                 class="UpperCase form-control"
                                 v-model="usuario.institucionCurso2"
-                                required
                               />
                             </div>
                             <div class="form-group">
-                              <label>Fecha título</label>
+                              <label class="negrita">Fecha título</label>
                               <v-flex xs12 sm2>
                                 <input
                                   type="date"
                                   class="form-control"
                                   v-model="usuario.fechaCurso2"
                                   pattern="\d{4}-\d{2}-\d{2}"
-                                  required
                                 />
                               </v-flex>
                             </div>
-                            <label>Título obtenido</label>
+                            <label class="negrita">Título obtenido</label>
                             <v-select
                               v-model="usuario.tituloCurso2"
                               :items="tipoTituloCurso2"
-                              required
                               dense
                               solo
                             ></v-select>
@@ -2607,31 +2590,28 @@
                         <v-expansion-panel-content>
                           <form>
                             <div class="form-group">
-                              <label>Institución</label>
+                              <label class="negrita">Institución</label>
                               <input
                                 type="text"
                                 class="UpperCase form-control"
                                 v-model="usuario.institucionCurso3"
-                                required
                               />
                             </div>
                             <div class="form-group">
-                              <label>Fecha título</label>
+                              <label class="negrita">Fecha título</label>
                               <v-flex xs12 sm2>
                                 <input
                                   type="date"
                                   class="form-control"
                                   v-model="usuario.fechaCurso3"
                                   pattern="\d{4}-\d{2}-\d{2}"
-                                  required
                                 />
                               </v-flex>
                             </div>
-                            <label>Título obtenido</label>
+                            <label class="negrita">Título obtenido</label>
                              <v-select
                               v-model="usuario.tituloCurso3"
                               :items="tipoTituloCurso3"
-                              required
                               dense
                               solo
                             ></v-select>
@@ -2647,31 +2627,28 @@
                         <v-expansion-panel-content>
                           <form>
                             <div class="form-group">
-                              <label>Institución</label>
+                              <label class="negrita">Institución</label>
                               <input
                                 type="text"
                                 class="UpperCase form-control"
                                 v-model="usuario.institucionCurso4"
-                                required
                               />
                             </div>
                             <div class="form-group">
-                              <label>Fecha título</label>
+                              <label class="negrita">Fecha título</label>
                               <v-flex xs12 sm2>
                                 <input
                                   type="date"
                                   class="form-control"
                                   v-model="usuario.fechaCurso4"
                                   pattern="\d{4}-\d{2}-\d{2}"
-                                  required
                                 />
                               </v-flex>
                             </div>
-                            <label>Título obtenido</label>
+                            <label class="negrita">Título obtenido</label>
                              <v-select
                               v-model="usuario.tituloCurso4"
                               :items="tipoTituloCurso4"
-                              required
                               dense
                               solo
                             ></v-select>
@@ -2687,38 +2664,38 @@
                         <v-expansion-panel-content>
                           <form>
                             <div class="form-group">
-                              <label>Institución</label>
+                              <label class="negrita">Institución</label>
                               <input
                                 type="text"
                                 class="UpperCase form-control"
                                 v-model="usuario.institucionCurso5"
-                                required
                               />
                             </div>
                             <div class="form-group">
-                              <label>Fecha título</label>
+                              <label class="negrita">Fecha título</label>
                               <v-flex xs12 sm2>
                                 <input
                                   type="date"
                                   class="form-control"
                                   v-model="usuario.fechaCurso5"
                                   pattern="\d{4}-\d{2}-\d{2}"
-                                  required
                                 />
                               </v-flex>
                             </div>
-                            <label>Título obtenido</label>
+                            <label class="negrita">Título obtenido</label>
                              <v-select
                               v-model="usuario.tituloCurso5"
                               :items="tipoTituloCurso5"
-                              required
                               dense
                               solo
                             ></v-select>
                           </form>
                         </v-expansion-panel-content>
                       </v-expansion-panel>
-                    </v-expansion-panels>
+                    </v-expansion-panels><br/>
+                    <div class="form-group">
+                    <button class="continuar">Actualizar datos</button>
+                </div>
                   </form>
                 </v-expansion-panel-content>
               </v-expansion-panel>
@@ -2729,7 +2706,7 @@
                   ><strong>Soportes</strong></v-expansion-panel-header
                 ><br />
                 <v-expansion-panel-content>
-                  <form>
+                  <form @submit.prevent="onUpdateForm"> 
                     <strong><label>Foto Personal (Seleccione una sola foto en formato JPG o PNG)</label></strong>
                     <br />
                     <input
@@ -2737,7 +2714,6 @@
                       accept="image/*"
                       @change="fotoPersonal($event)"
                       :src="cedula"
-                      required
                     /><br /><br />
                     <strong><label>Foto Familia (Seleccione una foto familiar en formato JPG o PNG)</label></strong><br />
                     <input
@@ -2745,7 +2721,6 @@
                       accept="image/*"
                       @change="fotoFamilia($event)"
                       :src="foto_Familia"
-                      required
                     /><br /><br />
                     <strong><label>Foto Vivienda (Seleccione una foto de la vivienda en formato JPG o PNG)</label></strong><br />
                     <input
@@ -2753,7 +2728,6 @@
                       accept="image/*"
                       @change="fotoVivienda($event)"
                       :src="foto_Vivienda"
-                      required
                     /><br />
                     
                     <div class="form-group">
@@ -2772,7 +2746,6 @@
                       accept="application/pdf"
                       :src="certificado_Laboral"
                       @change="clickCertficadoLaboral($event)"
-                      required
                     />
                     <br /><br />
                      <strong><label>Certificados Académicos (Selecciones todos los certificados académicos en un sólo archivo PDF)</label></strong><br />
@@ -2781,7 +2754,6 @@
                       accept="application/pdf"
                       :src="certificado_Academico"
                       @change="clickCertficadoAcademico($event)"
-                      required
                     />
                     <br /><br />
                      <strong><label>Certificados Cursos (Selecciones todos los certificados de cursos en un sólo archivo PDF)</label></strong><br />
@@ -2790,7 +2762,6 @@
                       accept="application/pdf"
                       :src="certificado_Cursos"
                       @change="clickCertficadoCursos($event)"
-                      required
                     />
                     <br /><br />
                      <strong><label>Certificados Experiencias (Selecciones todos los certificados de experiencias en un sólo archivo PDF)</label></strong><br />
@@ -2799,7 +2770,6 @@
                       accept="application/pdf"
                       :src="certificado_Experiencias"
                       @change="clickCertficadoExperiencias($event)"
-                      required
                     />
                     <div class="form-group">
                        <br />
@@ -2808,7 +2778,6 @@
                       type="button"
                       @click="subir_documentos()"
                       value="Guardar documentos"
-                      required
                     />
                     </div>
                     <br />
@@ -2838,6 +2807,7 @@
     export default {
         data() {
             return {
+              inp:'',
                 esHablitado: false,
       esHablitadoMadre: false,
       esHablitadoExperiencia: false,
@@ -2964,7 +2934,7 @@
       tipoPaisPadre: ["COLOMBIA"],
       tipoPaisMadre: ["COLOMBIA"],
       tipoReservista: ["SI", "NO"],
-      tipoInstitucionLibreta: ["EJERCITO NACIONAL", "ARMADA NACIONAL", "FUERZA AEREA", "INPEC",],
+      tipoInstitucionLibreta: ["EJERCITO NACIONAL", "POLICIA NACIONAL", "ARMADA NACIONAL", "FUERZA AEREA", "INPEC",],
       tipoClaseLibreta: ["PRIMERA CLASE", "SEGUNDA CLASE"],
       tipoLicenciaConduccion: ["A1", "A2", "B1","B2","B3"],
       tipoParentescoFamiliar1: [
@@ -19391,18 +19361,19 @@
         Swal.fire("¡Atención!", "No ha guardado la foto de la vivienda", "info");
       } 
       else{
-      const refImg = ref.child("imagenes/" + this.imagen.name);
+      const refImg = ref.child("imagenes/" + "fp" + this.usuario.documento+'.jpg' );
       const metadata = { contentType: "image/jpeg" };
       refImg.put(this.imagen, metadata).then((e) => {
       console.log(e)
+      
       });
 
 
-      const refImg2 = ref.child("imagenes/" + this.imagenFamilia.name);
+      const refImg2 = ref.child("imagenes/" + "ff" + this.usuario.documento+'.jpg');
       const metadata2 = { contentType: "image/jpeg" };
       refImg2.put(this.imagenFamilia, metadata2).then((e) => console.log(e));
 
-      const refImg3 = ref.child("imagenes/" + this.imagenVivienda.name);
+      const refImg3 = ref.child("imagenes/" + "fv" + this.usuario.documento+'.jpg');
       const metadata3 = { contentType: "image/jpeg" };
       refImg3.put(this.imagenVivienda, metadata3).then((e) => console.log(e));
 
@@ -19434,22 +19405,22 @@
         Swal.fire("¡Atención!", "No ha guardado el certificado de las experiencias", "info");
       } 
       else{
-      const refDoc = ref.child("documentos/" + this.archivoCerLaboral.name);
+      const refDoc = ref.child("documentos/" + "cl" + this.usuario.documento+'.pdf');
       console.log(this.archivoCerLaboral.name);
       const metadata4 = { contentType: "application/pdf" };
       refDoc.put(this.archivoCerLaboral, metadata4).then((e) => console.log(e));
 
-      const refDoc1 = ref.child("documentos/" + this.archivoCerAcademico.name);
+      const refDoc1 = ref.child("documentos/" + "ca" + this.usuario.documento+'.pdf');
       console.log(this.archivoCerAcademico.name);
       const metadata5 = { contentType: "application/pdf" };
       refDoc1.put(this.archivoCerAcademico, metadata5).then((e) => console.log(e));
 
-      const refDoc2 = ref.child("documentos/" + this.archivoCerCursos.name);
+      const refDoc2 = ref.child("documentos/" + "cc" + this.usuario.documento+'.pdf');
       console.log(this.archivoCerCursos.name);
       const metadata6 = { contentType: "application/pdf" };
       refDoc2.put(this.archivoCerCursos, metadata6).then((e) => console.log(e));
 
-      const refDoc3 = ref.child("documentos/" + this.archivoCerExperiencias.name);
+      const refDoc3 = ref.child("documentos/" + "ce" + this.usuario.documento+'.pdf');
       console.log(this.archivoCerExperiencias.name);
       const metadata7 = { contentType: "application/pdf" };
       refDoc3.put(this.archivoCerExperiencias, metadata7).then((e) => console.log(e));
@@ -19906,5 +19877,12 @@
   }
   .contenido{
     margin: -10%, -10% , -10%, -10%;
+  }
+  .color{
+    color: gray;
+    opacity: 0.7;
+  }
+  .negrita{
+    font-weight: bold;
   }
 </style>
