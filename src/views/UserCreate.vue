@@ -858,6 +858,16 @@
                       <option value="0">Seleccione...</option>
                       <option value="COLOMBIA">COLOMBIA</option>
                       <option value="VENEZUELA">VENEZUELA</option>
+                      <option value="ECUADOR">ECUADOR</option>
+                      <option value="MEXICO">MEXICO</option>
+                      <option value="PERU">PERU</option>
+                      <option value="CHILE">CHILE</option>
+                      <option value="ESTADOS_UNIDOS">ESTADOS UNIDOS</option>
+                      <option value="ESPANA">ESPAÑA</option>
+                      <option value="ARGENTINA">ARGENTINA</option>
+                      <option value="PANAMA">PANAMA</option>
+                      <option value="BRASIL">BRASIL</option>
+                      <option value="FRANCIA">FRANCIA</option>
                     </select>
                     <label class="negrita">Departamento de residencia</label>
                     <select
@@ -907,13 +917,16 @@
                       <option value="VAUPES">VAUPÉS</option>
                       <option value="VICHADA">VICHADA</option>
                     </select><br/>
-                    <v-text-field
-                     v-bind:disabled="esHablitado2"
-                     solo
-                     dense
-                     label="Digite el departamento"
-            v-model="usuario.departamentoPadre"
-          ></v-text-field>
+                    <p v-if="usuario.paisPadre!='COLOMBIA'"><strong>Digite el departamento</strong></p>
+                    <div id="depaPadre">   
+                    <input
+                        v-bind:disabled="esHablitado2"
+                        type="text"
+                        class="form-control"
+                        v-model="usuario.departamentoPadre"
+                        required
+                      />
+                    </div>
                     <label class="negrita">Ciudad / Municipio</label>
                     <select
                       required
@@ -924,13 +937,16 @@
                     >
                       <option value="0"></option>
                     </select><br/>
-                    <v-text-field
-                     v-bind:disabled="esHablitado2"
-                     solo
-                     dense
-                     label="Digite la ciudad"
-            v-model="usuario.municipioPadre"
-          ></v-text-field>
+                    <p v-if="usuario.paisPadre!='COLOMBIA'"><strong>Digite la ciudad</strong></p>
+                    <div id="ciuPadre">   
+                    <input
+                        v-bind:disabled="esHablitado2"
+                        type="text"
+                        class="form-control"
+                        v-model="usuario.municipioPadre"
+                        required
+                      />
+                    </div>
                     <div class="form-group">
                       <label class="negrita">Teléfono</label>
                       <input
@@ -998,6 +1014,16 @@
                       <option value="0">Seleccione...</option>
                       <option value="COLOMBIA">COLOMBIA</option>
                       <option value="VENEZUELA">VENEZUELA</option>
+                      <option value="ECUADOR">ECUADOR</option>
+                      <option value="MEXICO">MEXICO</option>
+                      <option value="PERU">PERU</option>
+                      <option value="CHILE">CHILE</option>
+                      <option value="ESTADOS_UNIDOS">ESTADOS UNIDOS</option>
+                      <option value="ESPANA">ESPAÑA</option>
+                      <option value="ARGENTINA">ARGENTINA</option>
+                      <option value="PANAMA">PANAMA</option>
+                      <option value="BRASIL">BRASIL</option>
+                      <option value="FRANCIA">FRANCIA</option>
                     </select>
                     <label class="negrita">Departamento de residencia</label>
                     <select
@@ -1047,13 +1073,16 @@
                       <option value="VAUPES">VAUPÉS</option>
                       <option value="VICHADA">VICHADA</option>
                     </select><br/>
-                    <p v-if="usuario.paisMadre!='COLOMBIA'">Digite el departamento</p>   
-                    <v-text-field
-                     v-bind:disabled="esHablitado3"
-                     solo
-                     dense
-            v-model="usuario.departamentoMadre"
-          ></v-text-field>
+                    <p v-if="usuario.paisMadre!='COLOMBIA'"><strong>Digite el departamento</strong></p>
+                    <div id="depaMadre">   
+                    <input
+                        v-bind:disabled="esHablitado3"
+                        type="text"
+                        class="form-control"
+                        v-model="usuario.departamentoMadre"
+                        required
+                      />
+                    </div>
                     <label class="negrita">Ciudad / Municipio</label>
                     <select
                       required
@@ -1064,14 +1093,16 @@
                     >
                       <option value="0"></option>
                     </select><br/>
-                    <v-text-field
-                     v-bind:disabled="esHablitado3"
-                     solo
-                     dense
-                      label="Digite la ciudad"
-                      id="nombreCiudadM"
-            v-model="usuario.municipioMadre"
-          ></v-text-field>
+                    <p v-if="usuario.paisMadre!='COLOMBIA'"><strong>Digite la ciudad</strong></p>
+                    <div id="ciuMadre">   
+                    <input
+                        v-bind:disabled="esHablitado3"
+                        type="text"
+                        class="form-control"
+                        v-model="usuario.municipioMadre"
+                        required
+                      />
+                    </div>
                     <div class="form-group">
                       <label class="negrita">Teléfono</label>
                       <input
@@ -19715,12 +19746,11 @@ export default {
 
     subir_documentos(){
       global.banderaDocumento= 1;
-      if (this.archivoCerLaboral== null) {
-        Swal.fire(
-          "¡Atención!",
-          "No ha guardado el certificado laboral",
-          "info"
-        );
+      if (this.archivoDocIdentidad == null) {
+        Swal.fire("¡Atención!", "No ha guardado el documento de identidad", "info");
+      } 
+     else if (this.archivoCerLaboral== null) {
+        Swal.fire("¡Atención!", "No ha guardado el certificado laboral", "info");
       }
       else if (this.archivoCerAcademico == null) {
         Swal.fire("¡Atención!", "No ha guardado el certificado académico", "info");
@@ -19731,9 +19761,7 @@ export default {
        else if (this.archivoCerExperiencias == null) {
         Swal.fire("¡Atención!", "No ha guardado el certificado de las experiencias", "info");
       } 
-        else if (this.archivoDocIdentidad == null) {
-        Swal.fire("¡Atención!", "No ha guardado el certificado de las experiencias", "info");
-      } 
+      
       else{
       const refDoc = ref.child("documentos/" + "cl" + this.usuario.documento+'.pdf');
       console.log(this.archivoCerLaboral.name);
@@ -19754,6 +19782,11 @@ export default {
       console.log(this.archivoCerExperiencias.name);
       const metadata7 = { contentType: "application/pdf" };
       refDoc3.put(this.archivoCerExperiencias, metadata7).then((e) => console.log(e));
+
+      const refDoc4 = ref.child("documentos/" + "cedula" + this.usuario.documento+'.pdf');
+      console.log(this.archivoDocIdentidad.name);
+      const metadata8 = { contentType: "application/pdf" };
+      refDoc4.put(this.archivoDocIdentidad, metadata8).then((e) => console.log(e));
 
        Swal.fire(
               "¡Felicitaciones!",
@@ -19966,10 +19999,14 @@ export default {
        this.esHablitadoDepartamento=true;
        this.esHablitadoCiudad=true;
        this.esHablitado2= false;
+       document.getElementById('depaPadre').style.display = 'block';
+       document.getElementById('ciuPadre').style.display = 'block';
       } else{
         this.esHablitadoDepartamento=false;
        this.esHablitadoCiudad=false;
         this.esHablitado2= true;
+        document.getElementById('depaPadre').style.display = 'none';
+        document.getElementById('ciuPadre').style.display = 'none';
       }
     },
     municipiosMadre() {
@@ -20016,10 +20053,14 @@ export default {
        this.esHablitadoDepartamentoM=true;
        this.esHablitadoCiudadM=true;
        this.esHablitado3= false;
+       document.getElementById('depaMadre').style.display = 'block';
+       document.getElementById('ciuMadre').style.display = 'block';
       } else{
         this.esHablitadoDepartamentoM=false;
        this.esHablitadoCiudadM=false;
         this.esHablitado3= true;
+        document.getElementById('depaMadre').style.display = 'none';
+        document.getElementById('ciuMadre').style.display = 'none';
         
       }
     },

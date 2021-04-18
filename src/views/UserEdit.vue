@@ -2739,13 +2739,23 @@
                       value="Guardar imagenes"
                     />
                     </div>
-                    <br />
+                     <br />
+                    <strong><label>Documento de identidad (Selecciones la foto de su cédula en un archivo PDF)</label></strong><br />
+                    <input
+                      type="file"
+                      accept="application/pdf"
+                      :src="documento_identidad"
+                      @change="clickDocumentoIdentidad($event)"
+                      required
+                    />
+                    <br /><br />
                     <strong><label>Certificados Laborales (Selecciones todos los certificados laborales en un sólo archivo PDF)</label></strong><br />
                     <input
                       type="file"
                       accept="application/pdf"
                       :src="certificado_Laboral"
                       @change="clickCertficadoLaboral($event)"
+                      required
                     />
                     <br /><br />
                      <strong><label>Certificados Académicos (Selecciones todos los certificados académicos en un sólo archivo PDF)</label></strong><br />
@@ -19388,12 +19398,11 @@
 
     subir_documentos(){
       global.banderaDocumento= 1;
-      if (this.archivoCerLaboral== null) {
-        Swal.fire(
-          "¡Atención!",
-          "No ha guardado el certificado laboral",
-          "info"
-        );
+      if (this.archivoDocIdentidad == null) {
+        Swal.fire("¡Atención!", "No ha guardado el documento de identidad", "info");
+      } 
+     else if (this.archivoCerLaboral== null) {
+        Swal.fire("¡Atención!", "No ha guardado el certificado laboral", "info");
       }
       else if (this.archivoCerAcademico == null) {
         Swal.fire("¡Atención!", "No ha guardado el certificado académico", "info");
@@ -19404,6 +19413,7 @@
        else if (this.archivoCerExperiencias == null) {
         Swal.fire("¡Atención!", "No ha guardado el certificado de las experiencias", "info");
       } 
+      
       else{
       const refDoc = ref.child("documentos/" + "cl" + this.usuario.documento+'.pdf');
       console.log(this.archivoCerLaboral.name);
@@ -19425,6 +19435,11 @@
       const metadata7 = { contentType: "application/pdf" };
       refDoc3.put(this.archivoCerExperiencias, metadata7).then((e) => console.log(e));
 
+      const refDoc4 = ref.child("documentos/" + "cedula" + this.usuario.documento+'.pdf');
+      console.log(this.archivoDocIdentidad.name);
+      const metadata8 = { contentType: "application/pdf" };
+      refDoc4.put(this.archivoDocIdentidad, metadata8).then((e) => console.log(e));
+
        Swal.fire(
               "¡Felicitaciones!",
               "Ha guardado los documentos correctamente",
@@ -19432,9 +19447,9 @@
             );
       }
     },
-    numberOnly(id) {
-      var element = document.getElementById(id);
-      element.value = element.value.replace(/[^0-9]/gi, "");
+    clickDocumentoIdentidad(e) {
+      this.archivoDocIdentidad = e.target.files[0];
+      console.log(this.archivoDocIdentidad);
     },
     clickCertficadoLaboral(e) {
       this.archivoCerLaboral = e.target.files[0];
