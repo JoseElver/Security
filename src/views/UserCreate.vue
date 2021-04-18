@@ -557,7 +557,7 @@
                           type="date"
                           class="form-control"
                           id="final"
-                          oninput="inp1 = document.getElementById('inicial').value; inp2 = document.getElementById('final').value; if(inp1 > inp2){alert('Error, la fecha inicial es mayor que la fecha final. Por favor corregir');  console.log('valor de ' + inp + ' el segundo valor de ' + inp2); document.getElementById('final').value=''; document.getElementById('inicial').value='';} ;"
+                          oninput="inp1 = document.getElementById('inicial').value; inp2 = document.getElementById('final').value; if(inp1 > inp2){alert('Error, la fecha inicial es mayor que la fecha final. Por favor corregir');  document.getElementById('final').value=''; document.getElementById('inicial').value='';} ;"
                           v-model="usuario.fechaFinal"
                           pattern="\d{4}-\d{2}-\d{2}"
                           required
@@ -1843,7 +1843,7 @@
                           pattern="\d{4}-\d{2}-\d{2}"
                           required
                           id="fechaFinal"
-                          oninput="inp1 = document.getElementById('fechaIncial').value; inp2 = document.getElementById('fechaFinal').value; if(inp1 > inp2){alert('Error, la fecha inicial es mayor que la fecha final. Por favor corregir');  console.log('valor de ' + inp + ' el segundo valor de ' + inp2); document.getElementById('fechaFinal').value=''; document.getElementById('fechaIncial').value='';} ;"
+                          oninput="inp3 = document.getElementById('fechaIncial').value; inp4 = document.getElementById('fechaFinal').value; if(inp3 > inp4){alert('Error, la fecha inicial es mayor que la fecha final. Por favor corregir');  document.getElementById('fechaFinal').value=''; document.getElementById('fechaIncial').value='';} ;"
                         />
                       </v-flex>
                     </div>
@@ -1970,7 +1970,7 @@
                                   pattern="\d{4}-\d{2}-\d{2}"
                                   required
                                   id="fechaFinal2"
-                                  oninput="inp1 = document.getElementById('fechaIncial2').value; inp2 = document.getElementById('fechaFinal2').value; if(inp1 > inp2){alert('Error, la fecha inicial es mayor que la fecha final. Por favor corregir');  console.log('valor de ' + inp + ' el segundo valor de ' + inp2); document.getElementById('fechaFinal2').value=''; document.getElementById('fechaIncial2').value='';} ;"
+                                  oninput="inp5 = document.getElementById('fechaIncial2').value; inp6 = document.getElementById('fechaFinal2').value; if(inp5 > inp6){alert('Error, la fecha inicial es mayor que la fecha final. Por favor corregir');  document.getElementById('fechaFinal2').value=''; document.getElementById('fechaIncial2').value='';} ;"
                                 />
                               </v-flex>
                             </div>
@@ -2101,7 +2101,7 @@
                                   pattern="\d{4}-\d{2}-\d{2}"
                                   required
                                   id="fechaFinal3"
-                                  oninput="inp1 = document.getElementById('fechaIncial3').value; inp2 = document.getElementById('fechaFinal3').value; if(inp1 > inp2){alert('Error, la fecha inicial es mayor que la fecha final. Por favor corregir');  console.log('valor de ' + inp + ' el segundo valor de ' + inp2); document.getElementById('fechaFinal3').value=''; document.getElementById('fechaIncial3').value='';} ;"
+                                  oninput="inp7 = document.getElementById('fechaIncial3').value; inp8 = document.getElementById('fechaFinal3').value; if(inp7 > inp8){alert('Error, la fecha inicial es mayor que la fecha final. Por favor corregir');  document.getElementById('fechaFinal3').value=''; document.getElementById('fechaIncial3').value='';} ;"
                                 />
                               </v-flex>
                             </div>
@@ -2232,7 +2232,7 @@
                                   pattern="\d{4}-\d{2}-\d{2}"
                                   required
                                   id="fechaFinal4"
-                                  oninput="inp1 = document.getElementById('fechaIncial4').value; inp2 = document.getElementById('fechaFinal4').value; if(inp1 > inp2){alert('Error, la fecha inicial es mayor que la fecha final. Por favor corregir');  console.log('valor de ' + inp + ' el segundo valor de ' + inp2); document.getElementById('fechaFinal4').value=''; document.getElementById('fechaIncial4').value='';} ;"
+                                  oninput="inp9 = document.getElementById('fechaIncial4').value; inp10 = document.getElementById('fechaFinal4').value; if(inp9 > inp10){alert('Error, la fecha inicial es mayor que la fecha final. Por favor corregir');  document.getElementById('fechaFinal4').value=''; document.getElementById('fechaIncial4').value='';} ;"
                                 />
                               </v-flex>
                             </div>
@@ -2363,7 +2363,7 @@
                                   pattern="\d{4}-\d{2}-\d{2}"
                                   required
                                   id="fechaFinal5"
-                                  oninput="inp1 = document.getElementById('fechaFinal5').value; inp2 = document.getElementById('fechaFinal5').value; if(inp1 > inp2){alert('Error, la fecha inicial es mayor que la fecha final. Por favor corregir');  console.log('valor de ' + inp + ' el segundo valor de ' + inp2); document.getElementById('fechaFinal5').value=''; document.getElementById('fechaFinal5').value='';} ;"
+                                  oninput="inp11 = document.getElementById('fechaIncial5').value; inp12 = document.getElementById('fechaFinal5').value; if(inp11 > inp12){alert('Error, la fecha inicial es mayor que la fecha final. Por favor corregir');  document.getElementById('fechaFinal5').value=''; document.getElementById('fechaIncial5').value='';} ;"
                                 />
                               </v-flex>
                             </div>
