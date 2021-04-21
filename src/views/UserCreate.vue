@@ -849,7 +849,6 @@
                     <label class="negrita">País de residencia</label>
                     <select
                       v-bind:disabled="esHablitadoPais"
-                      required
                       id="pais"
                       class="form-control"
                       v-model="usuario.paisPadre"
@@ -871,7 +870,6 @@
                     </select>
                     <label class="negrita">Departamento de residencia</label>
                     <select
-                      required
                       v-bind:disabled="esHablitadoDepartamento"
                       class="form-control"
                       id="departamentos2"
@@ -922,17 +920,16 @@
                     <input
                         v-bind:disabled="esHablitado2"
                         type="text"
-                        class="form-control"
+                        class="UpperCase form-control"
                         v-model="usuario.departamentoPadre"
                         required
                       />
                     </div>
                     <label class="negrita">Ciudad / Municipio</label>
                     <select
-                      required
                       v-bind:disabled="esHablitadoCiudad"
                       id="municipiosPadre"
-                      class="form-control"
+                      class="UpperCase form-control"
                       v-model="usuario.municipioPadre"
                     >
                       <option value="0"></option>
@@ -942,9 +939,8 @@
                     <input
                         v-bind:disabled="esHablitado2"
                         type="text"
-                        class="form-control"
+                        class="UpperCase form-control"
                         v-model="usuario.municipioPadre"
-                        required
                       />
                     </div>
                     <div class="form-group">
@@ -954,7 +950,6 @@
                         type="number"
                         class="form-control"
                         v-model="usuario.telefonoPadre"
-                        required
                         oninput="this.value = this.value.replace(/[^0-9.]/g, ''); this.value = this.value.replace(/(\..*)\./g, '$1');" 
                         onKeyDown="if(this.value.length==10 && event.keyCode!=8) return false;"
                       />
@@ -964,9 +959,8 @@
                       <input 
                         v-bind:disabled="esHablitadoDireccion"
                         type="text"
-                        class="form-control"
+                        class="UpperCase form-control"
                         v-model="usuario.direccionPadre"
-                        required
                       />
                     </div>
                     <div class="form-group">
@@ -974,9 +968,8 @@
                       <input
                         v-bind:disabled="esHablitadoOcupacion"
                         type="text"
-                        class="form-control"
+                        class="UpperCase form-control"
                         v-model="usuario.ocupacionPadre"
-                        required
                       />
                     </div>
 
@@ -1005,7 +998,6 @@
                     <label class="negrita">País de residencia</label>
                     <select
                       v-bind:disabled="esHablitadoPaisM"
-                      required
                       id="paisM"
                       class="form-control"
                       v-model="usuario.paisMadre"
@@ -1027,7 +1019,6 @@
                     </select>
                     <label class="negrita">Departamento de residencia</label>
                     <select
-                      required
                       v-bind:disabled="esHablitadoDepartamentoM"
                       class="form-control"
                       id="departamentos3"
@@ -1078,17 +1069,15 @@
                     <input
                         v-bind:disabled="esHablitado3"
                         type="text"
-                        class="form-control"
+                        class="UpperCase form-control"
                         v-model="usuario.departamentoMadre"
-                        required
                       />
                     </div>
                     <label class="negrita">Ciudad / Municipio</label>
                     <select
-                      required
                       v-bind:disabled="esHablitadoCiudadM"
                       id="municipiosMadre"
-                      class="form-control"
+                      class="UpperCase form-control"
                       v-model="usuario.municipioMadre"
                     >
                       <option value="0"></option>
@@ -1098,9 +1087,8 @@
                     <input
                         v-bind:disabled="esHablitado3"
                         type="text"
-                        class="form-control"
+                        class="UpperCase form-control"
                         v-model="usuario.municipioMadre"
-                        required
                       />
                     </div>
                     <div class="form-group">
@@ -1110,7 +1098,6 @@
                         type="number"
                         class="form-control"
                         v-model="usuario.telefonoMadre"
-                        required
                         oninput="this.value = this.value.replace(/[^0-9.]/g, ''); this.value = this.value.replace(/(\..*)\./g, '$1');" 
                         onKeyDown="if(this.value.length==10 && event.keyCode!=8) return false;"
                       />
@@ -1120,9 +1107,8 @@
                       <input
                         v-bind:disabled="esHablitadoDireccionM"
                         type="text"
-                        class="form-control"
+                        class="UpperCase form-control"
                         v-model="usuario.direccionMadre"
-                        required
                       />
                     </div>
                     <div class="form-group">
@@ -1130,9 +1116,8 @@
                       <input
                         v-bind:disabled="esHablitadoOcupacionM"
                         type="text"
-                        class="form-control"
+                        class="UpperCase form-control"
                         v-model="usuario.ocupacionMadre"
-                        required
                       />
                     </div>
                         <div class="form-group">
@@ -1227,7 +1212,7 @@
                       <input
                         v-bind:disabled="esHablitadoLicencia"
                         type="text"
-                        class="form-control"
+                        class="UpperCase form-control"
                         v-model="usuario.numeroLicencia"
                         required
                         oninput="this.value = this.value.replace(/[^0-9.]/g, ''); this.value = this.value.replace(/(\..*)\./g, '$1');" 
@@ -3054,19 +3039,19 @@ export default {
       certificado_Cursos:"",
       certificado_Experiencias:"",
       imagenes: [],
-      imagen: null,
-      imagenFamilia: null,
-      imagenVivienda: null,
+      imagen: "null",
+      imagenFamilia: "null",
+      imagenVivienda: "null",
       documentos: [],
-      archivoCerLaboral: null,
-      archivoDocIdentidad: null,
-      archivoCerAcademico: null,
-      archivoCerCursos: null,
-      archivoCerExperiencias: null,
-      archivo2: null,
-      archivo3: null,
-      archivo4: null,
-      archivo5: null,
+      archivoCerLaboral: "null",
+      archivoDocIdentidad: "null",
+      archivoCerAcademico: "null",
+      archivoCerCursos: "null",
+      archivoCerExperiencias: "null",
+      archivo2: "null",
+      archivo3: "null",
+      archivo4: "null",
+      archivo5: "null",
       tipoVivienda: ["CASA", "APARTAMENTO", "FINCA"],
       tipoModalidad: ["PROPIA",
         "ARRIENDO",
@@ -20422,14 +20407,6 @@ export default {
           tituloCurso3: this.usuario.tituloCurso3,
           tituloCurso4: this.usuario.tituloCurso4,
           tituloCurso5: this.usuario.tituloCurso5,
-          fotoPersonal: this.imagen.name,
-          fotoFamilia: this.imagenFamilia.name,
-          fotoVivenda: this.imagenVivienda.name,
-          certificadoLaboral: this.archivoCerLaboral.name,
-          documentoIdentidad: this.archivoDocIdentidad.name,
-          certificadoAcademico: this.archivoCerAcademico.name,
-          certificadoCursos: this.archivoCerCursos.name,
-          certificadoExperiencias: this.archivoCerExperiencias.name,
         })
         .then(() => {
           Swal.fire(

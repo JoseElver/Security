@@ -171,6 +171,7 @@ import Crear from './UserCreate'
 
 export default {
   data: () => ({
+    hidden: false,
     step: 1,
     show1: false,
     show2: false,

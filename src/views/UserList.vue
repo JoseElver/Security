@@ -44,7 +44,8 @@
     export default {
         data() {
             return {
-                usuarios: []
+                usuarios: [],
+                hidden: false,
             }
         },
         created() {
