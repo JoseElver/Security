@@ -39,6 +39,7 @@
                           label="Email"
                           color="black"
                           v-model="email"
+                          :rules="[rules.required]"
                         />
 
                         <v-text-field
@@ -47,6 +48,7 @@
                           :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
                           :type="show1 ? 'text' : 'password'"
                           @click:append="show1 = !show1"
+                          :rules="[rules.required, rules.min]"
                         ></v-text-field>
                       </v-form>
                       <h6 class="login-label text-center mt-4">
@@ -127,6 +129,7 @@
                           label="Email"
                           color="black"
                           v-model="email"
+                          :rules="[rules.required]"
                         />
 
                         <v-text-field
@@ -135,6 +138,7 @@
                           :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
                           :type="show1 ? 'text' : 'password'"
                           @click:append="show1 = !show1"
+                          :rules="[rules.required, rules.min]"
                         ></v-text-field>
 
                         <v-text-field
@@ -143,6 +147,7 @@
                           :append-icon="show2 ? 'mdi-eye' : 'mdi-eye-off'"
                           :type="show2 ? 'text' : 'password'"
                           @click:append="show2 = !show2"
+                          :rules="[rules.required, rules.min]"
                         ></v-text-field>
                       </v-form>
                     </v-card-text>
@@ -181,9 +186,7 @@ export default {
     confirmPassword: "",
     rules: {
       required: (value) => !!value || "Requerido.",
-      email: [
-        (v) => (v || "").match(/@/) || "Por favor ingrese el e-mail de cuenta",
-      ],
+      min: v => v.length >= 6 || 'Mínimo 6 caracteres',
     },
   }),
 
@@ -220,7 +223,6 @@ export default {
             console.log(error.message);
           });
       }
-      (this.email = ""), (this.password = ""), (this.confirmPassword = "");
     },
     inicioSesion() {
       var EMAIL_REGEXP = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;

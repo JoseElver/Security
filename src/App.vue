@@ -37,6 +37,7 @@
   
 </template>
 <script>
+import Swal from "sweetalert2";
   export default {
     data () {
       return {
@@ -57,9 +58,26 @@
            this.$router.push('Login');
            
           }
-          if(global.estaLogeado == true){ 
-           this.estaLog=false;
+          if(global.estaLogeado == true){
+            Swal.fire({
+          title: '¿Esás seguro que desea cerrar sesión?',
+          text: 'Tú no puedes revertir esta acción',
+          type: 'info',
+          showCancelButton: true,
+          confirmButtonText: 'SI, seguro',
+          cancelButtonText: 'Cancelar',
+          showCloseButton: true,
+          showLoaderOnConfirm: true
+        }).then((result) => {
+          if(result.value) {
+            this.estaLog=false;
            global.estaLogeado=false;
+           this.$router.push('Login');
+          } else {
+             return
+          }
+        })
+           
           }
        
       },
@@ -70,7 +88,11 @@
            
           }
           if(global.estaLogeado == false){ 
-           alert('Atención, para crear tu hoja de vida debes registrarte');
+            Swal.fire(
+              "¡Atención!",
+              "Para crear tu hoja de vida debes registrarte",
+              "info"
+            );
            this.$router.push('Login');
           }
        
@@ -82,7 +104,11 @@
            
           }
           if(global.estaLogeado == false){ 
-          alert('Atención, para ver el listado de usuarios debes registrarte');
+           Swal.fire(
+              "¡Atención!",
+              "Para ver el perfil debes registrarte primero",
+              "info"
+            );
            this.$router.push('Login');
           }
        
