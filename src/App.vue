@@ -72,7 +72,7 @@ import Swal from "sweetalert2";
           if(result.value) {
             this.estaLog=false;
            global.estaLogeado=false;
-           this.$router.push('Login');
+           this.$router.push('/');
           } else {
              return
           }
@@ -93,7 +93,6 @@ import Swal from "sweetalert2";
               "Para crear su hoja de vida debes registrarte",
               "info"
             );
-           this.$router.push('Login');
           }
        
       },
@@ -109,7 +108,6 @@ import Swal from "sweetalert2";
               "Para ver el perfil debes registrarte primero",
               "info"
             );
-           this.$router.push('Login');
           }
        
       },
