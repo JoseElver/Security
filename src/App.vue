@@ -90,7 +90,7 @@ import Swal from "sweetalert2";
           if(global.estaLogeado == false){ 
             Swal.fire(
               "¡Atención!",
-              "Para crear tu hoja de vida debes registrarte",
+              "Para crear su hoja de vida debes registrarte",
               "info"
             );
            this.$router.push('Login');
