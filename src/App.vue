@@ -60,8 +60,8 @@ import Swal from "sweetalert2";
           }
           if(global.estaLogeado == true){
             Swal.fire({
-          title: '¿Esás seguro que desea cerrar sesión?',
-          text: 'Tú no puedes revertir esta acción',
+          title: '¿Estás seguro que desea cerrar sesión?',
+          text: 'Ya no puedes revertir esta acción',
           type: 'info',
           showCancelButton: true,
           confirmButtonText: 'SI, seguro',
