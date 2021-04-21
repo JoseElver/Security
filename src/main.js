@@ -17,6 +17,7 @@ const options = {
 };
 global.banderaImagen = 0;
 global.banderaDocumento = 0;
+global.estaLogeado = false;
 
 Vue.use(VueSweetalert2, options);
 

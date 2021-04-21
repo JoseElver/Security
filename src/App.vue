@@ -17,13 +17,13 @@
         </ul>
         <ul class="nav navbar-nav flex-row float-right">
           <li class="nav-item">
-            <router-link class="nav-link pr-3" to="/crear" v-show="!hidden">Crear Hoja de Vida</router-link>
+            <button class="nav-link pr-3" @click="crear()">Crear Hoja de Vida</button>
           </li>
           <li class="nav-item">
-            <router-link class="nav-link pr-3" to="/list" v-show="!hidden">Listado de usuarios</router-link>
+            <button class="nav-link pr-3" @click="listado()">Listado de usuarios</button>
           </li>
           <li class="nav-item">
-            <router-link class="nav-link" to="/login">Iniciar sesión</router-link>
+              <button class="nav-link pr-3" @click="sesion()">{{estaLog ? 'Cerrar sesión' : 'Iniciar sesión'}}</button>
           </li>
         </ul>
       </div>
@@ -41,8 +41,53 @@
     data () {
       return {
         hidden: false,
+        estaLog: global.estaLogeado,
       }
     },
+      updated(){
+    if(global.estaLogeado == true){ 
+              console.log("el valor cambió " + global.estaLogeado);
+              this.estaLog=true;
+          }
+  },
+     methods: {
+      sesion(){
+          
+          if(global.estaLogeado == false){
+           this.$router.push('Login');
+           
+          }
+          if(global.estaLogeado == true){ 
+           this.estaLog=false;
+           global.estaLogeado=false;
+          }
+       
+      },
+        crear(){
+          
+          if(global.estaLogeado == true){
+           this.$router.push('crear');
+           
+          }
+          if(global.estaLogeado == false){ 
+           alert('Atención, para crear tu hoja de vida debes registrarte');
+           this.$router.push('Login');
+          }
+       
+      },
+        listado(){
+          
+          if(global.estaLogeado == true){
+           this.$router.push('list');
+           
+          }
+          if(global.estaLogeado == false){ 
+          alert('Atención, para ver el listado de usuarios debes registrarte');
+           this.$router.push('Login');
+          }
+       
+      },
+  },
   }
 </script>
 <style scoped>

@@ -239,7 +239,9 @@ export default {
           .auth()
           .signInWithEmailAndPassword(this.email, this.password)
           .then(() => {
-            this.$router.push('crear');
+            global.estaLogeado= true;
+            this.$router.push('/');
+             console.log("el valor global es " + global.estaLogeado);
           })
           .catch(function (error) {
             console.log(error.message);
