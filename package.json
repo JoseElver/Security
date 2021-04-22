@@ -2,9 +2,13 @@
   "name": "proyecto_vue",
   "version": "0.1.0",
   "private": true,
+  "engines":{
+    "node": "12.11.1"
+  },
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build"
+    "build": "vue-cli-service build",
+    "start": "nodemon --exec babel-node src/server.js"
   },
   "dependencies": {
     "@babel/polyfill": "^7.4.4",
