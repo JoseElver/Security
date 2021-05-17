@@ -51,7 +51,7 @@
                           :rules="[rules.required, rules.min]"
                         ></v-text-field>
                       </v-form>
-                      <h6 class="login-label text-center mt-4">
+                      <h6 class="login-label text-center mt-4" @click="recuperarContrasena()" >
                         ¿Olvidó su contraseña?
                       </h6>
                     </v-card-text>
@@ -234,9 +234,10 @@ export default {
         );
       } else if (this.email == null) {
         Swal.fire("¡Atención!", "Digite el correo por favor", "info");
-      } else if (this.password == null) {
+      } else if (this.password == '') {
         Swal.fire("¡Atención!", "Digite la contraseña por favor", "info");
-      } else {
+      } 
+      else {
         firebase
           .auth()
           .signInWithEmailAndPassword(this.email, this.password)
@@ -246,13 +247,29 @@ export default {
              console.log("el valor global es " + global.estaLogeado);
           })
           .catch(function (error) {
-            console.log(error.message);
+            Swal.fire("¡Atención!", "Contraseña equivocada", "info");
           });
       }
     },
     resetForm() {
       this.$refs.form.reset();
     },
+    recuperarContrasena(){
+      var auth = firebase.auth()
+      auth.sendPasswordResetEmail(this.email).then(() =>  {
+               Swal.fire(
+          "¡Atención!",
+          "Se ha enviado un mensaje al correo " + this.email + ", siga los pasos para recuperar su contraseña",
+          "success"
+        );
+          }).catch((error) =>  {
+          Swal.fire(
+          "¡Atención!",
+          "El email está incompleto, vacío o no se encuentra registrado",
+          "alert"
+        );
+          });
+    }
   },
 
   props: {

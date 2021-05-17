@@ -11,7 +11,9 @@ const firebaseConfig = {
 }
 
 const firebaseApp = firebase.initializeApp(firebaseConfig);
- 
+
+firebase.auth().languageCode = 'es';
+
 export const db = firebaseApp.firestore();
 
 export const storage = firebase.storage()
