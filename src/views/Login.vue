@@ -168,6 +168,7 @@
 </template>
 
 <script>
+import { db } from "../firebaseDb";
 import Swal from "sweetalert2";
 import "firebase/app";
 import "firebase/auth";
@@ -184,6 +185,10 @@ export default {
     email: "",
     password: "",
     confirmPassword: "",
+    estado: "",
+    rol:"",
+    correoPrincipal: "",
+    validarEmail: false,
     rules: {
       required: (value) => !!value || "Requerido.",
       min: v => v.length >= 6 || 'Mínimo 6 caracteres',
@@ -192,7 +197,6 @@ export default {
 
   methods: {
     registro() {
-      var bd = "";
       var EMAIL_REGEXP = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
       if (!EMAIL_REGEXP.test(this.email)) {
         Swal.fire(
@@ -209,19 +213,28 @@ export default {
       } else if (this.confirmPassword != this.password) {
         Swal.fire("¡Atención!", "Las contraseñas no coinciden", "info");
       } else {
+       /*  docRef =  db.collection("userLogin").add({
+          estado: "Activo",
+          rol: "Aspirante"
+        }) */
         firebase
           .auth()
           .createUserWithEmailAndPassword(this.email, this.password)
-          .then(() => {
-            Swal.fire(
-              "¡Felicitaciones!",
-              "Usuario creado correctamente",
-              "success"
-            );
-          })
           .catch(function (error) {
-            console.log(error.message);
-          });
+          alert(error);
+        })
+        .then(function () {
+      var user = firebase.auth().currentUser;
+      user.sendEmailVerification().then(function() {
+      Swal.fire(
+          "¡Atención!",
+          "Se ha enviado un mensaje de verificación al correo",
+          "info"
+        );
+}).catch(function(error) {
+  console.log(error)
+});
+        });
       }
     },
     inicioSesion() {
@@ -247,7 +260,7 @@ export default {
              console.log("el valor global es " + global.estaLogeado);
           })
           .catch(function (error) {
-            Swal.fire("¡Atención!", "Contraseña equivocada", "info");
+            Swal.fire("¡Atención!", "Correo o contraseña equivocada", "info");
           });
       }
     },

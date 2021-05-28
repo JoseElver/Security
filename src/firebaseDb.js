@@ -16,6 +16,5 @@ firebase.auth().languageCode = 'es';
 
 export const db = firebaseApp.firestore();
 
-export const storage = firebase.storage()
-
+export const storage = firebase.storage();
 

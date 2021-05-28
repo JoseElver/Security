@@ -8,9 +8,7 @@ import '@babel/polyfill'
 import 'roboto-fontface/css/roboto/roboto-fontface.css'
 import '@mdi/font/css/materialdesignicons.css'
 import 'bootstrap/dist/css/bootstrap.min.css'
-import { AccordionPlugin } from '@syncfusion/ej2-vue-navigations';
 import VueSweetalert2 from 'vue-sweetalert2';
-
 
 const options = {
   confirmButtonColor: '#41b882',
@@ -21,8 +19,6 @@ global.banderaDocumento = 0;
 global.estaLogeado = false;
 
 Vue.use(VueSweetalert2, options);
-
-Vue.use(AccordionPlugin);
 
 Vue.config.productionTip = false
 const VueFire = require('vuefire')
