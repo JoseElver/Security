@@ -1,5 +1,43 @@
 <template>
+
   <div class="row">
+    <v-dialog v-model="modalImg" max-width="700px">
+          <v-card>
+            <v-card-text>
+              <v-container grid-list-md>
+                <v-layout wrap>
+                  
+                  <v-flex xs12 sm12 md12>
+                      
+                      <v-carousel hide-delimiters >
+                        <v-app-bar
+                        flat
+                        color="rgba(0, 0, 0, 0)"
+                      >
+                        <v-toolbar-title class="title black--text pl-0">
+                          Imágenes del proyecto
+                        </v-toolbar-title>
+                        <v-spacer></v-spacer>
+                        <v-btn
+                          color="black"
+                          icon
+                          @click="close()"
+                        >
+                          <v-icon>mdi-close</v-icon>
+                        </v-btn>
+                      </v-app-bar>  
+                        <v-carousel-item
+                          v-for="img in imagenes"
+                          :key="img"
+                          :src="img"         
+                        ></v-carousel-item>
+                      </v-carousel> 
+                  </v-flex>
+                </v-layout>
+              </v-container>
+            </v-card-text>
+          </v-card>
+        </v-dialog>
     <div class="col-md-12">
       <table class="table table-striped">
         <thead>
@@ -39,9 +77,15 @@
               </button>
               <button
                 @click.prevent="generarPdf(usuario.key)"
-                class="btn btn-danger"
+                class="btn btn-info"
               >
                 GenerarPDF
+              </button>
+              <button
+                @click.prevent="mostrarImg(usuario.key)"
+                class="btn btn-info"
+              >
+                Metodo
               </button>
             </td>
           </tr>
@@ -55,12 +99,16 @@
 import { db } from "../firebaseDb";
 import Swal from "sweetalert2";
 import { jsPDF } from "jspdf";
+import { storage } from "../firebaseDb";
+const ref = storage.ref();
 
 export default {
   data() {
     return {
       usuarios: [],
       hidden: false,
+      imagenes: [],
+      modalImg: false
     };
   },
   created() {
@@ -108,6 +156,24 @@ export default {
         }
       });
     },
+    mostrarImg(item) {
+        let me = this;
+     me.codigo = item;
+     console.log(me.codigo + " codigo")
+     ref.child('/imagenes'+ "/" + 'ff.jpg')
+      .listAll()
+      .then( (res) =>{
+        console.log(res)
+        res.items.map( (item) =>{
+          ref.child(item.fullPath)
+          .getDownloadURL()
+          .then((url) =>{
+            this.imagenes.push(url)
+          })
+        })
+      })
+      this.modalImg = true;
+    },
     generarPdf(id) {
       var docRef = db.collection("usuarios").doc(id);
 
@@ -115,6 +181,25 @@ export default {
         .get()
         .then((doc) => {
           if (doc.exists) {
+            var imgRef = ref.child(
+              "imagenes/" + "fp" + doc.data().documento + ".jpg"
+            );
+
+            imgRef
+              .getDownloadURL()
+              .then(function (url) {
+                var xhr = new XMLHttpRequest();
+                xhr.responseType = "blob";
+                xhr.onload = function (event) {
+                  var blob = xhr.response;
+                };
+                xhr.open("GET", url);
+                xhr.send();
+              })
+              .catch(function (error) {
+                Swal.fire("No se pudo descargar la imagen", error, "Info");
+              });
+
             console.log("Este documento es :", doc.data());
             const logo = require("../assets/imagenPerfil.jpg");
             const pdf = new jsPDF();
@@ -130,7 +215,11 @@ export default {
             pdf.text("Primer nombre: " + doc.data().primernombre, 20, 140);
             pdf.text("Segundo nombre: " + doc.data().segundonombre, 120, 140);
             pdf.text("Primer apellido: " + doc.data().primerapellido, 20, 150);
-            pdf.text("Segundo apellido: " + doc.data().segundoapellido, 120, 150);
+            pdf.text(
+              "Segundo apellido: " + doc.data().segundoapellido,
+              120,
+              150
+            );
             pdf.text("Tipo de documento: " + doc.data().tipodocumento, 20, 160);
             pdf.text("Documento: " + doc.data().documento, 120, 160);
             pdf.text("Altura en cms: " + doc.data().altura, 20, 170);
@@ -144,14 +233,18 @@ export default {
             pdf.text("Zona: " + doc.data().zona, 120, 210);
             pdf.text("Sector: " + doc.data().sector, 20, 220);
             pdf.text("Dirección: " + doc.data().direccionResidencia, 120, 220);
-            pdf.text("Tipo de vivienda: " + doc.data().viviendaResidencia, 20, 230);
+            pdf.text(
+              "Tipo de vivienda: " + doc.data().viviendaResidencia,
+              20,
+              230
+            );
             pdf.text("Modalidad: " + doc.data().modalidadResidencia, 120, 230);
             pdf.text("Experiencia laboral: " + doc.data().experiencia, 20, 240);
             pdf.text("Años: " + doc.data().year, 120, 240);
             pdf.text("Meses: " + doc.data().meses, 140, 240);
             pdf.text("Teléfono: " + doc.data().telefono, 20, 250);
-          
-            pdf.save("Hoja de vida "+doc.data().documento+".pdf");
+
+            pdf.save("Hoja de vida " + doc.data().documento + ".pdf");
           } else {
             console.log("Documento no encontrado!");
           }
