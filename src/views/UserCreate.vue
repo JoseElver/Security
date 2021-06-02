@@ -20233,7 +20233,6 @@ export default {
           municipio: this.usuario.municipio,
           zona: this.usuario.zona,
           sector: this.usuario.sector,
-          pais: this.usuario.pais,
           direccionResidencia: this.usuario.direccionResidencia,
           viviendaResidencia: this.usuario.viviendaResidencia,
           modalidadResidencia: this.usuario.modalidadResidencia,

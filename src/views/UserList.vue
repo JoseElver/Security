@@ -108,24 +108,72 @@ export default {
         }
       });
     },
-    generarPdf() {
+    generarPdf(id) {
+      var docRef = db.collection("usuarios").doc(id);
 
-      const logo = require('../assets/logotipo.png')
-      const doc = new jsPDF();
-      var imgLogo = new Image()
-      imgLogo.src = logo
-      doc.addImage(imgLogo, 'PNG',  15, 10, 18, 16)
-      doc.text("Hello world!", 10, 10);
-      doc.setFontSize(36);
-      let header = ["id","name"];
-      let headerConfig = header.map(key=>({ 'name': key,
-      'prompt': key,
-      'width':50,
-      'align':'center',
-      'padding':0}));
-      let data = [{id: '1', name: "Peter"},{id: '2', name: "Chris"}];
-      doc.table(20, 30, data, headerConfig);
-      doc.save("a4.pdf");
+      docRef
+        .get()
+        .then((doc) => {
+          if (doc.exists) {
+            console.log("Este documento es :", doc.data());
+            const logo = require("../assets/logotipo.png");
+            const pdf = new jsPDF();
+            var imgLogo = new Image();
+            imgLogo.src = logo;
+            pdf.addImage(imgLogo, "PNG", 15, 10, 18, 16);
+            pdf.setFontSize(16);
+            pdf.text("Hoja de vida", 70, 30);
+            pdf.setFontSize(14);
+            pdf.text("DATOS PERSONALES", 20, 50);
+            pdf.setFontSize(12);
+            pdf.text("Primer nombre: " + doc.data().primernombre, 20, 60);
+            pdf.rect(10, 20, 150, 75);
+            pdf.line(20, 40, 60, 40)
+            pdf.text("Segundo nombre: " + doc.data().segundonombre, 120, 60);
+            pdf.text("Primer apellido: " + doc.data().primerapellido, 20, 70);
+            pdf.text("Segundo apellido: " + doc.data().segundoapellido, 120, 70);
+            pdf.text("Tipo de documento: " + doc.data().tipodocumento, 20, 80);
+            pdf.text("Documento: " + doc.data().documento, 120, 80);
+            pdf.text("Altura en cms: " + doc.data().altura, 20, 90);
+            pdf.text("Género: " + doc.data().genero, 120, 90);
+            pdf.text("Fecha de nacimiento: " + doc.data().nacimiento, 20, 100);
+            pdf.text("Estado civil: " + doc.data().civil, 120, 100);
+            pdf.text("Correo eléctronico: " + doc.data().email, 20, 110);
+            pdf.text("País: " + doc.data().pais, 20, 120);
+            pdf.text("Departamento: " + doc.data().departamento, 120, 120);
+            pdf.text("Ciudad: " + doc.data().municipio, 20, 130);
+            pdf.text("Zona: " + doc.data().zona, 120, 130);
+            pdf.text("Sector: " + doc.data().sector, 20, 140);
+            pdf.text("Dirección: " + doc.data().direccionResidencia, 120, 140);
+            pdf.text("Tipo de vivienda: " + doc.data().viviendaResidencia, 20, 150);
+            pdf.text("Modalidad: " + doc.data().modalidadResidencia, 120, 150);
+            pdf.text("Experiencia laboral: " + doc.data().experiencia, 20, 160);
+            pdf.text("Años: " + doc.data().year, 120, 160);
+            pdf.text("Meses: " + doc.data().meses, 140, 160);
+            pdf.text("Teléfono: " + doc.data().telefono, 20, 170);
+            
+            
+            let header = ["Primer_Nombre", "Segundo_Nombre", "Primer_Apellido"];
+            let headerConfig = header.map((key) => ({
+              name: key,
+              prompt: key,
+              width: 70,
+              align: "center",
+              padding: 0,
+            }));
+            let data = [
+              { Primer_Nombre: doc.data().primernombre, Segundo_Nombre: doc.data().segundonombre, Primer_Apellido: doc.data().primerapellido }
+            ];
+            pdf.table(20, 520, data, headerConfig);
+            pdf.table(20, 520, data, headerConfig);
+            pdf.save("ahora.pdf");
+          } else {
+            console.log("Documento no encontrado!");
+          }
+        })
+        .catch((error) => {
+          console.log("Error llamando documento:", error);
+        });
     },
   },
 };
