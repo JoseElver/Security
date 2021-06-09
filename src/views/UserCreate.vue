@@ -19704,19 +19704,19 @@ export default {
         Swal.fire("¡Atención!", "No ha guardado la foto de la vivienda", "info");
       } 
       else{
-      const refImg = ref.child("imagenes/" + "fp" + this.usuario.documento+'.jpg' );
+      let me = this;
+      const refImg = ref.child("imagenes/" +"fp"+me.usuario.documento +"/"+ "fp" + me.usuario.documento+'.jpg' );
       const metadata = { contentType: "image/jpeg" };
       refImg.put(this.imagen, metadata).then((e) => {
       console.log(e)
       
       });
 
-
-      const refImg2 = ref.child("imagenes/" + "ff" + this.usuario.documento+'.jpg');
+      const refImg2 = ref.child("imagenes/"+"ff"+me.usuario.documento +"/"+ "ff" + me.usuario.documento+'.jpg');
       const metadata2 = { contentType: "image/jpeg" };
       refImg2.put(this.imagenFamilia, metadata2).then((e) => console.log(e));
 
-      const refImg3 = ref.child("imagenes/" + "fv" + this.usuario.documento+'.jpg');
+      const refImg3 = ref.child("imagenes/" +"fv"+me.usuario.documento +"/"+ "fv" + me.usuario.documento+'.jpg');
       const metadata3 = { contentType: "image/jpeg" };
       refImg3.put(this.imagenVivienda, metadata3).then((e) => console.log(e));
 
@@ -19748,27 +19748,28 @@ export default {
       } 
       
       else{
-      const refDoc = ref.child("documentos/" + "cl" + this.usuario.documento+'.pdf');
+      let me = this;
+      const refDoc = ref.child("documentos/" +"cl"+me.usuario.documento +"/"+ "cl" + me.usuario.documento+'.pdf');
       console.log(this.archivoCerLaboral.name);
       const metadata4 = { contentType: "application/pdf" };
       refDoc.put(this.archivoCerLaboral, metadata4).then((e) => console.log(e));
 
-      const refDoc1 = ref.child("documentos/" + "ca" + this.usuario.documento+'.pdf');
+      const refDoc1 = ref.child("documentos/" +"ca"+me.usuario.documento +"/"+ "ca" + me.usuario.documento+'.pdf');
       console.log(this.archivoCerAcademico.name);
       const metadata5 = { contentType: "application/pdf" };
       refDoc1.put(this.archivoCerAcademico, metadata5).then((e) => console.log(e));
 
-      const refDoc2 = ref.child("documentos/" + "cc" + this.usuario.documento+'.pdf');
+      const refDoc2 = ref.child("documentos/" +"cc"+me.usuario.documento +"/"+ "cc" + me.usuario.documento+'.pdf');
       console.log(this.archivoCerCursos.name);
       const metadata6 = { contentType: "application/pdf" };
       refDoc2.put(this.archivoCerCursos, metadata6).then((e) => console.log(e));
 
-      const refDoc3 = ref.child("documentos/" + "ce" + this.usuario.documento+'.pdf');
+      const refDoc3 = ref.child("documentos/" +"ce"+me.usuario.documento +"/"+ "ce" + me.usuario.documento+'.pdf');
       console.log(this.archivoCerExperiencias.name);
       const metadata7 = { contentType: "application/pdf" };
       refDoc3.put(this.archivoCerExperiencias, metadata7).then((e) => console.log(e));
 
-      const refDoc4 = ref.child("documentos/" + "cedula" + this.usuario.documento+'.pdf');
+      const refDoc4 = ref.child("documentos/" +"cedula"+me.usuario.documento +"/"+ "cedula" + me.usuario.documento+'.pdf');
       console.log(this.archivoDocIdentidad.name);
       const metadata8 = { contentType: "application/pdf" };
       refDoc4.put(this.archivoDocIdentidad, metadata8).then((e) => console.log(e));
