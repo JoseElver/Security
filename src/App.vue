@@ -23,6 +23,9 @@
             <button class="nav-link pr-3" @click="listado()">Listado de usuarios</button>
           </li>
           <li class="nav-item">
+            <button class="nav-link pr-3" @click="editarPerfil()">Editar perfil</button>
+          </li>
+          <li class="nav-item">
               <button class="nav-link pr-3" @click="sesion()">{{estaLog ? 'Cerrar sesión' : 'Iniciar sesión'}}</button>
           </li>
         </ul>
@@ -100,6 +103,21 @@ import Swal from "sweetalert2";
           
           if(global.estaLogeado == true){
            this.$router.push('list');
+           
+          }
+          if(global.estaLogeado == false){ 
+           Swal.fire(
+              "¡Atención!",
+              "Para ver el perfil debes registrarte primero",
+              "info"
+            );
+          }
+       
+      },
+          editarPerfil(){
+          
+          if(global.estaLogeado == true){
+           this.$router.push('editarPerfil');
            
           }
           if(global.estaLogeado == false){ 

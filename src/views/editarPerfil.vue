@@ -1,20 +1,6 @@
 <template>
   <div class="row">
     <div class="col-md-12">
-      <div class="input-icono" @keyup="buscaTabla()">
-        <input
-          type="text"
-          placeholder="Buscar"
-          style="width: 300px"
-          id="buscar"
-        />
-         <button
-                @click.prevent="generarPdf(usuario.key)"
-                class="btn btn-info"
-              >
-                GenerarPDF
-              </button>
-      </div><br>
       <table class="table table-striped">
         <thead>
           <tr>
@@ -50,12 +36,6 @@
                 class="btn btn-danger"
               >
                 Eliminar
-              </button>
-              <button
-                @click.prevent="generarPdf(usuario.key)"
-                class="btn btn-info"
-              >
-                GenerarPDF
               </button>
               <button
                 @click.prevent="generarPdf(usuario.key)"
@@ -137,47 +117,6 @@ export default {
           Swal.fire("No se pudo eliminar el registro", "", "Info");
         }
       });
-    },
-    iniciarTabla(id) {
-    let body = document.getElementById("resultado");
-    while(body.rows.length > 0){
-      body.deleteRow(0);
-    }
-    this.usuarios.forEach(usuario => {
-      let fila = body.insertRow(body.rows.length);
-      return fila
-    })
-    },
-    buscaTabla(id) {
-      this.iniciarTabla(id);
-      var busqueda = document.getElementById("buscar");
-      var resultado = document.getElementById("resultado");
-      var texto = busqueda.value.toUpperCase();
-
-      for (let usuario of this.usuarios) {
-        let primerNombre = usuario.primernombre;
-
-        if (primerNombre.indexOf(texto) != -1) {
-          resultado.innerHTML += 
-          `
-            <td>${usuario.primernombre}</td>
-            <td>${usuario.segundonombre}</td>
-            <td>${usuario.primerapellido}</td>
-            <td>${usuario.segundoapellido}</td>
-            <td>${usuario.tipodocumento}</td>
-            <td>${usuario.documento}</td>
-            <td>${usuario.email}</td>
-            <td>${usuario.telefono}</td>
-          
-             `;
-             
-        } else {
-          console.log("No existe");
-        }
-      }
-    },
-    myFunction() {
-     console.log('aqui')
     },
     mostrarImg(item) {
       var docRef = db.collection("usuarios").doc(item);
@@ -942,26 +881,5 @@ export default {
 <style>
 .btn-primary {
   margin-right: 12px;
-}
-.input-icono {
-  background-image: url("../assets/buscador.jpg");
-  background-repeat: no-repeat;
-  background-position: 4px center;
-  background-size: 20px;
-  display: flex;
-  align-items: center;
-  width: 300px;
-  padding-left: 28px;
-  height: 30px;
-  border: 1px solid rgba(9, 113, 163, 1);
-  border-radius: 3px;
-}
-.input-icono input {
-  width: 100%;
-  font-size: 0.9em;
-  border: none;
-}
-.input-icono input:focus {
-  outline: none;
 }
 </style>

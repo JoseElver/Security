@@ -5,6 +5,7 @@ import Crear from '@/views/UserCreate.vue'
 import Lista from '@/views/UserList.vue'
 import Home from '@/views/Home.vue'
 import Editar from '@/views/UserEdit.vue'
+import EditarPerfil from '@/views/editarPerfil.vue'
 import 'firebase/app';
 import 'firebase/auth';
 
@@ -20,6 +21,11 @@ const routes = [
     path: '/list',
     name: 'list',
     component: Lista
+  },
+  {
+    path: '/editarPerfil',
+    name: 'editarPerfil',
+    component: EditarPerfil
   },
   {
     path: '/edit/:id',
