@@ -1,74 +1,35 @@
 <template>
-  <div class="row">
-    <div class="col-md-12">
-      <div class="input-icono" @keyup="buscaTabla()">
-        <input
-          type="text"
-          placeholder="Buscar"
-          style="width: 300px"
-          id="buscar"
-        />
-         <button
-                @click.prevent="generarPdf(usuario.key)"
-                class="btn btn-info"
-              >
-                GenerarPDF
-              </button>
-      </div><br>
-      <table class="table table-striped">
-        <thead>
-          <tr>
-            <th>Primer Nombre</th>
-            <th>Segundo Nombre</th>
-            <th>Primer Apellido</th>
-            <th>Segundo Apellido</th>
-            <th>Tipo de documento</th>
-            <th>Documento</th>
-            <th>Email</th>
-            <th>Teléfono</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
-        <tbody id="resultado">
-          <tr v-for="usuario in usuarios" :key="usuario.key">
-            <td>{{ usuario.primernombre }}</td>
-            <td>{{ usuario.segundonombre }}</td>
-            <td>{{ usuario.primerapellido }}</td>
-            <td>{{ usuario.segundoapellido }}</td>
-            <td>{{ usuario.tipodocumento }}</td>
-            <td>{{ usuario.documento }}</td>
-            <td>{{ usuario.email }}</td>
-            <td>{{ usuario.telefono }}</td>
-            <td>
-              <router-link
-                :to="{ name: 'edit', params: { id: usuario.key } }"
-                class="btn btn-primary"
-                >Editar
-              </router-link>
-              <button
-                @click.prevent="deleteUser(usuario.key)"
-                class="btn btn-danger"
-              >
-                Eliminar
-              </button>
-              <button
-                @click.prevent="generarPdf(usuario.key)"
-                class="btn btn-info"
-              >
-                GenerarPDF
-              </button>
-              <button
-                @click.prevent="generarPdf(usuario.key)"
-                class="btn btn-info"
-              >
-                GenerarPDF
-              </button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+<div id="app">
+  <v-app id="inspire">
+    <div>
+        <v-card>
+      <v-card-title>
+        Filtro
+        <v-spacer></v-spacer>
+        <v-text-field
+          v-model="search"
+          append-icon="mdi-magnify"
+          label="Buscar"
+          single-line
+          hide-details
+        ></v-text-field>
+      </v-card-title>
+    </v-card>
+      <v-data-table
+        :headers="headers"
+        :items="usuarios"
+        :search="search"
+        class="elevation-1"
+      >
+        <template v-slot:[`item.botones`]="{ item }">
+           <v-icon medium class="pdf mr-3" @click.prevent="generarPdf(item.key)">
+            mdi-file-pdf
+          </v-icon>
+        </template>
+      </v-data-table>
     </div>
-  </div>
+  </v-app>
+</div>
 </template>
 
 <script>
@@ -91,6 +52,21 @@ export default {
       docAcademico: [],
       docCursos: [],
       docExperiencias: [],
+      search: '',
+      headers: [
+      {
+        text: 'Tipo de documento',
+        align: 'left',
+        sortable: false,
+        value: 'tipodocumento'
+      },
+      { text: 'Documento', value: 'documento' },
+      { text: 'Primer nombre', value: 'primernombre' },
+      { text: 'Segundo nombre', value: 'segundonombre' },
+      { text: 'Primer apellido', value: 'primerapellido' },
+      { text: 'Segundo apellido', value: 'segundoapellido' },
+      { text: 'Descargar PDF', value: 'botones', sortable: false }
+    ],
     };
   },
   created() {
@@ -112,73 +88,6 @@ export default {
     });
   },
   methods: {
-    deleteUser(id) {
-      Swal.fire({
-        title: `¿Estás seguro que deseas elimiar el registro del usuario?`,
-        type: "question",
-        showCancelButton: true,
-        cancelButtonColor: "#d33",
-        confirmButtonColor: "#3085d6",
-        confirmButtonText: "Si, eliminar",
-        cancelButtonText: "Cancelar",
-      }).then((result) => {
-        if (result.isConfirmed) {
-          db.collection("usuarios")
-            .doc(id)
-            .delete()
-            .then(() => {
-              Swal.fire(
-                "Eliminado!",
-                "El registro se eliminó éxitosamente",
-                "success"
-              );
-            });
-        } else if (result.isDenied) {
-          Swal.fire("No se pudo eliminar el registro", "", "Info");
-        }
-      });
-    },
-    iniciarTabla(id) {
-    let body = document.getElementById("resultado");
-    while(body.rows.length > 0){
-      body.deleteRow(0);
-    }
-    this.usuarios.forEach(usuario => {
-      let fila = body.insertRow(body.rows.length);
-      return fila
-    })
-    },
-    buscaTabla(id) {
-      this.iniciarTabla(id);
-      var busqueda = document.getElementById("buscar");
-      var resultado = document.getElementById("resultado");
-      var texto = busqueda.value.toUpperCase();
-
-      for (let usuario of this.usuarios) {
-        let primerNombre = usuario.primernombre;
-
-        if (primerNombre.indexOf(texto) != -1) {
-          resultado.innerHTML += 
-          `
-            <td>${usuario.primernombre}</td>
-            <td>${usuario.segundonombre}</td>
-            <td>${usuario.primerapellido}</td>
-            <td>${usuario.segundoapellido}</td>
-            <td>${usuario.tipodocumento}</td>
-            <td>${usuario.documento}</td>
-            <td>${usuario.email}</td>
-            <td>${usuario.telefono}</td>
-          
-             `;
-             
-        } else {
-          console.log("No existe");
-        }
-      }
-    },
-    myFunction() {
-     console.log('aqui')
-    },
     mostrarImg(item) {
       var docRef = db.collection("usuarios").doc(item);
 
@@ -397,14 +306,14 @@ export default {
       this.mostrarCertCursos(id);
       this.mostrarCertExperiencias(id);
       var docRef = db.collection("usuarios").doc(id);
-
+      let me = this;
       docRef
         .get()
         .then((doc) => {
           if (doc.exists) {
             console.log("Este documento es :", doc.data());
-            console.log("Aqui es " + this.docIdentidad);
-            const logo = this.imagenes[0];
+            console.log("Aqui es " + me.docIdentidad);
+            const logo = me.imagenes[0];
             const pdf = new jsPDF();
             var imgLogo = new Image();
             imgLogo.src = logo;
@@ -898,32 +807,32 @@ export default {
             pdf.text("SOPORTES", 90, 95);
             pdf.setFontSize(14);
             pdf.text("Foto familiar", 45, 115);
-            const familia = this.imagenesFamilia[0];
+            const familia = me.imagenesFamilia[0];
             var imgFamilia = new Image();
             imgFamilia.src = familia;
             pdf.addImage(imgFamilia, "PNG", 20, 130, 80, 50);
             pdf.setFontSize(14);
             pdf.text("Foto vivienda", 145, 115);
-            const vivienda = this.imagenesVivienda[0];
+            const vivienda = me.imagenesVivienda[0];
             var imgViviendaa = new Image();
             imgViviendaa.src = vivienda;
             pdf.addImage(imgViviendaa, "PNG", 115, 130, 80, 50);
             pdf.setFontSize(13);
             pdf.setTextColor("#0084ff");
             pdf.textWithLink("Ver documento de identidad", 20, 200, {
-              url: this.docIdentidad[0],
+              url: me.docIdentidad[0],
             });
             pdf.textWithLink("Ver certificados laborales", 20, 220, {
-              url: this.docLaboral[0],
+              url: me.docLaboral[0],
             });
             pdf.textWithLink("Ver certificados académicos", 20, 240, {
-              url: this.docAcademico[0],
+              url: me.docAcademico[0],
             });
             pdf.textWithLink("Ver certificados de cursos", 20, 260, {
-              url: this.docCursos[0],
+              url: me.docCursos[0],
             });
             pdf.textWithLink("Ver certificados de experiencias", 20, 280, {
-              url: this.docExperiencias[0],
+              url: me.docExperiencias[0],
             });
 
             pdf.save("Hoja de vida " + doc.data().documento + ".pdf");
@@ -963,5 +872,8 @@ export default {
 }
 .input-icono input:focus {
   outline: none;
+}
+.pdf {
+  margin-left: 35%;
 }
 </style>
