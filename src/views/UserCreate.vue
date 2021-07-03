@@ -81,6 +81,16 @@
                       dense
                       solo
                     ></v-select>
+                    <label class="negrita">Edad</label>
+                   <input 
+                      type="number" 
+                      class="form-control"
+                      v-model="usuario.edad"
+                      required
+                      oninput="this.value = this.value.replace(/[^0-9.]/g, ''); this.value = this.value.replace(/(\..*)\./g, '$1');" 
+                      onKeyDown="if(this.value.length==2 && event.keyCode!=8) return false;"
+                      min="18"
+                      max="80"><br>
                     <div class="form-group">
                       <label class="negrita">Altura</label>
                       <v-layout>
@@ -20226,6 +20236,7 @@ export default {
           documento: this.usuario.documento,
           altura: this.usuario.altura,
           genero: this.usuario.genero,
+          edad: this.usuario.edad,
           nacimiento: this.usuario.nacimiento,
           civil: this.usuario.civil,
           email: this.usuario.email,
