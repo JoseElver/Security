@@ -15,7 +15,6 @@
                     id="departamentos"
                     @click="listaDepartamento()"
                   >
-                    <option value="0">SELECCIONE</option>
                     <option value="AMAZONAS">AMAZONAS</option>
                     <option value="ANTIOQUIA">ANTIOQUIA</option>
                     <option value="ARAUCA">ARAUCA</option>
@@ -74,7 +73,6 @@
                     @click="listaGenero()"
                     v-model="gene"
                   >
-                    <option value="0">SELECCIONE</option>
                     <option value="MASCULINO">MASCULINO</option>
                     <option value="FEMENINO">FEMENINO</option>
                   </select>
@@ -87,7 +85,6 @@
                     @click="listaEdad()"
                     v-model="eda"
                   >
-                    <option value="0">SELECCIONE</option>
                     <option value="18">18</option>
                     <option value="19">19</option>
                     <option value="20">20</option>
@@ -141,7 +138,6 @@
                     @click="listaAnios()"
                     v-model="anio"
                   >
-                    <option value="0">Años</option>
                     <option value="1">1</option>
                     <option value="2">2</option>
                     <option value="3">3</option>
@@ -173,6 +169,7 @@
                     <option value="29">29</option>
                     <option value="30">30</option>
                   </select>
+                  <label class="letrero1">Años</label>
                 </v-flex>
                 <v-flex xs12 sm1 class="filtro6">
                   <label class="titulo6">laboral</label>
@@ -182,7 +179,6 @@
                     @click="listaMeses()"
                     v-model="mes"
                   >
-                    <option value="0">Meses</option>
                     <option value="1">1</option>
                     <option value="2">2</option>
                     <option value="3">3</option>
@@ -195,6 +191,7 @@
                     <option value="0">10</option>
                     <option value="1">11</option>
                   </select>
+                  <label class="letrero2">Meses</label>
                 </v-flex>
               </v-layout>
             </div>
@@ -1511,8 +1508,36 @@ export default {
       }
       this.usuarios = [];
       var usuariosRef = db.collection("usuarios");
+
+      if(this.eda == "" && (this.anio == "") && (this.mes == "") && (this.gene == "") && (this.muni == "")) {
+        console.log("El mes, el genero, el año, el municipio y edad están vacios");
+          usuariosRef.where("departamento", "==", dpt)
+        .get()
+        .then((querySnapshot) => {
+          querySnapshot.forEach((doc) => {
+            this.usuarios.push({
+              key: doc.id,
+              primernombre: doc.data().primernombre,
+              segundonombre: doc.data().segundonombre,
+              primerapellido: doc.data().primerapellido,
+              segundoapellido: doc.data().segundoapellido,
+              tipodocumento: doc.data().tipodocumento,
+              documento: doc.data().documento,
+              departamento: doc.data().departamento,
+              municipio: doc.data().municipio,
+              genero: doc.data().genero,
+              edad: doc.data().edad,
+              year: doc.data().year,
+              meses: doc.data().meses,
+            });
+          });
+        })
+        .catch((error) => {
+          console.log("Error getting documents: ", error);
+        });
+      }
       
-      if(this.anio == "" && (this.mes == "") && (this.eda == "") && (this.muni == "")) {
+      else if(this.anio == "" && (this.mes == "") && (this.eda == "") && (this.muni == "")) {
         console.log("La edad,el municipio, el mes y el año están vacios");
           usuariosRef.where("departamento", "==", dpt).where("genero", "==", gen)
         .get()
@@ -2401,7 +2426,35 @@ export default {
       this.usuarios = [];
       var usuariosRef = db.collection("usuarios");
 
-      if(this.anio == "" && (this.mes == "") && (this.eda == "") && (this.muni == "")) {
+      if(this.eda == "" && (this.anio == "") && (this.mes == "") && (this.muni == "") && (this.depar == "")) {
+        console.log("El mes, el municipio, el año, el departamento y edad están vacios");
+          usuariosRef.where("genero", "==", gen)
+        .get()
+        .then((querySnapshot) => {
+          querySnapshot.forEach((doc) => {
+            this.usuarios.push({
+              key: doc.id,
+              primernombre: doc.data().primernombre,
+              segundonombre: doc.data().segundonombre,
+              primerapellido: doc.data().primerapellido,
+              segundoapellido: doc.data().segundoapellido,
+              tipodocumento: doc.data().tipodocumento,
+              documento: doc.data().documento,
+              departamento: doc.data().departamento,
+              municipio: doc.data().municipio,
+              genero: doc.data().genero,
+              edad: doc.data().edad,
+              year: doc.data().year,
+              meses: doc.data().meses,
+            });
+          });
+        })
+        .catch((error) => {
+          console.log("Error getting documents: ", error);
+        });
+      }
+
+      else if(this.anio == "" && (this.mes == "") && (this.eda == "") && (this.muni == "")) {
         console.log("La edad,el municipio, el mes y el año están vacios");
           usuariosRef.where("departamento", "==", dpt).where("genero", "==", gen)
         .get()
@@ -3287,7 +3340,35 @@ export default {
       this.usuarios = [];
       var usuariosRef = db.collection("usuarios");
 
-      if(this.anio == "" && (this.mes == "") && (this.eda == "") && (this.gene == "")) {
+      if(this.eda == "" && (this.anio == "") && (this.mes == "") && (this.gene == "") && (this.depar == "")) {
+        console.log("El mes, el genero, el año, el departamento y edad están vacios");
+          usuariosRef.where("municipio", "==", mun)
+        .get()
+        .then((querySnapshot) => {
+          querySnapshot.forEach((doc) => {
+            this.usuarios.push({
+              key: doc.id,
+              primernombre: doc.data().primernombre,
+              segundonombre: doc.data().segundonombre,
+              primerapellido: doc.data().primerapellido,
+              segundoapellido: doc.data().segundoapellido,
+              tipodocumento: doc.data().tipodocumento,
+              documento: doc.data().documento,
+              departamento: doc.data().departamento,
+              municipio: doc.data().municipio,
+              genero: doc.data().genero,
+              edad: doc.data().edad,
+              year: doc.data().year,
+              meses: doc.data().meses,
+            });
+          });
+        })
+        .catch((error) => {
+          console.log("Error getting documents: ", error);
+        });
+      }
+
+     else if(this.anio == "" && (this.mes == "") && (this.eda == "") && (this.gene == "")) {
         console.log("La edad,el genero, el mes y el año están vacios");
           usuariosRef.where("departamento", "==", dpt).where("municipio", "==", mun)
         .get()
@@ -4177,7 +4258,35 @@ export default {
       this.usuarios = [];
       var usuariosRef = db.collection("usuarios");
 
-      if(this.gene == "" && (this.mes == "") && (this.eda == "") && (this.muni == "")) {
+      if(this.gene == "" && (this.mes == "") && (this.eda == "") && (this.muni == "") && (this.depar == "")) {
+        console.log("La edad,el municipio, el mes, el departamento y el genero están vacios");
+          usuariosRef.where("year", "==", anios)
+        .get()
+        .then((querySnapshot) => {
+          querySnapshot.forEach((doc) => {
+            this.usuarios.push({
+              key: doc.id,
+              primernombre: doc.data().primernombre,
+              segundonombre: doc.data().segundonombre,
+              primerapellido: doc.data().primerapellido,
+              segundoapellido: doc.data().segundoapellido,
+              tipodocumento: doc.data().tipodocumento,
+              documento: doc.data().documento,
+              departamento: doc.data().departamento,
+              municipio: doc.data().municipio,
+              genero: doc.data().genero,
+              edad: doc.data().edad,
+              year: doc.data().year,
+              meses: doc.data().meses,
+            });
+          });
+        })
+        .catch((error) => {
+          console.log("Error getting documents: ", error);
+        });
+      }
+
+      else if(this.gene == "" && (this.mes == "") && (this.eda == "") && (this.muni == "")) {
         console.log("La edad,el municipio, el mes y el genero están vacios");
           usuariosRef.where("departamento", "==", dpt).where("year", "==", anios)
         .get()
@@ -5066,7 +5175,35 @@ export default {
       this.usuarios = [];
       var usuariosRef = db.collection("usuarios");
 
-      if(this.anio == "" && (this.gene == "") && (this.eda == "") && (this.muni == "")) {
+      if(this.gene == "" && (this.anio == "") && (this.eda == "") && (this.muni == "") && (this.depar == "")) {
+        console.log("La edad,el municipio, el año, el departamento y el genero están vacios");
+          usuariosRef.where("meses", "==", meses)
+        .get()
+        .then((querySnapshot) => {
+          querySnapshot.forEach((doc) => {
+            this.usuarios.push({
+              key: doc.id,
+              primernombre: doc.data().primernombre,
+              segundonombre: doc.data().segundonombre,
+              primerapellido: doc.data().primerapellido,
+              segundoapellido: doc.data().segundoapellido,
+              tipodocumento: doc.data().tipodocumento,
+              documento: doc.data().documento,
+              departamento: doc.data().departamento,
+              municipio: doc.data().municipio,
+              genero: doc.data().genero,
+              edad: doc.data().edad,
+              year: doc.data().year,
+              meses: doc.data().meses,
+            });
+          });
+        })
+        .catch((error) => {
+          console.log("Error getting documents: ", error);
+        });
+      }
+
+      else if(this.anio == "" && (this.gene == "") && (this.eda == "") && (this.muni == "")) {
         console.log("La edad,el municipio, el genero y el año están vacios");
           usuariosRef.where("departamento", "==", dpt).where("meses", "==", meses)
         .get()
@@ -5955,7 +6092,35 @@ export default {
       this.usuarios = [];
       var usuariosRef = db.collection("usuarios");
 
-      if(this.anio == "" && (this.mes == "") && (this.gene == "") && (this.muni == "")) {
+      if(this.gene == "" && (this.anio == "") && (this.mes == "") && (this.muni == "") && (this.depar == "")) {
+        console.log("El mes, el municipio, el año, el departamento y el genero están vacios");
+          usuariosRef.where("edad", "==", edad)
+        .get()
+        .then((querySnapshot) => {
+          querySnapshot.forEach((doc) => {
+            this.usuarios.push({
+              key: doc.id,
+              primernombre: doc.data().primernombre,
+              segundonombre: doc.data().segundonombre,
+              primerapellido: doc.data().primerapellido,
+              segundoapellido: doc.data().segundoapellido,
+              tipodocumento: doc.data().tipodocumento,
+              documento: doc.data().documento,
+              departamento: doc.data().departamento,
+              municipio: doc.data().municipio,
+              genero: doc.data().genero,
+              edad: doc.data().edad,
+              year: doc.data().year,
+              meses: doc.data().meses,
+            });
+          });
+        })
+        .catch((error) => {
+          console.log("Error getting documents: ", error);
+        });
+      }
+
+      else if(this.anio == "" && (this.mes == "") && (this.gene == "") && (this.muni == "")) {
         console.log("genero, el municipio, el mes y el año están vacios");
           usuariosRef.where("departamento", "==", dpt).where("edad", "==", edad)
         .get()
@@ -7692,5 +7857,11 @@ export default {
 }
 .titulo6 {
   margin-left: -13% !important;
+}
+.letrero1 {
+  margin-left: 40% !important;
+}
+.letrero2 {
+  margin-left: 27% !important;
 }
 </style>
