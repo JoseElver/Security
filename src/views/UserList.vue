@@ -5,6 +5,11 @@
         <div>
           <v-card>
             <v-card-title class="principal"> Filtros: </v-card-title>
+            <ul >
+              <li @click="recorrerVector()">
+                recorrer
+              </li>
+            </ul>
             <div class="form-group">
               <v-layout>
                 <v-flex xs12 sm2>
@@ -214,6 +219,7 @@
               </v-icon>
             </template>
           </v-data-table>
+          <button @click="descargarTodo()">Descargar todo</button>
         </div>
       </form>
     </v-app>
@@ -238,6 +244,7 @@ export default {
       docLaboral: [],
       docAcademico: [],
       docCursos: [],
+      vector: [],
       docExperiencias: [],
       search: "",
       mes: "",
@@ -1478,6 +1485,16 @@ export default {
     });
   },
   methods: {
+    async recorrerVector(){
+      console.log("valor vector " + this.vector);
+      console.log("length " + this.vector.length);
+      var i = 0;
+      for(i=0; i<this.vector.length; i++){
+         console.log("posición i " + this.vector[i]);
+         await this.generarPdf(this.vector[i]);
+      }
+    },
+
     listaDepartamento() {
       var i = 0;
       var dpt;
@@ -2403,11 +2420,11 @@ export default {
         .catch((error) => {
           console.log("Error getting documents: ", error);
         });
-
       }
     },
 
     listaGenero() {
+    this.vector = [];
      var gen;
       gen = document.getElementById("genero").value;
       var dpt;
@@ -2432,6 +2449,7 @@ export default {
         .get()
         .then((querySnapshot) => {
           querySnapshot.forEach((doc) => {
+            this.vector.push(doc.id);  
             this.usuarios.push({
               key: doc.id,
               primernombre: doc.data().primernombre,
@@ -2446,7 +2464,7 @@ export default {
               edad: doc.data().edad,
               year: doc.data().year,
               meses: doc.data().meses,
-            });
+            });          
           });
         })
         .catch((error) => {
@@ -6049,6 +6067,7 @@ export default {
         .get()
         .then((querySnapshot) => {
           querySnapshot.forEach((doc) => {
+            this.vector.push(doc.id); 
             this.usuarios.push({
               key: doc.id,
               primernombre: doc.data().primernombre,
@@ -7782,6 +7801,9 @@ export default {
           console.log("Error llamando documento:", error);
         });
     },
+  
+  
+  
   },
 };
 </script>
