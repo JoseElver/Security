@@ -5,10 +5,8 @@
         <div>
           <v-card>
             <v-card-title class="principal"> Filtros: </v-card-title>
-            <ul >
-              <li @click="recorrerVector()">
-                recorrer
-              </li>
+            <ul>
+              <li @click="recorrerVector()">recorrer</li>
             </ul>
             <div class="form-group">
               <v-layout>
@@ -219,7 +217,23 @@
               </v-icon>
             </template>
           </v-data-table>
-          <button @click="descargarTodo()">Descargar todo</button>
+          <div @click="recorrerVector()" class="boton">
+          <v-btn
+      :loading="loading3"
+      :disabled="loading3"
+      color="blue-grey lighten-1"
+      class="ma-2 white--text"
+      @click="loader = 'loading3'"
+    >
+      Descargar todo
+      <v-icon
+        right
+        dark
+      >
+        mdi-cloud-download
+      </v-icon>
+    </v-btn>
+          </div>
         </div>
       </form>
     </v-app>
@@ -237,6 +251,9 @@ export default {
     return {
       usuarios: [],
       hidden: false,
+      loader: null,
+      loading: false,
+      loading3: false,
       imagenes: [],
       imagenesFamilia: [],
       imagenesVivienda: [],
@@ -1484,14 +1501,24 @@ export default {
       });
     });
   },
+  watch: {
+      loader () {
+        const l = this.loader
+        this[l] = !this[l]
+
+        setTimeout(() => (this[l] = false), 3000)
+
+        this.loader = null
+      },
+    },
   methods: {
-    async recorrerVector(){
+    async recorrerVector() {
       console.log("valor vector " + this.vector);
       console.log("length " + this.vector.length);
       var i = 0;
-      for(i=0; i<this.vector.length; i++){
-         console.log("posición i " + this.vector[i]);
-         await this.generarPdf(this.vector[i]);
+      for (i = 0; i < this.vector.length; i++) {
+        console.log("posición i " + this.vector[i]);
+        await this.generarPdf(this.vector[i]);
       }
     },
 
@@ -1526,906 +1553,1051 @@ export default {
       this.usuarios = [];
       var usuariosRef = db.collection("usuarios");
 
-      if(this.eda == "" && (this.anio == "") && (this.mes == "") && (this.gene == "") && (this.muni == "")) {
-        console.log("El mes, el genero, el año, el municipio y edad están vacios");
-          usuariosRef.where("departamento", "==", dpt)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+      if (
+        this.eda == "" &&
+        this.anio == "" &&
+        this.mes == "" &&
+        this.gene == "" &&
+        this.muni == ""
+      ) {
+        this.vector = [];
+        console.log(
+          "El mes, el genero, el año, el municipio y edad están vacios"
+        );
+        usuariosRef
+          .where("departamento", "==", dpt)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-      
-      else if(this.anio == "" && (this.mes == "") && (this.eda == "") && (this.muni == "")) {
+      } else if (
+        this.anio == "" &&
+        this.mes == "" &&
+        this.eda == "" &&
+        this.muni == ""
+      ) {
+        this.vector = [];
         console.log("La edad,el municipio, el mes y el año están vacios");
-          usuariosRef.where("departamento", "==", dpt).where("genero", "==", gen)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("departamento", "==", dpt)
+          .where("genero", "==", gen)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-     else if(this.anio == "" && (this.mes == "") && (this.eda == "") && (this.gene == "")) {
+      } else if (
+        this.anio == "" &&
+        this.mes == "" &&
+        this.eda == "" &&
+        this.gene == ""
+      ) {
+        this.vector = [];
         console.log("La edad,el genero, el mes y el año están vacios");
-          usuariosRef.where("municipio", "==", mun).where("departamento", "==", dpt)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("municipio", "==", mun)
+          .where("departamento", "==", dpt)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.anio == "" && (this.mes == "") && (this.muni == "") && (this.gene == "")) {
+      } else if (
+        this.anio == "" &&
+        this.mes == "" &&
+        this.muni == "" &&
+        this.gene == ""
+      ) {
+        this.vector = [];
         console.log("El municipio, el genero, el mes y el año están vacios");
-          usuariosRef.where("edad", "==", edad).where("departamento", "==", dpt)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("edad", "==", edad)
+          .where("departamento", "==", dpt)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.anio == "" && (this.eda == "") && (this.muni == "") && (this.gene == "")) {
+      } else if (
+        this.anio == "" &&
+        this.eda == "" &&
+        this.muni == "" &&
+        this.gene == ""
+      ) {
+        this.vector = [];
         console.log("El municipio, el genero, la edad y el año están vacios");
-          usuariosRef.where("meses", "==", meses).where("departamento", "==", dpt)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("meses", "==", meses)
+          .where("departamento", "==", dpt)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.eda == "" && (this.mes == "") && (this.muni == "") && (this.gene == "")) {
+      } else if (
+        this.eda == "" &&
+        this.mes == "" &&
+        this.muni == "" &&
+        this.gene == ""
+      ) {
+        this.vector = [];
         console.log("El municipio, el genero, el mes y la edad están vacios");
-          usuariosRef.where("year", "==", anios).where("departamento", "==", dpt)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("year", "==", anios)
+          .where("departamento", "==", dpt)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.anio == "" && (this.mes == "") && (this.eda == "")) {
+      } else if (this.anio == "" && this.mes == "" && this.eda == "") {
+        this.vector = [];
         console.log("La edad, el mes y el año están vacios");
-          usuariosRef.where("departamento", "==", dpt).where("municipio", "==", mun).where("genero", "==", gen)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("departamento", "==", dpt)
+          .where("municipio", "==", mun)
+          .where("genero", "==", gen)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.anio == "" && (this.mes == "") && (this.muni == "")) {
+      } else if (this.anio == "" && this.mes == "" && this.muni == "") {
+        this.vector = [];
         console.log("El municipio, el mes y el año están vacios");
-          usuariosRef.where("departamento", "==", dpt).where("genero", "==", gen).where("edad", "==", edad)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("departamento", "==", dpt)
+          .where("genero", "==", gen)
+          .where("edad", "==", edad)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.anio == "" && (this.mes == "") && (this.gene == "")) {
+      } else if (this.anio == "" && this.mes == "" && this.gene == "") {
+        this.vector = [];
         console.log("El genero, el mes y el año están vacios");
-          usuariosRef.where("municipio", "==", mun).where("departamento", "==", dpt).where("edad", "==", edad)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("municipio", "==", mun)
+          .where("departamento", "==", dpt)
+          .where("edad", "==", edad)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.eda == "" && (this.mes == "") && (this.gene == "")) {
+      } else if (this.eda == "" && this.mes == "" && this.gene == "") {
+        this.vector = [];
         console.log("El genero, el mes y la edad están vacios");
-          usuariosRef.where("municipio", "==", mun).where("departamento", "==", dpt).where("year", "==", anios)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("municipio", "==", mun)
+          .where("departamento", "==", dpt)
+          .where("year", "==", anios)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.eda == "" && (this.mes == "") && (this.muni == "")) {
+      } else if (this.eda == "" && this.mes == "" && this.muni == "") {
+        this.vector = [];
         console.log("El municipio, el mes y la edad están vacios");
-          usuariosRef.where("departamento", "==", dpt).where("genero", "==", gen).where("year", "==", anios)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("departamento", "==", dpt)
+          .where("genero", "==", gen)
+          .where("year", "==", anios)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-       else if(this.eda == "" && (this.anio == "") && (this.gene == "")) {
+      } else if (this.eda == "" && this.anio == "" && this.gene == "") {
+        this.vector = [];
         console.log("El genero, el año y la edad están vacios");
-          usuariosRef.where("municipio", "==", mun).where("departamento", "==", dpt).where("meses", "==", meses)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("municipio", "==", mun)
+          .where("departamento", "==", dpt)
+          .where("meses", "==", meses)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.eda == "" && (this.anio == "") && (this.muni == "")) {
+      } else if (this.eda == "" && this.anio == "" && this.muni == "") {
+        this.vector = [];
         console.log("El municipio, el año y la edad están vacios");
-          usuariosRef.where("departamento", "==", dpt).where("genero", "==", gen).where("meses", "==", meses)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("departamento", "==", dpt)
+          .where("genero", "==", gen)
+          .where("meses", "==", meses)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-       else if(this.eda == "" && (this.gene == "") && (this.muni == "")) {
+      } else if (this.eda == "" && this.gene == "" && this.muni == "") {
+        this.vector = [];
         console.log("El municipio, el genero y la edad están vacios");
-          usuariosRef.where("departamento", "==", dpt).where("meses", "==", meses).where("year", "==", anios)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("departamento", "==", dpt)
+          .where("meses", "==", meses)
+          .where("year", "==", anios)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-       else if(this.anio == "" && (this.gene == "") && (this.muni == "")) {
+      } else if (this.anio == "" && this.gene == "" && this.muni == "") {
+        this.vector = [];
         console.log("El municipio, el genero y el año están vacios");
-          usuariosRef.where("departamento", "==", dpt).where("meses", "==", meses).where("edad", "==", edad)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("departamento", "==", dpt)
+          .where("meses", "==", meses)
+          .where("edad", "==", edad)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.mes == "" && (this.gene == "") && (this.muni == "")) {
+      } else if (this.mes == "" && this.gene == "" && this.muni == "") {
+        this.vector = [];
         console.log("El municipio, el genero y el mes están vacios");
-          usuariosRef.where("departamento", "==", dpt).where("year", "==", anios).where("edad", "==", edad)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("departamento", "==", dpt)
+          .where("year", "==", anios)
+          .where("edad", "==", edad)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.anio == "" && (this.mes == "")) {
+      } else if (this.anio == "" && this.mes == "") {
+        this.vector = [];
         console.log("El mes y el año están vacios");
-          usuariosRef.where("departamento", "==", dpt).where("municipio", "==", mun).where("genero", "==", gen).where("edad", "==", edad)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("departamento", "==", dpt)
+          .where("municipio", "==", mun)
+          .where("genero", "==", gen)
+          .where("edad", "==", edad)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-     else if(this.anio == "" && (this.eda == "")) {
+      } else if (this.anio == "" && this.eda == "") {
+        this.vector = [];
         console.log("La edad y el año están vacios");
-          usuariosRef.where("departamento", "==", dpt).where("municipio", "==", mun).where("genero", "==", gen).where("meses", "==", meses)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("departamento", "==", dpt)
+          .where("municipio", "==", mun)
+          .where("genero", "==", gen)
+          .where("meses", "==", meses)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.anio == "" && (this.muni == "")) {
+      } else if (this.anio == "" && this.muni == "") {
+        this.vector = [];
         console.log("El municipio y el año están vacios");
-          usuariosRef.where("departamento", "==", dpt).where("genero", "==", gen).where("meses", "==", meses).where("edad", "==", edad)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("departamento", "==", dpt)
+          .where("genero", "==", gen)
+          .where("meses", "==", meses)
+          .where("edad", "==", edad)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.anio == "" && (this.gene == "")) {
+      } else if (this.anio == "" && this.gene == "") {
+        this.vector = [];
         console.log("El genero y el año están vacios");
-          usuariosRef.where("departamento", "==", dpt).where("municipio", "==", mun).where("meses", "==", meses).where("edad", "==", edad)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("departamento", "==", dpt)
+          .where("municipio", "==", mun)
+          .where("meses", "==", meses)
+          .where("edad", "==", edad)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.eda == "" && (this.mes == "")) {
+      } else if (this.eda == "" && this.mes == "") {
+        this.vector = [];
         console.log("La edad y el mes están vacios");
-          usuariosRef.where("departamento", "==", dpt).where("municipio", "==", mun).where("genero", "==", gen).where("year", "==", anios)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("departamento", "==", dpt)
+          .where("municipio", "==", mun)
+          .where("genero", "==", gen)
+          .where("year", "==", anios)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.eda == "" && (this.muni == "")) {
+      } else if (this.eda == "" && this.muni == "") {
+        this.vector = [];
         console.log("La edad y el munipio están vacios");
-          usuariosRef.where("departamento", "==", dpt).where("genero", "==", gen).where("year", "==", anios).where("meses", "==", meses)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("departamento", "==", dpt)
+          .where("genero", "==", gen)
+          .where("year", "==", anios)
+          .where("meses", "==", meses)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.eda == "" && (this.gene == "")) {
+      } else if (this.eda == "" && this.gene == "") {
+        this.vector = [];
         console.log("La edad y el genero están vacios");
-          usuariosRef.where("departamento", "==", dpt).where("municipio", "==", mun).where("year", "==", anios).where("meses", "==", meses)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("departamento", "==", dpt)
+          .where("municipio", "==", mun)
+          .where("year", "==", anios)
+          .where("meses", "==", meses)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-       else if(this.muni == "" && (this.mes == "")) {
+      } else if (this.muni == "" && this.mes == "") {
+        this.vector = [];
         console.log("El municipio y el mes están vacios");
-          usuariosRef.where("departamento", "==", dpt).where("genero", "==", gen).where("edad", "==", edad).where("year", "==", anios)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("departamento", "==", dpt)
+          .where("genero", "==", gen)
+          .where("edad", "==", edad)
+          .where("year", "==", anios)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.muni == "" && (this.gene == "")) {
+      } else if (this.muni == "" && this.gene == "") {
+        this.vector = [];
         console.log("El municipio y el genero están vacios");
-          usuariosRef.where("departamento", "==", dpt).where("edad", "==", edad).where("year", "==", anios).where("meses", "==", meses)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("departamento", "==", dpt)
+          .where("edad", "==", edad)
+          .where("year", "==", anios)
+          .where("meses", "==", meses)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.gene == "" && (this.mes == "")) {
+      } else if (this.gene == "" && this.mes == "") {
+        this.vector = [];
         console.log("El genero y el mes están vacios");
-          usuariosRef.where("municipio", "==", mun).where("departamento", "==", dpt).where("edad", "==", edad).where("year", "==", anios)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("municipio", "==", mun)
+          .where("departamento", "==", dpt)
+          .where("edad", "==", edad)
+          .where("year", "==", anios)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-       else if(this.gene == "") {
+      } else if (this.gene == "") {
+        this.vector = [];
         console.log("El genero está vacio");
-          usuariosRef.where("departamento", "==", dpt).where("edad", "==", edad).where("year", "==", anios).where("meses", "==", meses)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("departamento", "==", dpt)
+          .where("edad", "==", edad)
+          .where("year", "==", anios)
+          .where("meses", "==", meses)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.muni == "") {
+      } else if (this.muni == "") {
+        this.vector = [];
         console.log("El munipio está vacio");
-          usuariosRef.where("departamento", "==", dpt).where("genero", "==", gen).where("edad", "==", edad).where("year", "==", anios).where("meses", "==", meses)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("departamento", "==", dpt)
+          .where("genero", "==", gen)
+          .where("edad", "==", edad)
+          .where("year", "==", anios)
+          .where("meses", "==", meses)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.eda == "") {
+      } else if (this.eda == "") {
+        this.vector = [];
         console.log("La edad está vacio");
-          usuariosRef.where("departamento", "==", dpt).where("municipio", "==", mun).where("genero", "==", gen).where("year", "==", anios).where("meses", "==", meses)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("departamento", "==", dpt)
+          .where("municipio", "==", mun)
+          .where("genero", "==", gen)
+          .where("year", "==", anios)
+          .where("meses", "==", meses)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.anio == "") {
+      } else if (this.anio == "") {
+        this.vector = [];
         console.log("El año está vacio");
-          usuariosRef.where("departamento", "==", dpt).where("municipio", "==", mun).where("genero", "==", gen).where("edad", "==", edad).where("meses", "==", meses)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("departamento", "==", dpt)
+          .where("municipio", "==", mun)
+          .where("genero", "==", gen)
+          .where("edad", "==", edad)
+          .where("meses", "==", meses)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.mes == "") {
+      } else if (this.mes == "") {
+        this.vector = [];
         console.log("El mes está vacio");
-          usuariosRef.where("departamento", "==", dpt).where("municipio", "==", mun).where("genero", "==", gen).where("edad", "==", edad).where("year", "==", anios)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("departamento", "==", dpt)
+          .where("municipio", "==", mun)
+          .where("genero", "==", gen)
+          .where("edad", "==", edad)
+          .where("year", "==", anios)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else {
+      } else {
+        this.vector = [];
         console.log("Ninguno está vacio");
-          usuariosRef.where("departamento", "==", dpt).where("municipio", "==", mun).where("genero", "==", gen).where("edad", "==", edad).where("year", "==", anios).where("meses", "==", meses)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("departamento", "==", dpt)
+          .where("municipio", "==", mun)
+          .where("genero", "==", gen)
+          .where("edad", "==", edad)
+          .where("year", "==", anios)
+          .where("meses", "==", meses)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
       }
     },
 
     listaGenero() {
-    this.vector = [];
-     var gen;
+      var gen;
       gen = document.getElementById("genero").value;
       var dpt;
       dpt = document.getElementById("departamentos").value;
@@ -2438,907 +2610,1057 @@ export default {
       var edad;
       edad = document.getElementById("edad").value;
 
-      console.log("departamento " +dpt + " genero " + gen + " municipio " + mun);
+      console.log(
+        "departamento " + dpt + " genero " + gen + " municipio " + mun
+      );
 
       this.usuarios = [];
       var usuariosRef = db.collection("usuarios");
 
-      if(this.eda == "" && (this.anio == "") && (this.mes == "") && (this.muni == "") && (this.depar == "")) {
-        console.log("El mes, el municipio, el año, el departamento y edad están vacios");
-          usuariosRef.where("genero", "==", gen)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.vector.push(doc.id);  
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
-            });          
+      if (
+        this.eda == "" &&
+        this.anio == "" &&
+        this.mes == "" &&
+        this.muni == "" &&
+        this.depar == ""
+      ) {
+        this.vector = [];
+        console.log(
+          "El mes, el municipio, el año, el departamento y edad están vacios"
+        );
+        usuariosRef
+          .where("genero", "==", gen)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
+            });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.anio == "" && (this.mes == "") && (this.eda == "") && (this.muni == "")) {
+      } else if (
+        this.anio == "" &&
+        this.mes == "" &&
+        this.eda == "" &&
+        this.muni == ""
+      ) {
+        this.vector = [];
         console.log("La edad,el municipio, el mes y el año están vacios");
-          usuariosRef.where("departamento", "==", dpt).where("genero", "==", gen)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("departamento", "==", dpt)
+          .where("genero", "==", gen)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-     else if(this.anio == "" && (this.mes == "") && (this.eda == "") && (this.depar == "")) {
+      } else if (
+        this.anio == "" &&
+        this.mes == "" &&
+        this.eda == "" &&
+        this.depar == ""
+      ) {
+        this.vector = [];
         console.log("La edad,el departamento, el mes y el año están vacios");
-          usuariosRef.where("municipio", "==", mun).where("genero", "==", gen)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("municipio", "==", mun)
+          .where("genero", "==", gen)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.anio == "" && (this.mes == "") && (this.muni == "") && (this.depar == "")) {
-        console.log("El municipio, el departamento, el mes y el año están vacios");
-          usuariosRef.where("edad", "==", edad).where("genero", "==", gen)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+      } else if (
+        this.anio == "" &&
+        this.mes == "" &&
+        this.muni == "" &&
+        this.depar == ""
+      ) {
+        this.vector = [];
+        console.log(
+          "El municipio, el departamento, el mes y el año están vacios"
+        );
+        usuariosRef
+          .where("edad", "==", edad)
+          .where("genero", "==", gen)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.anio == "" && (this.eda == "") && (this.muni == "") && (this.depar == "")) {
-        console.log("El municipio, el departamento, la edad y el año están vacios");
-          usuariosRef.where("meses", "==", meses).where("genero", "==", gen)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+      } else if (
+        this.anio == "" &&
+        this.eda == "" &&
+        this.muni == "" &&
+        this.depar == ""
+      ) {
+        this.vector = [];
+        console.log(
+          "El municipio, el departamento, la edad y el año están vacios"
+        );
+        usuariosRef
+          .where("meses", "==", meses)
+          .where("genero", "==", gen)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.eda == "" && (this.mes == "") && (this.muni == "") && (this.depar == "")) {
-        console.log("El municipio, el departamento, el mes y la edad están vacios");
-          usuariosRef.where("year", "==", anios).where("genero", "==", gen)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+      } else if (
+        this.eda == "" &&
+        this.mes == "" &&
+        this.muni == "" &&
+        this.depar == ""
+      ) {
+        this.vector = [];
+        console.log(
+          "El municipio, el departamento, el mes y la edad están vacios"
+        );
+        usuariosRef
+          .where("year", "==", anios)
+          .where("genero", "==", gen)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.anio == "" && (this.mes == "") && (this.eda == "")) {
+      } else if (this.anio == "" && this.mes == "" && this.eda == "") {
+        this.vector = [];
         console.log("La edad, el mes y el año están vacios");
-          usuariosRef.where("departamento", "==", dpt).where("municipio", "==", mun).where("genero", "==", gen)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("departamento", "==", dpt)
+          .where("municipio", "==", mun)
+          .where("genero", "==", gen)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.anio == "" && (this.mes == "") && (this.muni == "")) {
+      } else if (this.anio == "" && this.mes == "" && this.muni == "") {
+        this.vector = [];
         console.log("El municipio, el mes y el año están vacios");
-          usuariosRef.where("departamento", "==", dpt).where("genero", "==", gen).where("edad", "==", edad)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("departamento", "==", dpt)
+          .where("genero", "==", gen)
+          .where("edad", "==", edad)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.anio == "" && (this.mes == "") && (this.depar == "")) {
+      } else if (this.anio == "" && this.mes == "" && this.depar == "") {
+        this.vector = [];
         console.log("El departamento, el mes y el año están vacios");
-          usuariosRef.where("municipio", "==", mun).where("genero", "==", gen).where("edad", "==", edad)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("municipio", "==", mun)
+          .where("genero", "==", gen)
+          .where("edad", "==", edad)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.eda == "" && (this.mes == "") && (this.depar == "")) {
+      } else if (this.eda == "" && this.mes == "" && this.depar == "") {
+        this.vector = [];
         console.log("El departamento, el mes y la edad están vacios");
-          usuariosRef.where("municipio", "==", mun).where("genero", "==", gen).where("year", "==", anios)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("municipio", "==", mun)
+          .where("genero", "==", gen)
+          .where("year", "==", anios)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.eda == "" && (this.mes == "") && (this.muni == "")) {
+      } else if (this.eda == "" && this.mes == "" && this.muni == "") {
+        this.vector = [];
         console.log("El municipio, el mes y la edad están vacios");
-          usuariosRef.where("departamento", "==", dpt).where("genero", "==", gen).where("year", "==", anios)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("departamento", "==", dpt)
+          .where("genero", "==", gen)
+          .where("year", "==", anios)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-       else if(this.eda == "" && (this.anio == "") && (this.depar == "")) {
+      } else if (this.eda == "" && this.anio == "" && this.depar == "") {
+        this.vector = [];
         console.log("El departamento, el año y la edad están vacios");
-          usuariosRef.where("municipio", "==", mun).where("genero", "==", gen).where("meses", "==", meses)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("municipio", "==", mun)
+          .where("genero", "==", gen)
+          .where("meses", "==", meses)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.eda == "" && (this.anio == "") && (this.muni == "")) {
+      } else if (this.eda == "" && this.anio == "" && this.muni == "") {
+        this.vector = [];
         console.log("El municipio, el año y la edad están vacios");
-          usuariosRef.where("departamento", "==", dpt).where("genero", "==", gen).where("meses", "==", meses)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("departamento", "==", dpt)
+          .where("genero", "==", gen)
+          .where("meses", "==", meses)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-       else if(this.eda == "" && (this.depar == "") && (this.muni == "")) {
+      } else if (this.eda == "" && this.depar == "" && this.muni == "") {
+        this.vector = [];
         console.log("El municipio, el departamento y la edad están vacios");
-          usuariosRef.where("genero", "==", gen).where("meses", "==", meses).where("year", "==", anios)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("genero", "==", gen)
+          .where("meses", "==", meses)
+          .where("year", "==", anios)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-       else if(this.anio == "" && (this.depar == "") && (this.muni == "")) {
+      } else if (this.anio == "" && this.depar == "" && this.muni == "") {
+        this.vector = [];
         console.log("El municipio, el departamento y el año están vacios");
-          usuariosRef.where("genero", "==", gen).where("meses", "==", meses).where("edad", "==", edad)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("genero", "==", gen)
+          .where("meses", "==", meses)
+          .where("edad", "==", edad)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.mes == "" && (this.depar == "") && (this.muni == "")) {
+      } else if (this.mes == "" && this.depar == "" && this.muni == "") {
+        this.vector = [];
         console.log("El municipio, el departamento y el mes están vacios");
-          usuariosRef.where("genero", "==", gen).where("year", "==", anios).where("edad", "==", edad)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("genero", "==", gen)
+          .where("year", "==", anios)
+          .where("edad", "==", edad)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.anio == "" && (this.mes == "")) {
+      } else if (this.anio == "" && this.mes == "") {
+        this.vector = [];
         console.log("El mes y el año están vacios");
-          usuariosRef.where("departamento", "==", dpt).where("municipio", "==", mun).where("genero", "==", gen).where("edad", "==", edad)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("departamento", "==", dpt)
+          .where("municipio", "==", mun)
+          .where("genero", "==", gen)
+          .where("edad", "==", edad)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-     else if(this.anio == "" && (this.eda == "")) {
+      } else if (this.anio == "" && this.eda == "") {
+        this.vector = [];
         console.log("La edad y el año están vacios");
-          usuariosRef.where("departamento", "==", dpt).where("municipio", "==", mun).where("genero", "==", gen).where("meses", "==", meses)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("departamento", "==", dpt)
+          .where("municipio", "==", mun)
+          .where("genero", "==", gen)
+          .where("meses", "==", meses)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.anio == "" && (this.muni == "")) {
+      } else if (this.anio == "" && this.muni == "") {
+        this.vector = [];
         console.log("El municipio y el año están vacios");
-          usuariosRef.where("departamento", "==", dpt).where("genero", "==", gen).where("meses", "==", meses).where("edad", "==", edad)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("departamento", "==", dpt)
+          .where("genero", "==", gen)
+          .where("meses", "==", meses)
+          .where("edad", "==", edad)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.anio == "" && (this.depar == "")) {
+      } else if (this.anio == "" && this.depar == "") {
+        this.vector = [];
         console.log("El departamento y el año están vacios");
-          usuariosRef.where("genero", "==", gen).where("meses", "==", meses).where("edad", "==", edad)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("genero", "==", gen)
+          .where("meses", "==", meses)
+          .where("edad", "==", edad)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.eda == "" && (this.mes == "")) {
+      } else if (this.eda == "" && this.mes == "") {
+        this.vector = [];
         console.log("La edad y el mes están vacios");
-          usuariosRef.where("departamento", "==", dpt).where("municipio", "==", mun).where("genero", "==", gen).where("year", "==", anios)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("departamento", "==", dpt)
+          .where("municipio", "==", mun)
+          .where("genero", "==", gen)
+          .where("year", "==", anios)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.eda == "" && (this.muni == "")) {
+      } else if (this.eda == "" && this.muni == "") {
+        this.vector = [];
         console.log("La edad y el munipio están vacios");
-          usuariosRef.where("departamento", "==", dpt).where("genero", "==", gen).where("year", "==", anios).where("meses", "==", meses)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("departamento", "==", dpt)
+          .where("genero", "==", gen)
+          .where("year", "==", anios)
+          .where("meses", "==", meses)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.eda == "" && (this.depar == "")) {
+      } else if (this.eda == "" && this.depar == "") {
+        this.vector = [];
         console.log("La edad y el departamento están vacios");
-          usuariosRef.where("genero", "==", gen).where("year", "==", anios).where("meses", "==", meses)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("genero", "==", gen)
+          .where("year", "==", anios)
+          .where("meses", "==", meses)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-       else if(this.muni == "" && (this.mes == "")) {
+      } else if (this.muni == "" && this.mes == "") {
+        this.vector = [];
         console.log("El municipio y el mes están vacios");
-          usuariosRef.where("departamento", "==", dpt).where("genero", "==", gen).where("edad", "==", edad).where("year", "==", anios)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("departamento", "==", dpt)
+          .where("genero", "==", gen)
+          .where("edad", "==", edad)
+          .where("year", "==", anios)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.muni == "" && (this.depar == "")) {
+      } else if (this.muni == "" && this.depar == "") {
+        this.vector = [];
         console.log("El municipio y el departamento están vacios");
-          usuariosRef.where("genero", "==", gen).where("edad", "==", edad).where("year", "==", anios).where("meses", "==", meses)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("genero", "==", gen)
+          .where("edad", "==", edad)
+          .where("year", "==", anios)
+          .where("meses", "==", meses)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.depar == "" && (this.mes == "")) {
+      } else if (this.depar == "" && this.mes == "") {
+        this.vector = [];
         console.log("El departamento y el mes están vacios");
-          usuariosRef.where("municipio", "==", mun).where("genero", "==", gen).where("edad", "==", edad).where("year", "==", anios)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("municipio", "==", mun)
+          .where("genero", "==", gen)
+          .where("edad", "==", edad)
+          .where("year", "==", anios)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-       else if(this.depar == "") {
+      } else if (this.depar == "") {
+        this.vector = [];
         console.log("El departamento está vacio");
-          usuariosRef.where("genero", "==", gen).where("edad", "==", edad).where("year", "==", anios).where("meses", "==", meses)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("genero", "==", gen)
+          .where("edad", "==", edad)
+          .where("year", "==", anios)
+          .where("meses", "==", meses)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.muni == "") {
+      } else if (this.muni == "") {
+        this.vector = [];
         console.log("El munipio está vacio");
-          usuariosRef.where("departamento", "==", dpt).where("genero", "==", gen).where("edad", "==", edad).where("year", "==", anios).where("meses", "==", meses)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("departamento", "==", dpt)
+          .where("genero", "==", gen)
+          .where("edad", "==", edad)
+          .where("year", "==", anios)
+          .where("meses", "==", meses)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.gene == "") {
+      } else if (this.gene == "") {
+        this.vector = [];
         console.log("El género está vacio");
-          usuariosRef.where("departamento", "==", dpt).where("municipio", "==", mun).where("edad", "==", edad).where("year", "==", anios).where("meses", "==", meses)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("departamento", "==", dpt)
+          .where("municipio", "==", mun)
+          .where("edad", "==", edad)
+          .where("year", "==", anios)
+          .where("meses", "==", meses)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.anio == "") {
+      } else if (this.anio == "") {
+        this.vector = [];
         console.log("El año está vacio");
-          usuariosRef.where("departamento", "==", dpt).where("municipio", "==", mun).where("genero", "==", gen).where("edad", "==", edad).where("meses", "==", meses)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("departamento", "==", dpt)
+          .where("municipio", "==", mun)
+          .where("genero", "==", gen)
+          .where("edad", "==", edad)
+          .where("meses", "==", meses)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.mes == "") {
+      } else if (this.mes == "") {
+        this.vector = [];
         console.log("El mes está vacio");
-          usuariosRef.where("departamento", "==", dpt).where("municipio", "==", mun).where("genero", "==", gen).where("edad", "==", edad).where("year", "==", anios)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("departamento", "==", dpt)
+          .where("municipio", "==", mun)
+          .where("genero", "==", gen)
+          .where("edad", "==", edad)
+          .where("year", "==", anios)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else {
+      } else {
+        this.vector = [];
         console.log("Ninguno está vacio");
-          usuariosRef.where("departamento", "==", dpt).where("municipio", "==", mun).where("genero", "==", gen).where("edad", "==", edad).where("year", "==", anios).where("meses", "==", meses)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("departamento", "==", dpt)
+          .where("municipio", "==", mun)
+          .where("genero", "==", gen)
+          .where("edad", "==", edad)
+          .where("year", "==", anios)
+          .where("meses", "==", meses)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-
       }
     },
 
@@ -3358,903 +3680,1051 @@ export default {
       this.usuarios = [];
       var usuariosRef = db.collection("usuarios");
 
-      if(this.eda == "" && (this.anio == "") && (this.mes == "") && (this.gene == "") && (this.depar == "")) {
-        console.log("El mes, el genero, el año, el departamento y edad están vacios");
-          usuariosRef.where("municipio", "==", mun)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+      if (
+        this.eda == "" &&
+        this.anio == "" &&
+        this.mes == "" &&
+        this.gene == "" &&
+        this.depar == ""
+      ) {
+        this.vector = [];
+        console.log(
+          "El mes, el genero, el año, el departamento y edad están vacios"
+        );
+        usuariosRef
+          .where("municipio", "==", mun)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-     else if(this.anio == "" && (this.mes == "") && (this.eda == "") && (this.gene == "")) {
+      } else if (
+        this.anio == "" &&
+        this.mes == "" &&
+        this.eda == "" &&
+        this.gene == ""
+      ) {
+        this.vector = [];
         console.log("La edad,el genero, el mes y el año están vacios");
-          usuariosRef.where("departamento", "==", dpt).where("municipio", "==", mun)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("departamento", "==", dpt)
+          .where("municipio", "==", mun)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-     else if(this.anio == "" && (this.mes == "") && (this.eda == "") && (this.depar == "")) {
+      } else if (
+        this.anio == "" &&
+        this.mes == "" &&
+        this.eda == "" &&
+        this.depar == ""
+      ) {
+        this.vector = [];
         console.log("La edad,el departamento, el mes y el año están vacios");
-          usuariosRef.where("municipio", "==", mun).where("genero", "==", gen)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("municipio", "==", mun)
+          .where("genero", "==", gen)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.anio == "" && (this.mes == "") && (this.gene == "") && (this.depar == "")) {
+      } else if (
+        this.anio == "" &&
+        this.mes == "" &&
+        this.gene == "" &&
+        this.depar == ""
+      ) {
+        this.vector = [];
         console.log("El genero, el departamento, el mes y el año están vacios");
-          usuariosRef.where("edad", "==", edad).where("municipio", "==", mun)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("edad", "==", edad)
+          .where("municipio", "==", mun)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.anio == "" && (this.eda == "") && (this.gene == "") && (this.depar == "")) {
-        console.log("El genero, el departamento, la edad y el año están vacios");
-          usuariosRef.where("meses", "==", meses).where("municipio", "==", mun)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+      } else if (
+        this.anio == "" &&
+        this.eda == "" &&
+        this.gene == "" &&
+        this.depar == ""
+      ) {
+        this.vector = [];
+        console.log(
+          "El genero, el departamento, la edad y el año están vacios"
+        );
+        usuariosRef
+          .where("meses", "==", meses)
+          .where("municipio", "==", mun)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.eda == "" && (this.mes == "") && (this.gene == "") && (this.depar == "")) {
-        console.log("El genero, el departamento, el mes y la edad están vacios");
-          usuariosRef.where("year", "==", anios).where("municipio", "==", mun)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+      } else if (
+        this.eda == "" &&
+        this.mes == "" &&
+        this.gene == "" &&
+        this.depar == ""
+      ) {
+        this.vector = [];
+        console.log(
+          "El genero, el departamento, el mes y la edad están vacios"
+        );
+        usuariosRef
+          .where("year", "==", anios)
+          .where("municipio", "==", mun)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.anio == "" && (this.mes == "") && (this.eda == "")) {
+      } else if (this.anio == "" && this.mes == "" && this.eda == "") {
+        this.vector = [];
         console.log("La edad, el mes y el año están vacios");
-          usuariosRef.where("departamento", "==", dpt).where("municipio", "==", mun).where("genero", "==", gen)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("departamento", "==", dpt)
+          .where("municipio", "==", mun)
+          .where("genero", "==", gen)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.anio == "" && (this.mes == "") && (this.gene == "")) {
+      } else if (this.anio == "" && this.mes == "" && this.gene == "") {
+        this.vector = [];
         console.log("El genero, el mes y el año están vacios");
-          usuariosRef.where("departamento", "==", dpt).where("municipio", "==", mun).where("edad", "==", edad)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("departamento", "==", dpt)
+          .where("municipio", "==", mun)
+          .where("edad", "==", edad)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.anio == "" && (this.mes == "") && (this.depar == "")) {
+      } else if (this.anio == "" && this.mes == "" && this.depar == "") {
+        this.vector = [];
         console.log("El departamento, el mes y el año están vacios");
-          usuariosRef.where("municipio", "==", mun).where("genero", "==", gen).where("edad", "==", edad)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("municipio", "==", mun)
+          .where("genero", "==", gen)
+          .where("edad", "==", edad)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.eda == "" && (this.mes == "") && (this.depar == "")) {
+      } else if (this.eda == "" && this.mes == "" && this.depar == "") {
+        this.vector = [];
         console.log("El departamento, el mes y la edad están vacios");
-          usuariosRef.where("municipio", "==", mun).where("genero", "==", gen).where("year", "==", anios)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("municipio", "==", mun)
+          .where("genero", "==", gen)
+          .where("year", "==", anios)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.eda == "" && (this.mes == "") && (this.gene == "")) {
+      } else if (this.eda == "" && this.mes == "" && this.gene == "") {
+        this.vector = [];
         console.log("El genero, el mes y la edad están vacios");
-          usuariosRef.where("departamento", "==", dpt).where("municipio", "==", mun).where("year", "==", anios)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("departamento", "==", dpt)
+          .where("municipio", "==", mun)
+          .where("year", "==", anios)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-       else if(this.eda == "" && (this.anio == "") && (this.depar == "")) {
+      } else if (this.eda == "" && this.anio == "" && this.depar == "") {
+        this.vector = [];
         console.log("El departamento, el año y la edad están vacios");
-          usuariosRef.where("municipio", "==", mun).where("genero", "==", gen).where("meses", "==", meses)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("municipio", "==", mun)
+          .where("genero", "==", gen)
+          .where("meses", "==", meses)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.eda == "" && (this.anio == "") && (this.gene == "")) {
+      } else if (this.eda == "" && this.anio == "" && this.gene == "") {
+        this.vector = [];
         console.log("El genero, el año y la edad están vacios");
-          usuariosRef.where("departamento", "==", dpt).where("municipio", "==", mun).where("meses", "==", meses)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("departamento", "==", dpt)
+          .where("municipio", "==", mun)
+          .where("meses", "==", meses)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-       else if(this.eda == "" && (this.depar == "") && (this.gene == "")) {
+      } else if (this.eda == "" && this.depar == "" && this.gene == "") {
+        this.vector = [];
         console.log("El genero, el departamento y la edad están vacios");
-          usuariosRef.where("municipio", "==", mun).where("meses", "==", meses).where("year", "==", anios)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("municipio", "==", mun)
+          .where("meses", "==", meses)
+          .where("year", "==", anios)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-       else if(this.anio == "" && (this.depar == "") && (this.gene == "")) {
+      } else if (this.anio == "" && this.depar == "" && this.gene == "") {
+        this.vector = [];
         console.log("El genero, el departamento y el año están vacios");
-          usuariosRef.where("municipio", "==", mun).where("meses", "==", meses).where("edad", "==", edad)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("municipio", "==", mun)
+          .where("meses", "==", meses)
+          .where("edad", "==", edad)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.mes == "" && (this.depar == "") && (this.gene == "")) {
+      } else if (this.mes == "" && this.depar == "" && this.gene == "") {
+        this.vector = [];
         console.log("El genero, el departamento y el mes están vacios");
-          usuariosRef.where("municipio", "==", mun).where("year", "==", anios).where("edad", "==", edad)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("municipio", "==", mun)
+          .where("year", "==", anios)
+          .where("edad", "==", edad)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.anio == "" && (this.mes == "")) {
+      } else if (this.anio == "" && this.mes == "") {
+        this.vector = [];
         console.log("El mes y el año están vacios");
-          usuariosRef.where("departamento", "==", dpt).where("municipio", "==", mun).where("genero", "==", gen).where("edad", "==", edad)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("departamento", "==", dpt)
+          .where("municipio", "==", mun)
+          .where("genero", "==", gen)
+          .where("edad", "==", edad)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-     else if(this.anio == "" && (this.eda == "")) {
+      } else if (this.anio == "" && this.eda == "") {
+        this.vector = [];
         console.log("La edad y el año están vacios");
-          usuariosRef.where("departamento", "==", dpt).where("municipio", "==", mun).where("genero", "==", gen).where("meses", "==", meses)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("departamento", "==", dpt)
+          .where("municipio", "==", mun)
+          .where("genero", "==", gen)
+          .where("meses", "==", meses)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.anio == "" && (this.gene == "")) {
+      } else if (this.anio == "" && this.gene == "") {
+        this.vector = [];
         console.log("El genero y el año están vacios");
-          usuariosRef.where("departamento", "==", dpt).where("municipio", "==", mun).where("meses", "==", meses).where("edad", "==", edad)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("departamento", "==", dpt)
+          .where("municipio", "==", mun)
+          .where("meses", "==", meses)
+          .where("edad", "==", edad)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.anio == "" && (this.depar == "")) {
+      } else if (this.anio == "" && this.depar == "") {
+        this.vector = [];
         console.log("El departamento y el año están vacios");
-          usuariosRef.where("municipio", "==", mun).where("genero", "==", gen).where("meses", "==", meses).where("edad", "==", edad)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("municipio", "==", mun)
+          .where("genero", "==", gen)
+          .where("meses", "==", meses)
+          .where("edad", "==", edad)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.eda == "" && (this.mes == "")) {
+      } else if (this.eda == "" && this.mes == "") {
+        this.vector = [];
         console.log("La edad y el mes están vacios");
-          usuariosRef.where("departamento", "==", dpt).where("municipio", "==", mun).where("genero", "==", gen).where("year", "==", anios)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("departamento", "==", dpt)
+          .where("municipio", "==", mun)
+          .where("genero", "==", gen)
+          .where("year", "==", anios)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.eda == "" && (this.gene == "")) {
+      } else if (this.eda == "" && this.gene == "") {
+        this.vector = [];
         console.log("La edad y el genero están vacios");
-          usuariosRef.where("departamento", "==", dpt).where("municipio", "==", mun).where("year", "==", anios).where("meses", "==", meses)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("departamento", "==", dpt)
+          .where("municipio", "==", mun)
+          .where("year", "==", anios)
+          .where("meses", "==", meses)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.eda == "" && (this.depar == "")) {
+      } else if (this.eda == "" && this.depar == "") {
+        this.vector = [];
         console.log("La edad y el departamento están vacios");
-          usuariosRef.where("municipio", "==", mun).where("year", "==", anios).where("meses", "==", meses)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("municipio", "==", mun)
+          .where("year", "==", anios)
+          .where("meses", "==", meses)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-       else if(this.gene == "" && (this.mes == "")) {
+      } else if (this.gene == "" && this.mes == "") {
+        this.vector = [];
         console.log("El genero y el mes están vacios");
-          usuariosRef.where("departamento", "==", dpt).where("municipio", "==", mun).where("edad", "==", edad).where("year", "==", anios)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("departamento", "==", dpt)
+          .where("municipio", "==", mun)
+          .where("edad", "==", edad)
+          .where("year", "==", anios)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.gene == "" && (this.depar == "")) {
+      } else if (this.gene == "" && this.depar == "") {
+        this.vector = [];
         console.log("El genero y el departamento están vacios");
-          usuariosRef.where("municipio", "==", mun).where("edad", "==", edad).where("year", "==", anios).where("meses", "==", meses)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("municipio", "==", mun)
+          .where("edad", "==", edad)
+          .where("year", "==", anios)
+          .where("meses", "==", meses)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.depar == "" && (this.mes == "")) {
+      } else if (this.depar == "" && this.mes == "") {
+        this.vector = [];
         console.log("El departamento y el mes están vacios");
-          usuariosRef.where("municipio", "==", mun).where("genero", "==", gen).where("edad", "==", edad).where("year", "==", anios)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("municipio", "==", mun)
+          .where("genero", "==", gen)
+          .where("edad", "==", edad)
+          .where("year", "==", anios)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-       else if(this.depar == "") {
+      } else if (this.depar == "") {
+        this.vector = [];
         console.log("El departamento está vacio");
-          usuariosRef.where("genero", "==", gen).where("edad", "==", edad).where("year", "==", anios).where("meses", "==", meses).where("municipio", "==", mun)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("genero", "==", gen)
+          .where("edad", "==", edad)
+          .where("year", "==", anios)
+          .where("meses", "==", meses)
+          .where("municipio", "==", mun)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.gene == "") {
+      } else if (this.gene == "") {
+        this.vector = [];
         console.log("El genero está vacio");
-          usuariosRef.where("departamento", "==", dpt).where("municipio", "==", mun).where("edad", "==", edad).where("year", "==", anios).where("meses", "==", meses)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("departamento", "==", dpt)
+          .where("municipio", "==", mun)
+          .where("edad", "==", edad)
+          .where("year", "==", anios)
+          .where("meses", "==", meses)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.eda == "") {
+      } else if (this.eda == "") {
+        this.vector = [];
         console.log("La edad está vacio");
-          usuariosRef.where("departamento", "==", dpt).where("municipio", "==", mun).where("genero", "==", gen).where("year", "==", anios).where("meses", "==", meses)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("departamento", "==", dpt)
+          .where("municipio", "==", mun)
+          .where("genero", "==", gen)
+          .where("year", "==", anios)
+          .where("meses", "==", meses)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.anio == "") {
+      } else if (this.anio == "") {
+        this.vector = [];
         console.log("El año está vacio");
-          usuariosRef.where("departamento", "==", dpt).where("municipio", "==", mun).where("genero", "==", gen).where("edad", "==", edad).where("meses", "==", meses)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("departamento", "==", dpt)
+          .where("municipio", "==", mun)
+          .where("genero", "==", gen)
+          .where("edad", "==", edad)
+          .where("meses", "==", meses)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.mes == "") {
+      } else if (this.mes == "") {
+        this.vector = [];
         console.log("El mes está vacio");
-          usuariosRef.where("departamento", "==", dpt).where("municipio", "==", mun).where("genero", "==", gen).where("edad", "==", edad).where("year", "==", anios)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("departamento", "==", dpt)
+          .where("municipio", "==", mun)
+          .where("genero", "==", gen)
+          .where("edad", "==", edad)
+          .where("year", "==", anios)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else {
+      } else {
+        this.vector = [];
         console.log("Ninguno está vacio");
-          usuariosRef.where("departamento", "==", dpt).where("municipio", "==", mun).where("genero", "==", gen).where("edad", "==", edad).where("year", "==", anios).where("meses", "==", meses)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("departamento", "==", dpt)
+          .where("municipio", "==", mun)
+          .where("genero", "==", gen)
+          .where("edad", "==", edad)
+          .where("year", "==", anios)
+          .where("meses", "==", meses)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-
       }
-      
     },
 
     listaAnios() {
@@ -4271,906 +4741,1057 @@ export default {
       var edad;
       edad = document.getElementById("edad").value;
 
-      console.log("departamento " +dpt + " genero " + gen + " municipio " + mun);
+      console.log(
+        "departamento " + dpt + " genero " + gen + " municipio " + mun
+      );
 
       this.usuarios = [];
       var usuariosRef = db.collection("usuarios");
 
-      if(this.gene == "" && (this.mes == "") && (this.eda == "") && (this.muni == "") && (this.depar == "")) {
-        console.log("La edad,el municipio, el mes, el departamento y el genero están vacios");
-          usuariosRef.where("year", "==", anios)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+      if (
+        this.gene == "" &&
+        this.mes == "" &&
+        this.eda == "" &&
+        this.muni == "" &&
+        this.depar == ""
+      ) {
+         this.vector = [];
+        console.log(
+          "La edad,el municipio, el mes, el departamento y el genero están vacios"
+        );
+        usuariosRef
+          .where("year", "==", anios)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.gene == "" && (this.mes == "") && (this.eda == "") && (this.muni == "")) {
+      } else if (
+        this.gene == "" &&
+        this.mes == "" &&
+        this.eda == "" &&
+        this.muni == ""
+      ) {
+         this.vector = [];
         console.log("La edad,el municipio, el mes y el genero están vacios");
-          usuariosRef.where("departamento", "==", dpt).where("year", "==", anios)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("departamento", "==", dpt)
+          .where("year", "==", anios)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-     else if(this.gene == "" && (this.mes == "") && (this.eda == "") && (this.depar == "")) {
+      } else if (
+        this.gene == "" &&
+        this.mes == "" &&
+        this.eda == "" &&
+        this.depar == ""
+      ) {
+         this.vector = [];
         console.log("La edad,el departamento, el mes y el genero están vacios");
-          usuariosRef.where("municipio", "==", mun).where("year", "==", anios)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("municipio", "==", mun)
+          .where("year", "==", anios)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.gene == "" && (this.mes == "") && (this.muni == "") && (this.depar == "")) {
-        console.log("El municipio, el departamento, el mes y el genero están vacios");
-          usuariosRef.where("edad", "==", edad).where("year", "==", anios)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+      } else if (
+        this.gene == "" &&
+        this.mes == "" &&
+        this.muni == "" &&
+        this.depar == ""
+      ) {
+         this.vector = [];
+        console.log(
+          "El municipio, el departamento, el mes y el genero están vacios"
+        );
+        usuariosRef
+          .where("edad", "==", edad)
+          .where("year", "==", anios)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.gene == "" && (this.eda == "") && (this.muni == "") && (this.depar == "")) {
-        console.log("El municipio, el departamento, la edad y el genero están vacios");
-          usuariosRef.where("meses", "==", meses).where("year", "==", anios)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+      } else if (
+        this.gene == "" &&
+        this.eda == "" &&
+        this.muni == "" &&
+        this.depar == ""
+      ) {
+         this.vector = [];
+        console.log(
+          "El municipio, el departamento, la edad y el genero están vacios"
+        );
+        usuariosRef
+          .where("meses", "==", meses)
+          .where("year", "==", anios)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.eda == "" && (this.mes == "") && (this.muni == "") && (this.depar == "")) {
-        console.log("El municipio, el departamento, el mes y la edad están vacios");
-          usuariosRef.where("year", "==", anios).where("genero", "==", gen)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+      } else if (
+        this.eda == "" &&
+        this.mes == "" &&
+        this.muni == "" &&
+        this.depar == ""
+      ) {
+         this.vector = [];
+        console.log(
+          "El municipio, el departamento, el mes y la edad están vacios"
+        );
+        usuariosRef
+          .where("year", "==", anios)
+          .where("genero", "==", gen)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.gene == "" && (this.mes == "") && (this.eda == "")) {
+      } else if (this.gene == "" && this.mes == "" && this.eda == "") {
+         this.vector = [];
         console.log("La edad, el mes y el genero están vacios");
-          usuariosRef.where("departamento", "==", dpt).where("municipio", "==", mun).where("year", "==", anios)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("departamento", "==", dpt)
+          .where("municipio", "==", mun)
+          .where("year", "==", anios)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.gene == "" && (this.mes == "") && (this.muni == "")) {
+      } else if (this.gene == "" && this.mes == "" && this.muni == "") {
+         this.vector = [];
         console.log("El municipio, el mes y el genero están vacios");
-          usuariosRef.where("departamento", "==", dpt).where("year", "==", anios).where("edad", "==", edad)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("departamento", "==", dpt)
+          .where("year", "==", anios)
+          .where("edad", "==", edad)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.gene == "" && (this.mes == "") && (this.depar == "")) {
+      } else if (this.gene == "" && this.mes == "" && this.depar == "") {
+         this.vector = [];
         console.log("El departamento, el mes y el genero están vacios");
-          usuariosRef.where("municipio", "==", mun).where("year", "==", anios).where("edad", "==", edad)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("municipio", "==", mun)
+          .where("year", "==", anios)
+          .where("edad", "==", edad)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.eda == "" && (this.mes == "") && (this.depar == "")) {
+      } else if (this.eda == "" && this.mes == "" && this.depar == "") {
+         this.vector = [];
         console.log("El departamento, el mes y la edad están vacios");
-          usuariosRef.where("municipio", "==", mun).where("genero", "==", gen).where("year", "==", anios)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("municipio", "==", mun)
+          .where("genero", "==", gen)
+          .where("year", "==", anios)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.eda == "" && (this.mes == "") && (this.muni == "")) {
+      } else if (this.eda == "" && this.mes == "" && this.muni == "") {
+         this.vector = [];
         console.log("El municipio, el mes y la edad están vacios");
-          usuariosRef.where("departamento", "==", dpt).where("genero", "==", gen).where("year", "==", anios)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("departamento", "==", dpt)
+          .where("genero", "==", gen)
+          .where("year", "==", anios)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-       else if(this.eda == "" && (this.gene == "") && (this.depar == "")) {
+      } else if (this.eda == "" && this.gene == "" && this.depar == "") {
+         this.vector = [];
         console.log("El departamento, el genero y la edad están vacios");
-          usuariosRef.where("municipio", "==", mun).where("year", "==", anios).where("meses", "==", meses)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("municipio", "==", mun)
+          .where("year", "==", anios)
+          .where("meses", "==", meses)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.eda == "" && (this.gene == "") && (this.muni == "")) {
+      } else if (this.eda == "" && this.gene == "" && this.muni == "") {
+         this.vector = [];
         console.log("El municipio, el genero y la edad están vacios");
-          usuariosRef.where("departamento", "==", dpt).where("year", "==", anios).where("meses", "==", meses)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("departamento", "==", dpt)
+          .where("year", "==", anios)
+          .where("meses", "==", meses)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-       else if(this.eda == "" && (this.depar == "") && (this.muni == "")) {
+      } else if (this.eda == "" && this.depar == "" && this.muni == "") {
+         this.vector = [];
         console.log("El municipio, el departamento y la edad están vacios");
-          usuariosRef.where("genero", "==", gen).where("meses", "==", meses).where("year", "==", anios)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("genero", "==", gen)
+          .where("meses", "==", meses)
+          .where("year", "==", anios)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-       else if(this.gene == "" && (this.depar == "") && (this.muni == "")) {
+      } else if (this.gene == "" && this.depar == "" && this.muni == "") {
+         this.vector = [];
         console.log("El municipio, el departamento y el genero están vacios");
-          usuariosRef.where("year", "==", anios).where("meses", "==", meses).where("edad", "==", edad)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("year", "==", anios)
+          .where("meses", "==", meses)
+          .where("edad", "==", edad)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.mes == "" && (this.depar == "") && (this.muni == "")) {
+      } else if (this.mes == "" && this.depar == "" && this.muni == "") {
+         this.vector = [];
         console.log("El municipio, el departamento y el mes están vacios");
-          usuariosRef.where("genero", "==", gen).where("year", "==", anios).where("edad", "==", edad)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("genero", "==", gen)
+          .where("year", "==", anios)
+          .where("edad", "==", edad)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.gene == "" && (this.mes == "")) {
+      } else if (this.gene == "" && this.mes == "") {
+         this.vector = [];
         console.log("El mes y el genero están vacios");
-          usuariosRef.where("departamento", "==", dpt).where("municipio", "==", mun).where("year", "==", anios).where("edad", "==", edad)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("departamento", "==", dpt)
+          .where("municipio", "==", mun)
+          .where("year", "==", anios)
+          .where("edad", "==", edad)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-     else if(this.gene == "" && (this.eda == "")) {
+      } else if (this.gene == "" && this.eda == "") {
+         this.vector = [];
         console.log("La edad y el genero están vacios");
-          usuariosRef.where("departamento", "==", dpt).where("municipio", "==", mun).where("year", "==", anios).where("meses", "==", meses)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("departamento", "==", dpt)
+          .where("municipio", "==", mun)
+          .where("year", "==", anios)
+          .where("meses", "==", meses)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.gene == "" && (this.muni == "")) {
+      } else if (this.gene == "" && this.muni == "") {
+         this.vector = [];
         console.log("El municipio y el genero están vacios");
-          usuariosRef.where("departamento", "==", dpt).where("year", "==", anios).where("meses", "==", meses).where("edad", "==", edad)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("departamento", "==", dpt)
+          .where("year", "==", anios)
+          .where("meses", "==", meses)
+          .where("edad", "==", edad)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.gene == "" && (this.depar == "")) {
+      } else if (this.gene == "" && this.depar == "") {
+         this.vector = [];
         console.log("El departamento y el genero están vacios");
-          usuariosRef.where("year", "==", anios).where("meses", "==", meses).where("edad", "==", edad)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("year", "==", anios)
+          .where("meses", "==", meses)
+          .where("edad", "==", edad)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.eda == "" && (this.mes == "")) {
+      } else if (this.eda == "" && this.mes == "") {
+         this.vector = [];
         console.log("La edad y el mes están vacios");
-          usuariosRef.where("departamento", "==", dpt).where("municipio", "==", mun).where("genero", "==", gen).where("year", "==", anios)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("departamento", "==", dpt)
+          .where("municipio", "==", mun)
+          .where("genero", "==", gen)
+          .where("year", "==", anios)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.eda == "" && (this.muni == "")) {
+      } else if (this.eda == "" && this.muni == "") {
+         this.vector = [];
         console.log("La edad y el munipio están vacios");
-          usuariosRef.where("departamento", "==", dpt).where("genero", "==", gen).where("year", "==", anios).where("meses", "==", meses)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("departamento", "==", dpt)
+          .where("genero", "==", gen)
+          .where("year", "==", anios)
+          .where("meses", "==", meses)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.eda == "" && (this.depar == "")) {
+      } else if (this.eda == "" && this.depar == "") {
+         this.vector = [];
         console.log("La edad y el departamento están vacios");
-          usuariosRef.where("genero", "==", gen).where("year", "==", anios).where("meses", "==", meses)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("genero", "==", gen)
+          .where("year", "==", anios)
+          .where("meses", "==", meses)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-       else if(this.muni == "" && (this.mes == "")) {
+      } else if (this.muni == "" && this.mes == "") {
+         this.vector = [];
         console.log("El municipio y el mes están vacios");
-          usuariosRef.where("departamento", "==", dpt).where("genero", "==", gen).where("edad", "==", edad).where("year", "==", anios)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("departamento", "==", dpt)
+          .where("genero", "==", gen)
+          .where("edad", "==", edad)
+          .where("year", "==", anios)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.muni == "" && (this.depar == "")) {
+      } else if (this.muni == "" && this.depar == "") {
+         this.vector = [];
         console.log("El municipio y el departamento están vacios");
-          usuariosRef.where("genero", "==", gen).where("edad", "==", edad).where("year", "==", anios).where("meses", "==", meses)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("genero", "==", gen)
+          .where("edad", "==", edad)
+          .where("year", "==", anios)
+          .where("meses", "==", meses)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.depar == "" && (this.mes == "")) {
+      } else if (this.depar == "" && this.mes == "") {
+         this.vector = [];
         console.log("El departamento y el mes están vacios");
-          usuariosRef.where("municipio", "==", mun).where("genero", "==", gen).where("edad", "==", edad).where("year", "==", anios)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("municipio", "==", mun)
+          .where("genero", "==", gen)
+          .where("edad", "==", edad)
+          .where("year", "==", anios)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-       else if(this.depar == "") {
+      } else if (this.depar == "") {
+         this.vector = [];
         console.log("El departamento está vacio");
-          usuariosRef.where("genero", "==", gen).where("edad", "==", edad).where("year", "==", anios).where("meses", "==", meses)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("genero", "==", gen)
+          .where("edad", "==", edad)
+          .where("year", "==", anios)
+          .where("meses", "==", meses)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.muni == "") {
+      } else if (this.muni == "") {
+         this.vector = [];
         console.log("El munipio está vacio");
-          usuariosRef.where("departamento", "==", dpt).where("genero", "==", gen).where("edad", "==", edad).where("year", "==", anios).where("meses", "==", meses)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("departamento", "==", dpt)
+          .where("genero", "==", gen)
+          .where("edad", "==", edad)
+          .where("year", "==", anios)
+          .where("meses", "==", meses)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.eda == "") {
+      } else if (this.eda == "") {
+         this.vector = [];
         console.log("La edad está vacio");
-          usuariosRef.where("departamento", "==", dpt).where("municipio", "==", mun).where("genero", "==", gen).where("year", "==", anios).where("meses", "==", meses)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("departamento", "==", dpt)
+          .where("municipio", "==", mun)
+          .where("genero", "==", gen)
+          .where("year", "==", anios)
+          .where("meses", "==", meses)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.gene == "") {
+      } else if (this.gene == "") {
+         this.vector = [];
         console.log("El genero está vacio");
-          usuariosRef.where("departamento", "==", dpt).where("municipio", "==", mun).where("year", "==", anios).where("edad", "==", edad).where("meses", "==", meses)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("departamento", "==", dpt)
+          .where("municipio", "==", mun)
+          .where("year", "==", anios)
+          .where("edad", "==", edad)
+          .where("meses", "==", meses)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.mes == "") {
+      } else if (this.mes == "") {
+        this.vector = [];
         console.log("El mes está vacio");
-          usuariosRef.where("departamento", "==", dpt).where("municipio", "==", mun).where("genero", "==", gen).where("edad", "==", edad).where("year", "==", anios)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("departamento", "==", dpt)
+          .where("municipio", "==", mun)
+          .where("genero", "==", gen)
+          .where("edad", "==", edad)
+          .where("year", "==", anios)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else {
+      } else {
+        this.vector = [];
         console.log("Ninguno está vacio");
-          usuariosRef.where("departamento", "==", dpt).where("municipio", "==", mun).where("genero", "==", gen).where("edad", "==", edad).where("year", "==", anios).where("meses", "==", meses)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("departamento", "==", dpt)
+          .where("municipio", "==", mun)
+          .where("genero", "==", gen)
+          .where("edad", "==", edad)
+          .where("year", "==", anios)
+          .where("meses", "==", meses)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-
       }
     },
 
@@ -5188,907 +5809,1057 @@ export default {
       var edad;
       edad = document.getElementById("edad").value;
 
-      console.log("departamento " +dpt + " genero " + gen + " municipio " + mun);
+      console.log(
+        "departamento " + dpt + " genero " + gen + " municipio " + mun
+      );
 
       this.usuarios = [];
       var usuariosRef = db.collection("usuarios");
 
-      if(this.gene == "" && (this.anio == "") && (this.eda == "") && (this.muni == "") && (this.depar == "")) {
-        console.log("La edad,el municipio, el año, el departamento y el genero están vacios");
-          usuariosRef.where("meses", "==", meses)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+      if (
+        this.gene == "" &&
+        this.anio == "" &&
+        this.eda == "" &&
+        this.muni == "" &&
+        this.depar == ""
+      ) {
+        this.vector = [];
+        console.log(
+          "La edad,el municipio, el año, el departamento y el genero están vacios"
+        );
+        usuariosRef
+          .where("meses", "==", meses)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.anio == "" && (this.gene == "") && (this.eda == "") && (this.muni == "")) {
+      } else if (
+        this.anio == "" &&
+        this.gene == "" &&
+        this.eda == "" &&
+        this.muni == ""
+      ) {
+        this.vector = [];
         console.log("La edad,el municipio, el genero y el año están vacios");
-          usuariosRef.where("departamento", "==", dpt).where("meses", "==", meses)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("departamento", "==", dpt)
+          .where("meses", "==", meses)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-     else if(this.anio == "" && (this.gene == "") && (this.eda == "") && (this.depar == "")) {
+      } else if (
+        this.anio == "" &&
+        this.gene == "" &&
+        this.eda == "" &&
+        this.depar == ""
+      ) {
+        this.vector = [];
         console.log("La edad,el departamento, el genero y el año están vacios");
-          usuariosRef.where("municipio", "==", mun).where("meses", "==", meses)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("municipio", "==", mun)
+          .where("meses", "==", meses)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.anio == "" && (this.gene == "") && (this.muni == "") && (this.depar == "")) {
-        console.log("El municipio, el departamento, el genero y el año están vacios");
-          usuariosRef.where("edad", "==", edad).where("meses", "==", meses)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+      } else if (
+        this.anio == "" &&
+        this.gene == "" &&
+        this.muni == "" &&
+        this.depar == ""
+      ) {
+        this.vector = [];
+        console.log(
+          "El municipio, el departamento, el genero y el año están vacios"
+        );
+        usuariosRef
+          .where("edad", "==", edad)
+          .where("meses", "==", meses)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.anio == "" && (this.eda == "") && (this.muni == "") && (this.depar == "")) {
-        console.log("El municipio, el departamento, la edad y el año están vacios");
-          usuariosRef.where("meses", "==", meses).where("genero", "==", gen)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+      } else if (
+        this.anio == "" &&
+        this.eda == "" &&
+        this.muni == "" &&
+        this.depar == ""
+      ) {
+        this.vector = [];
+        console.log(
+          "El municipio, el departamento, la edad y el año están vacios"
+        );
+        usuariosRef
+          .where("meses", "==", meses)
+          .where("genero", "==", gen)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.eda == "" && (this.gene == "") && (this.muni == "") && (this.depar == "")) {
-        console.log("El municipio, el departamento, el genero y la edad están vacios");
-          usuariosRef.where("year", "==", anios).where("meses", "==", meses)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+      } else if (
+        this.eda == "" &&
+        this.gene == "" &&
+        this.muni == "" &&
+        this.depar == ""
+      ) {
+        this.vector = [];
+        console.log(
+          "El municipio, el departamento, el genero y la edad están vacios"
+        );
+        usuariosRef
+          .where("year", "==", anios)
+          .where("meses", "==", meses)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.anio == "" && (this.gene == "") && (this.eda == "")) {
+      } else if (this.anio == "" && this.gene == "" && this.eda == "") {
+        this.vector = [];
         console.log("La edad, el genero y el año están vacios");
-          usuariosRef.where("departamento", "==", dpt).where("municipio", "==", mun).where("meses", "==", meses)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("departamento", "==", dpt)
+          .where("municipio", "==", mun)
+          .where("meses", "==", meses)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.anio == "" && (this.gene == "") && (this.muni == "")) {
+      } else if (this.anio == "" && this.gene == "" && this.muni == "") {
+        this.vector = [];
         console.log("El municipio, el genero y el año están vacios");
-          usuariosRef.where("departamento", "==", dpt).where("meses", "==", meses).where("edad", "==", edad)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("departamento", "==", dpt)
+          .where("meses", "==", meses)
+          .where("edad", "==", edad)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.anio == "" && (this.gene == "") && (this.depar == "")) {
+      } else if (this.anio == "" && this.gene == "" && this.depar == "") {
+        this.vector = [];
         console.log("El departamento, el genero y el año están vacios");
-          usuariosRef.where("municipio", "==", mun).where("meses", "==", meses).where("edad", "==", edad)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("municipio", "==", mun)
+          .where("meses", "==", meses)
+          .where("edad", "==", edad)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.eda == "" && (this.gene == "") && (this.depar == "")) {
+      } else if (this.eda == "" && this.gene == "" && this.depar == "") {
+        this.vector = [];
         console.log("El departamento, el genero y la edad están vacios");
-          usuariosRef.where("municipio", "==", mun).where("meses", "==", meses).where("year", "==", anios)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("municipio", "==", mun)
+          .where("meses", "==", meses)
+          .where("year", "==", anios)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.eda == "" && (this.gene == "") && (this.muni == "")) {
+      } else if (this.eda == "" && this.gene == "" && this.muni == "") {
+        this.vector = [];
         console.log("El municipio, el genero y la edad están vacios");
-          usuariosRef.where("departamento", "==", dpt).where("meses", "==", meses).where("year", "==", anios)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("departamento", "==", dpt)
+          .where("meses", "==", meses)
+          .where("year", "==", anios)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-       else if(this.eda == "" && (this.anio == "") && (this.depar == "")) {
+      } else if (this.eda == "" && this.anio == "" && this.depar == "") {
+        this.vector = [];
         console.log("El departamento, el año y la edad están vacios");
-          usuariosRef.where("municipio", "==", mun).where("genero", "==", gen).where("meses", "==", meses)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("municipio", "==", mun)
+          .where("genero", "==", gen)
+          .where("meses", "==", meses)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.eda == "" && (this.anio == "") && (this.muni == "")) {
+      } else if (this.eda == "" && this.anio == "" && this.muni == "") {
+        this.vector = [];
         console.log("El municipio, el año y la edad están vacios");
-          usuariosRef.where("departamento", "==", dpt).where("genero", "==", gen).where("meses", "==", meses)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("departamento", "==", dpt)
+          .where("genero", "==", gen)
+          .where("meses", "==", meses)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-       else if(this.eda == "" && (this.depar == "") && (this.muni == "")) {
+      } else if (this.eda == "" && this.depar == "" && this.muni == "") {
+        this.vector = [];
         console.log("El municipio, el departamento y la edad están vacios");
-          usuariosRef.where("genero", "==", gen).where("meses", "==", meses).where("year", "==", anios)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("genero", "==", gen)
+          .where("meses", "==", meses)
+          .where("year", "==", anios)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-       else if(this.anio == "" && (this.depar == "") && (this.muni == "")) {
+      } else if (this.anio == "" && this.depar == "" && this.muni == "") {
+        this.vector = [];
         console.log("El municipio, el departamento y el año están vacios");
-          usuariosRef.where("genero", "==", gen).where("meses", "==", meses).where("edad", "==", edad)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("genero", "==", gen)
+          .where("meses", "==", meses)
+          .where("edad", "==", edad)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.gene == "" && (this.depar == "") && (this.muni == "")) {
+      } else if (this.gene == "" && this.depar == "" && this.muni == "") {
+        this.vector = [];
         console.log("El municipio, el departamento y el genero están vacios");
-          usuariosRef.where("meses", "==", meses).where("year", "==", anios).where("edad", "==", edad)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("meses", "==", meses)
+          .where("year", "==", anios)
+          .where("edad", "==", edad)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.anio == "" && (this.gene == "")) {
+      } else if (this.anio == "" && this.gene == "") {
+        this.vector = [];
         console.log("El genero y el año están vacios");
-          usuariosRef.where("departamento", "==", dpt).where("municipio", "==", mun).where("meses", "==", meses).where("edad", "==", edad)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("departamento", "==", dpt)
+          .where("municipio", "==", mun)
+          .where("meses", "==", meses)
+          .where("edad", "==", edad)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-     else if(this.anio == "" && (this.eda == "")) {
+      } else if (this.anio == "" && this.eda == "") {
+        this.vector = [];
         console.log("La edad y el año están vacios");
-          usuariosRef.where("departamento", "==", dpt).where("municipio", "==", mun).where("genero", "==", gen).where("meses", "==", meses)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("departamento", "==", dpt)
+          .where("municipio", "==", mun)
+          .where("genero", "==", gen)
+          .where("meses", "==", meses)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.anio == "" && (this.muni == "")) {
+      } else if (this.anio == "" && this.muni == "") {
+        this.vector = [];
         console.log("El municipio y el año están vacios");
-          usuariosRef.where("departamento", "==", dpt).where("genero", "==", gen).where("meses", "==", meses).where("edad", "==", edad)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("departamento", "==", dpt)
+          .where("genero", "==", gen)
+          .where("meses", "==", meses)
+          .where("edad", "==", edad)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.anio == "" && (this.depar == "")) {
+      } else if (this.anio == "" && this.depar == "") {
+        this.vector = [];
         console.log("El departamento y el año están vacios");
-          usuariosRef.where("genero", "==", gen).where("meses", "==", meses).where("edad", "==", edad)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("genero", "==", gen)
+          .where("meses", "==", meses)
+          .where("edad", "==", edad)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.eda == "" && (this.gene == "")) {
+      } else if (this.eda == "" && this.gene == "") {
+        this.vector = [];
         console.log("La edad y el genero están vacios");
-          usuariosRef.where("departamento", "==", dpt).where("municipio", "==", mun).where("meses", "==", meses).where("year", "==", anios)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("departamento", "==", dpt)
+          .where("municipio", "==", mun)
+          .where("meses", "==", meses)
+          .where("year", "==", anios)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.eda == "" && (this.muni == "")) {
+      } else if (this.eda == "" && this.muni == "") {
+        this.vector = [];
         console.log("La edad y el munipio están vacios");
-          usuariosRef.where("departamento", "==", dpt).where("genero", "==", gen).where("year", "==", anios).where("meses", "==", meses)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("departamento", "==", dpt)
+          .where("genero", "==", gen)
+          .where("year", "==", anios)
+          .where("meses", "==", meses)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.eda == "" && (this.depar == "")) {
+      } else if (this.eda == "" && this.depar == "") {
+        this.vector = [];
         console.log("La edad y el departamento están vacios");
-          usuariosRef.where("genero", "==", gen).where("year", "==", anios).where("meses", "==", meses)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("genero", "==", gen)
+          .where("year", "==", anios)
+          .where("meses", "==", meses)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-       else if(this.muni == "" && (this.gene == "")) {
+      } else if (this.muni == "" && this.gene == "") {
+        this.vector = [];
         console.log("El municipio y el genero están vacios");
-          usuariosRef.where("departamento", "==", dpt).where("meses", "==", meses).where("edad", "==", edad).where("year", "==", anios)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("departamento", "==", dpt)
+          .where("meses", "==", meses)
+          .where("edad", "==", edad)
+          .where("year", "==", anios)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.muni == "" && (this.depar == "")) {
+      } else if (this.muni == "" && this.depar == "") {
+        this.vector = [];
         console.log("El municipio y el departamento están vacios");
-          usuariosRef.where("genero", "==", gen).where("edad", "==", edad).where("year", "==", anios).where("meses", "==", meses)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("genero", "==", gen)
+          .where("edad", "==", edad)
+          .where("year", "==", anios)
+          .where("meses", "==", meses)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.depar == "" && (this.gene == "")) {
+      } else if (this.depar == "" && this.gene == "") {
+        this.vector = [];
         console.log("El departamento y el genero están vacios");
-          usuariosRef.where("municipio", "==", mun).where("meses", "==", meses).where("edad", "==", edad).where("year", "==", anios)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("municipio", "==", mun)
+          .where("meses", "==", meses)
+          .where("edad", "==", edad)
+          .where("year", "==", anios)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-       else if(this.depar == "") {
+      } else if (this.depar == "") {
+        this.vector = [];
         console.log("El departamento está vacio");
-          usuariosRef.where("genero", "==", gen).where("edad", "==", edad).where("year", "==", anios).where("meses", "==", meses)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("genero", "==", gen)
+          .where("edad", "==", edad)
+          .where("year", "==", anios)
+          .where("meses", "==", meses)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.muni == "") {
+      } else if (this.muni == "") {
+        this.vector = [];
         console.log("El munipio está vacio");
-          usuariosRef.where("departamento", "==", dpt).where("genero", "==", gen).where("edad", "==", edad).where("year", "==", anios).where("meses", "==", meses)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("departamento", "==", dpt)
+          .where("genero", "==", gen)
+          .where("edad", "==", edad)
+          .where("year", "==", anios)
+          .where("meses", "==", meses)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.eda == "") {
+      } else if (this.eda == "") {
+        this.vector = [];
         console.log("La edad está vacio");
-          usuariosRef.where("departamento", "==", dpt).where("municipio", "==", mun).where("genero", "==", gen).where("year", "==", anios).where("meses", "==", meses)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("departamento", "==", dpt)
+          .where("municipio", "==", mun)
+          .where("genero", "==", gen)
+          .where("year", "==", anios)
+          .where("meses", "==", meses)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.anio == "") {
+      } else if (this.anio == "") {
+        this.vector = [];
         console.log("El año está vacio");
-          usuariosRef.where("departamento", "==", dpt).where("municipio", "==", mun).where("genero", "==", gen).where("edad", "==", edad).where("meses", "==", meses)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("departamento", "==", dpt)
+          .where("municipio", "==", mun)
+          .where("genero", "==", gen)
+          .where("edad", "==", edad)
+          .where("meses", "==", meses)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.gene == "") {
+      } else if (this.gene == "") {
+        this.vector = [];
         console.log("El genero está vacio");
-          usuariosRef.where("departamento", "==", dpt).where("municipio", "==", mun).where("meses", "==", meses).where("edad", "==", edad).where("year", "==", anios)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("departamento", "==", dpt)
+          .where("municipio", "==", mun)
+          .where("meses", "==", meses)
+          .where("edad", "==", edad)
+          .where("year", "==", anios)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else {
+      } else {
+        this.vector = [];
         console.log("Ninguno está vacio");
-          usuariosRef.where("departamento", "==", dpt).where("municipio", "==", mun).where("genero", "==", gen).where("edad", "==", edad).where("year", "==", anios).where("meses", "==", meses)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.vector.push(doc.id); 
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("departamento", "==", dpt)
+          .where("municipio", "==", mun)
+          .where("genero", "==", gen)
+          .where("edad", "==", edad)
+          .where("year", "==", anios)
+          .where("meses", "==", meses)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-
       }
     },
 
@@ -6106,905 +6877,1057 @@ export default {
       var edad;
       edad = document.getElementById("edad").value;
 
-      console.log("departamento " +dpt + " genero " + gen + " municipio " + mun);
+      console.log(
+        "departamento " + dpt + " genero " + gen + " municipio " + mun
+      );
 
       this.usuarios = [];
       var usuariosRef = db.collection("usuarios");
 
-      if(this.gene == "" && (this.anio == "") && (this.mes == "") && (this.muni == "") && (this.depar == "")) {
-        console.log("El mes, el municipio, el año, el departamento y el genero están vacios");
-          usuariosRef.where("edad", "==", edad)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+      if (
+        this.gene == "" &&
+        this.anio == "" &&
+        this.mes == "" &&
+        this.muni == "" &&
+        this.depar == ""
+      ) {
+        this.vector = [];
+        console.log(
+          "El mes, el municipio, el año, el departamento y el genero están vacios"
+        );
+        usuariosRef
+          .where("edad", "==", edad)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.anio == "" && (this.mes == "") && (this.gene == "") && (this.muni == "")) {
+      } else if (
+        this.anio == "" &&
+        this.mes == "" &&
+        this.gene == "" &&
+        this.muni == ""
+      ) {
+        this.vector = [];
         console.log("genero, el municipio, el mes y el año están vacios");
-          usuariosRef.where("departamento", "==", dpt).where("edad", "==", edad)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("departamento", "==", dpt)
+          .where("edad", "==", edad)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-     else if(this.anio == "" && (this.mes == "") && (this.gene == "") && (this.depar == "")) {
+      } else if (
+        this.anio == "" &&
+        this.mes == "" &&
+        this.gene == "" &&
+        this.depar == ""
+      ) {
+        this.vector = [];
         console.log("genero,el departamento, el mes y el año están vacios");
-          usuariosRef.where("municipio", "==", mun).where("edad", "==", edad)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("municipio", "==", mun)
+          .where("edad", "==", edad)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.anio == "" && (this.mes == "") && (this.muni == "") && (this.depar == "")) {
-        console.log("El municipio, el departamento, el mes y el año están vacios");
-          usuariosRef.where("edad", "==", edad).where("genero", "==", gen)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+      } else if (
+        this.anio == "" &&
+        this.mes == "" &&
+        this.muni == "" &&
+        this.depar == ""
+      ) {
+        this.vector = [];
+        console.log(
+          "El municipio, el departamento, el mes y el año están vacios"
+        );
+        usuariosRef
+          .where("edad", "==", edad)
+          .where("genero", "==", gen)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.anio == "" && (this.gene == "") && (this.muni == "") && (this.depar == "")) {
-        console.log("El municipio, el departamento, genero y el año están vacios");
-          usuariosRef.where("meses", "==", meses).where("edad", "==", edad)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+      } else if (
+        this.anio == "" &&
+        this.gene == "" &&
+        this.muni == "" &&
+        this.depar == ""
+      ) {
+        this.vector = [];
+        console.log(
+          "El municipio, el departamento, genero y el año están vacios"
+        );
+        usuariosRef
+          .where("meses", "==", meses)
+          .where("edad", "==", edad)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.gene == "" && (this.mes == "") && (this.muni == "") && (this.depar == "")) {
-        console.log("El municipio, el departamento, el mes y genero están vacios");
-          usuariosRef.where("year", "==", anios).where("edad", "==", edad)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+      } else if (
+        this.gene == "" &&
+        this.mes == "" &&
+        this.muni == "" &&
+        this.depar == ""
+      ) {
+        this.vector = [];
+        console.log(
+          "El municipio, el departamento, el mes y genero están vacios"
+        );
+        usuariosRef
+          .where("year", "==", anios)
+          .where("edad", "==", edad)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.anio == "" && (this.mes == "") && (this.gene == "")) {
+      } else if (this.anio == "" && this.mes == "" && this.gene == "") {
+        this.vector = [];
         console.log("genero, el mes y el año están vacios");
-          usuariosRef.where("departamento", "==", dpt).where("municipio", "==", mun).where("edad", "==", edad)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("departamento", "==", dpt)
+          .where("municipio", "==", mun)
+          .where("edad", "==", edad)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.anio == "" && (this.mes == "") && (this.muni == "")) {
+      } else if (this.anio == "" && this.mes == "" && this.muni == "") {
+        this.vector = [];
         console.log("El municipio, el mes y el año están vacios");
-          usuariosRef.where("departamento", "==", dpt).where("genero", "==", gen).where("edad", "==", edad)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("departamento", "==", dpt)
+          .where("genero", "==", gen)
+          .where("edad", "==", edad)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.anio == "" && (this.mes == "") && (this.depar == "")) {
+      } else if (this.anio == "" && this.mes == "" && this.depar == "") {
+        this.vector = [];
         console.log("El departamento, el mes y el año están vacios");
-          usuariosRef.where("municipio", "==", mun).where("genero", "==", gen).where("edad", "==", edad)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("municipio", "==", mun)
+          .where("genero", "==", gen)
+          .where("edad", "==", edad)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.gene == "" && (this.mes == "") && (this.depar == "")) {
+      } else if (this.gene == "" && this.mes == "" && this.depar == "") {
+        this.vector = [];
         console.log("El departamento, el mes y genero están vacios");
-          usuariosRef.where("municipio", "==", mun).where("edad", "==", edad).where("year", "==", anios)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("municipio", "==", mun)
+          .where("edad", "==", edad)
+          .where("year", "==", anios)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.gene == "" && (this.mes == "") && (this.muni == "")) {
+      } else if (this.gene == "" && this.mes == "" && this.muni == "") {
+        this.vector = [];
         console.log("El municipio, el mes y genero están vacios");
-          usuariosRef.where("departamento", "==", dpt).where("edad", "==", edad).where("year", "==", anios)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("departamento", "==", dpt)
+          .where("edad", "==", edad)
+          .where("year", "==", anios)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-       else if(this.gene == "" && (this.anio == "") && (this.depar == "")) {
+      } else if (this.gene == "" && this.anio == "" && this.depar == "") {
+        this.vector = [];
         console.log("El departamento, el año y genero están vacios");
-          usuariosRef.where("municipio", "==", mun).where("edad", "==", edad).where("meses", "==", meses)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("municipio", "==", mun)
+          .where("edad", "==", edad)
+          .where("meses", "==", meses)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.gene == "" && (this.anio == "") && (this.muni == "")) {
+      } else if (this.gene == "" && this.anio == "" && this.muni == "") {
+        this.vector = [];
         console.log("El municipio, el año y genero están vacios");
-          usuariosRef.where("departamento", "==", dpt).where("edad", "==", edad).where("meses", "==", meses)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("departamento", "==", dpt)
+          .where("edad", "==", edad)
+          .where("meses", "==", meses)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-       else if(this.gene == "" && (this.depar == "") && (this.muni == "")) {
+      } else if (this.gene == "" && this.depar == "" && this.muni == "") {
+        this.vector = [];
         console.log("El municipio, el departamento y genero están vacios");
-          usuariosRef.where("edad", "==", edad).where("meses", "==", meses).where("year", "==", anios)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("edad", "==", edad)
+          .where("meses", "==", meses)
+          .where("year", "==", anios)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-       else if(this.anio == "" && (this.depar == "") && (this.muni == "")) {
+      } else if (this.anio == "" && this.depar == "" && this.muni == "") {
+        this.vector = [];
         console.log("El municipio, el departamento y el año están vacios");
-          usuariosRef.where("genero", "==", gen).where("meses", "==", meses).where("edad", "==", edad)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("genero", "==", gen)
+          .where("meses", "==", meses)
+          .where("edad", "==", edad)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.mes == "" && (this.depar == "") && (this.muni == "")) {
+      } else if (this.mes == "" && this.depar == "" && this.muni == "") {
+        this.vector = [];
         console.log("El municipio, el departamento y el mes están vacios");
-          usuariosRef.where("genero", "==", gen).where("year", "==", anios).where("edad", "==", edad)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("genero", "==", gen)
+          .where("year", "==", anios)
+          .where("edad", "==", edad)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.anio == "" && (this.mes == "")) {
+      } else if (this.anio == "" && this.mes == "") {
+        this.vector = [];
         console.log("El mes y el año están vacios");
-          usuariosRef.where("departamento", "==", dpt).where("municipio", "==", mun).where("genero", "==", gen).where("edad", "==", edad)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("departamento", "==", dpt)
+          .where("municipio", "==", mun)
+          .where("genero", "==", gen)
+          .where("edad", "==", edad)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-     else if(this.anio == "" && (this.gene == "")) {
+      } else if (this.anio == "" && this.gene == "") {
+        this.vector = [];
         console.log("genero y el año están vacios");
-          usuariosRef.where("departamento", "==", dpt).where("municipio", "==", mun).where("edad", "==", edad).where("meses", "==", meses)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("departamento", "==", dpt)
+          .where("municipio", "==", mun)
+          .where("edad", "==", edad)
+          .where("meses", "==", meses)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.anio == "" && (this.muni == "")) {
+      } else if (this.anio == "" && this.muni == "") {
+        this.vector = [];
         console.log("El municipio y el año están vacios");
-          usuariosRef.where("departamento", "==", dpt).where("genero", "==", gen).where("meses", "==", meses).where("edad", "==", edad)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("departamento", "==", dpt)
+          .where("genero", "==", gen)
+          .where("meses", "==", meses)
+          .where("edad", "==", edad)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.anio == "" && (this.depar == "")) {
+      } else if (this.anio == "" && this.depar == "") {
+        this.vector = [];
         console.log("El departamento y el año están vacios");
-          usuariosRef.where("genero", "==", gen).where("meses", "==", meses).where("edad", "==", edad)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("genero", "==", gen)
+          .where("meses", "==", meses)
+          .where("edad", "==", edad)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.gene == "" && (this.mes == "")) {
+      } else if (this.gene == "" && this.mes == "") {
+        this.vector = [];
         console.log("genero y el mes están vacios");
-          usuariosRef.where("departamento", "==", dpt).where("municipio", "==", mun).where("edad", "==", edad).where("year", "==", anios)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("departamento", "==", dpt)
+          .where("municipio", "==", mun)
+          .where("edad", "==", edad)
+          .where("year", "==", anios)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.gene == "" && (this.muni == "")) {
+      } else if (this.gene == "" && this.muni == "") {
+        this.vector = [];
         console.log("genero y el munipio están vacios");
-          usuariosRef.where("departamento", "==", dpt).where("edad", "==", edad).where("year", "==", anios).where("meses", "==", meses)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("departamento", "==", dpt)
+          .where("edad", "==", edad)
+          .where("year", "==", anios)
+          .where("meses", "==", meses)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.gene == "" && (this.depar == "")) {
+      } else if (this.gene == "" && this.depar == "") {
+        this.vector = [];
         console.log("genero y el departamento están vacios");
-          usuariosRef.where("edad", "==", edad).where("year", "==", anios).where("meses", "==", meses)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("edad", "==", edad)
+          .where("year", "==", anios)
+          .where("meses", "==", meses)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-       else if(this.muni == "" && (this.mes == "")) {
+      } else if (this.muni == "" && this.mes == "") {
+        this.vector = [];
         console.log("El municipio y el mes están vacios");
-          usuariosRef.where("departamento", "==", dpt).where("genero", "==", gen).where("edad", "==", edad).where("year", "==", anios)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("departamento", "==", dpt)
+          .where("genero", "==", gen)
+          .where("edad", "==", edad)
+          .where("year", "==", anios)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.muni == "" && (this.depar == "")) {
+      } else if (this.muni == "" && this.depar == "") {
+        this.vector = [];
         console.log("El municipio y el departamento están vacios");
-          usuariosRef.where("genero", "==", gen).where("edad", "==", edad).where("year", "==", anios).where("meses", "==", meses)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("genero", "==", gen)
+          .where("edad", "==", edad)
+          .where("year", "==", anios)
+          .where("meses", "==", meses)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.depar == "" && (this.mes == "")) {
+      } else if (this.depar == "" && this.mes == "") {
+        this.vector = [];
         console.log("El departamento y el mes están vacios");
-          usuariosRef.where("municipio", "==", mun).where("genero", "==", gen).where("edad", "==", edad).where("year", "==", anios)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("municipio", "==", mun)
+          .where("genero", "==", gen)
+          .where("edad", "==", edad)
+          .where("year", "==", anios)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-       else if(this.depar == "") {
+      } else if (this.depar == "") {
+        this.vector = [];
         console.log("El departamento está vacio");
-          usuariosRef.where("genero", "==", gen).where("edad", "==", edad).where("year", "==", anios).where("meses", "==", meses)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("genero", "==", gen)
+          .where("edad", "==", edad)
+          .where("year", "==", anios)
+          .where("meses", "==", meses)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.muni == "") {
+      } else if (this.muni == "") {
+        this.vector = [];
         console.log("El munipio está vacio");
-          usuariosRef.where("departamento", "==", dpt).where("genero", "==", gen).where("edad", "==", edad).where("year", "==", anios).where("meses", "==", meses)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("departamento", "==", dpt)
+          .where("genero", "==", gen)
+          .where("edad", "==", edad)
+          .where("year", "==", anios)
+          .where("meses", "==", meses)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.gene == "") {
+      } else if (this.gene == "") {
+        this.vector = [];
         console.log("genero está vacio");
-          usuariosRef.where("departamento", "==", dpt).where("municipio", "==", mun).where("edad", "==", edad).where("year", "==", anios).where("meses", "==", meses)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("departamento", "==", dpt)
+          .where("municipio", "==", mun)
+          .where("edad", "==", edad)
+          .where("year", "==", anios)
+          .where("meses", "==", meses)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.anio == "") {
+      } else if (this.anio == "") {
+        this.vector = [];
         console.log("El año está vacio");
-          usuariosRef.where("departamento", "==", dpt).where("municipio", "==", mun).where("genero", "==", gen).where("edad", "==", edad).where("meses", "==", meses)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("departamento", "==", dpt)
+          .where("municipio", "==", mun)
+          .where("genero", "==", gen)
+          .where("edad", "==", edad)
+          .where("meses", "==", meses)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else if(this.mes == "") {
+      } else if (this.mes == "") {
+        this.vector = [];
         console.log("El mes está vacio");
-          usuariosRef.where("departamento", "==", dpt).where("municipio", "==", mun).where("genero", "==", gen).where("edad", "==", edad).where("year", "==", anios)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("departamento", "==", dpt)
+          .where("municipio", "==", mun)
+          .where("genero", "==", gen)
+          .where("edad", "==", edad)
+          .where("year", "==", anios)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      }
-
-      else {
+      } else {
+        this.vector = [];
         console.log("Ninguno está vacio");
-          usuariosRef.where("departamento", "==", dpt).where("municipio", "==", mun).where("genero", "==", gen).where("edad", "==", edad).where("year", "==", anios).where("meses", "==", meses)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.usuarios.push({
-              key: doc.id,
-              primernombre: doc.data().primernombre,
-              segundonombre: doc.data().segundonombre,
-              primerapellido: doc.data().primerapellido,
-              segundoapellido: doc.data().segundoapellido,
-              tipodocumento: doc.data().tipodocumento,
-              documento: doc.data().documento,
-              departamento: doc.data().departamento,
-              municipio: doc.data().municipio,
-              genero: doc.data().genero,
-              edad: doc.data().edad,
-              year: doc.data().year,
-              meses: doc.data().meses,
+        usuariosRef
+          .where("departamento", "==", dpt)
+          .where("municipio", "==", mun)
+          .where("genero", "==", gen)
+          .where("edad", "==", edad)
+          .where("year", "==", anios)
+          .where("meses", "==", meses)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                primernombre: doc.data().primernombre,
+                segundonombre: doc.data().segundonombre,
+                primerapellido: doc.data().primerapellido,
+                segundoapellido: doc.data().segundoapellido,
+                tipodocumento: doc.data().tipodocumento,
+                documento: doc.data().documento,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                meses: doc.data().meses,
+              });
             });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
       }
     },
     mostrarImg(item) {
@@ -7801,9 +8724,6 @@ export default {
           console.log("Error llamando documento:", error);
         });
     },
-  
-  
-  
   },
 };
 </script>
@@ -7885,5 +8805,9 @@ export default {
 }
 .letrero2 {
   margin-left: 27% !important;
+}
+.boton {
+  margin-left: 82% !important;
+  margin-top: 2% !important;
 }
 </style>
