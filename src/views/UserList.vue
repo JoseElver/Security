@@ -5,9 +5,6 @@
         <div>
           <v-card>
             <v-card-title class="principal"> Filtros: </v-card-title>
-            <ul>
-              <li @click="recorrerVector()">recorrer</li>
-            </ul>
             <div class="form-group">
               <v-layout>
                 <v-flex xs12 sm2>
@@ -217,7 +214,7 @@
               </v-icon>
             </template>
           </v-data-table>
-          <div @click="recorrerVector()" class="boton">
+          <div @click="recorrerVector()" class="botonDescargar">
           <v-btn
       :loading="loading3"
       :disabled="loading3"
@@ -243,6 +240,7 @@
 <script>
 import { db } from "../firebaseDb";
 import { jsPDF } from "jspdf";
+import Swal from "sweetalert2";
 import { storage } from "../firebaseDb";
 const ref = storage.ref();
 
@@ -1506,7 +1504,7 @@ export default {
         const l = this.loader
         this[l] = !this[l]
 
-        setTimeout(() => (this[l] = false), 3000)
+        setTimeout(() => (this[l] = false), 10000)
 
         this.loader = null
       },
@@ -1516,10 +1514,21 @@ export default {
       console.log("valor vector " + this.vector);
       console.log("length " + this.vector.length);
       var i = 0;
-      for (i = 0; i < this.vector.length; i++) {
+      if ( this.eda == "" && this.anio == "" &&  this.mes == "" &&
+           this.muni == "" && this.depar == "" && this.gene == "") {
+        Swal.fire(
+          "¡Atención!",
+          "Realice la búsqueda por medio de los filtros para descargar los documentos deseados",
+          "info"
+        );
+        }
+        else {
+           for (i = 0; i < this.vector.length; i++) {
         console.log("posición i " + this.vector[i]);
         await this.generarPdf(this.vector[i]);
       }
+        }
+     
     },
 
     listaDepartamento() {
@@ -8806,7 +8815,7 @@ export default {
 .letrero2 {
   margin-left: 27% !important;
 }
-.boton {
+.botonDescargar {
   margin-left: 82% !important;
   margin-top: 2% !important;
 }
