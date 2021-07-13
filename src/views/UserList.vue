@@ -193,6 +193,17 @@
                   </select>
                   <label class="letrero2">Meses</label>
                 </v-flex>
+                 <v-flex xs12 sm1 class="filtro6">
+                   <div class="botonBorrar">
+                     <v-btn
+      color="blue-grey lighten-1"
+      class="ma-2 white--text"
+      @click="BorrarFiltro()"
+    >
+      Limpiar
+    </v-btn>
+                   </div>
+                </v-flex>
               </v-layout>
             </div>
           </v-card>
@@ -1478,7 +1489,21 @@ export default {
     };
   },
   created() {
-    db.collection("usuarios").onSnapshot((snapshotChange) => {
+   this.todo();
+  },
+  watch: {
+      loader () {
+        const l = this.loader
+        this[l] = !this[l]
+
+        setTimeout(() => (this[l] = false), 10000)
+
+        this.loader = null
+      },
+    },
+  methods: {
+    todo(){
+      db.collection("usuarios").onSnapshot((snapshotChange) => {
       this.usuarios = [];
       snapshotChange.forEach((doc) => {
         this.usuarios.push({
@@ -1498,18 +1523,19 @@ export default {
         });
       });
     });
-  },
-  watch: {
-      loader () {
-        const l = this.loader
-        this[l] = !this[l]
-
-        setTimeout(() => (this[l] = false), 10000)
-
-        this.loader = null
-      },
     },
-  methods: {
+    BorrarFiltro() {
+
+       this.eda = "";
+       this.anio = "";
+       this.mes = "";
+       this.muni = "";
+       this.depar = "";
+       this.gene = "";
+       this.todo();
+
+
+    },
     async recorrerVector() {
       console.log("valor vector " + this.vector);
       console.log("length " + this.vector.length);
@@ -1526,7 +1552,13 @@ export default {
            for (i = 0; i < this.vector.length; i++) {
         console.log("posición i " + this.vector[i]);
         await this.generarPdf(this.vector[i]);
+        
       }
+         Swal.fire(
+          "¡Felicitaciones!",
+          "Se han descargado éxitosamente todos los documento",
+          "success"
+        );
         }
      
     },
@@ -1599,7 +1631,10 @@ export default {
           .catch((error) => {
             console.log("Error getting documents: ", error);
           });
-      } else if (
+         
+      } 
+      
+      else if (
         this.anio == "" &&
         this.mes == "" &&
         this.eda == "" &&
@@ -8818,5 +8853,10 @@ export default {
 .botonDescargar {
   margin-left: 82% !important;
   margin-top: 2% !important;
+}
+.botonBorrar {
+  padding: 20%;
+  margin-top: 5% !important;
+  margin-left: -27% !important;
 }
 </style>
