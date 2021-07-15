@@ -177,7 +177,7 @@
                     id="cargoPrin"
                     class="filtro6 form-control"
                     @click="listaCargo()"
-                    v-model="mes"
+                    v-model="cargoAct"
                   >
                     <option value="ANALISTA DE INFORMACION">ANALISTA DE INFORMACION</option>
                     <option value="ANALISTA DE NOMINA">ANALISTA DE NOMINA</option>
@@ -285,7 +285,7 @@ export default {
       vector: [],
       docExperiencias: [],
       search: "",
-      mes: "",
+      cargoAct: "",
       anio: "",
       depar: "",
       muni: "",
@@ -1523,7 +1523,7 @@ export default {
 
        this.eda = "";
        this.anio = "";
-       this.mes = "";
+       this.cargoAct = "";
        this.muni = "";
        this.depar = "";
        this.gene = "";
@@ -1535,7 +1535,7 @@ export default {
       console.log("valor vector " + this.vector);
       console.log("length " + this.vector.length);
       var i = 0;
-      if ( this.eda == "" && this.anio == "" &&  this.mes == "" &&
+      if ( this.eda == "" && this.anio == "" &&  this.cargoAct == "" &&
            this.muni == "" && this.depar == "" && this.gene == "") {
         Swal.fire(
           "¡Atención!",
@@ -1566,8 +1566,8 @@ export default {
       gen = document.getElementById("genero").value;
       var mun;
       mun = document.getElementById("municipios").value;
-      var meses;
-      meses = document.getElementById("cargoPrin").value;
+      var carg;
+      carg = document.getElementById("cargoPrin").value;
       var anios;
       anios = document.getElementById("anios").value;
       var edad;
@@ -1592,7 +1592,7 @@ export default {
       if (
         this.eda == "" &&
         this.anio == "" &&
-        this.mes == "" &&
+        this.cargoAct == "" &&
         this.gene == "" &&
         this.muni == ""
       ) {
@@ -1613,7 +1613,7 @@ export default {
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
@@ -1625,7 +1625,7 @@ export default {
       
       else if (
         this.anio == "" &&
-        this.mes == "" &&
+        this.cargoAct == "" &&
         this.eda == "" &&
         this.muni == ""
       ) {
@@ -1645,7 +1645,7 @@ export default {
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
@@ -1654,7 +1654,7 @@ export default {
           });
       } else if (
         this.anio == "" &&
-        this.mes == "" &&
+        this.cargoAct == "" &&
         this.eda == "" &&
         this.gene == ""
       ) {
@@ -1669,18 +1669,12 @@ export default {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
@@ -1689,7 +1683,7 @@ export default {
           });
       } else if (
         this.anio == "" &&
-        this.mes == "" &&
+        this.cargoAct == "" &&
         this.muni == "" &&
         this.gene == ""
       ) {
@@ -1704,18 +1698,12 @@ export default {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
@@ -1731,7 +1719,7 @@ export default {
         this.vector = [];
         console.log("El municipio, el genero, la edad y el año están vacios");
         usuariosRef
-          .where("meses", "==", meses)
+          .where("cargoActual1", "==", carg)
           .where("departamento", "==", dpt)
           .get()
           .then((querySnapshot) => {
@@ -1739,18 +1727,12 @@ export default {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
@@ -1759,7 +1741,7 @@ export default {
           });
       } else if (
         this.eda == "" &&
-        this.mes == "" &&
+        this.cargoAct == "" &&
         this.muni == "" &&
         this.gene == ""
       ) {
@@ -1774,25 +1756,19 @@ export default {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
           .catch((error) => {
             console.log("Error getting documents: ", error);
           });
-      } else if (this.anio == "" && this.mes == "" && this.eda == "") {
+      } else if (this.anio == "" && this.cargoAct == "" && this.eda == "") {
         this.vector = [];
         console.log("La edad, el mes y el año están vacios");
         usuariosRef
@@ -1805,25 +1781,19 @@ export default {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
           .catch((error) => {
             console.log("Error getting documents: ", error);
           });
-      } else if (this.anio == "" && this.mes == "" && this.muni == "") {
+      } else if (this.anio == "" && this.cargoAct == "" && this.muni == "") {
         this.vector = [];
         console.log("El municipio, el mes y el año están vacios");
         usuariosRef
@@ -1836,25 +1806,19 @@ export default {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
           .catch((error) => {
             console.log("Error getting documents: ", error);
           });
-      } else if (this.anio == "" && this.mes == "" && this.gene == "") {
+      } else if (this.anio == "" && this.cargoAct == "" && this.gene == "") {
         this.vector = [];
         console.log("El genero, el mes y el año están vacios");
         usuariosRef
@@ -1867,25 +1831,19 @@ export default {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
           .catch((error) => {
             console.log("Error getting documents: ", error);
           });
-      } else if (this.eda == "" && this.mes == "" && this.gene == "") {
+      } else if (this.eda == "" && this.cargoAct == "" && this.gene == "") {
         this.vector = [];
         console.log("El genero, el mes y la edad están vacios");
         usuariosRef
@@ -1898,25 +1856,19 @@ export default {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
           .catch((error) => {
             console.log("Error getting documents: ", error);
           });
-      } else if (this.eda == "" && this.mes == "" && this.muni == "") {
+      } else if (this.eda == "" && this.cargoAct == "" && this.muni == "") {
         this.vector = [];
         console.log("El municipio, el mes y la edad están vacios");
         usuariosRef
@@ -1929,18 +1881,12 @@ export default {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
@@ -1953,25 +1899,19 @@ export default {
         usuariosRef
           .where("municipio", "==", mun)
           .where("departamento", "==", dpt)
-          .where("meses", "==", meses)
+          .where("cargoActual1", "==", carg)
           .get()
           .then((querySnapshot) => {
             querySnapshot.forEach((doc) => {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
@@ -1984,25 +1924,19 @@ export default {
         usuariosRef
           .where("departamento", "==", dpt)
           .where("genero", "==", gen)
-          .where("meses", "==", meses)
+          .where("cargoActual1", "==", carg)
           .get()
           .then((querySnapshot) => {
             querySnapshot.forEach((doc) => {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
@@ -2014,7 +1948,7 @@ export default {
         console.log("El municipio, el genero y la edad están vacios");
         usuariosRef
           .where("departamento", "==", dpt)
-          .where("meses", "==", meses)
+          .where("cargoActual1", "==", carg)
           .where("year", "==", anios)
           .get()
           .then((querySnapshot) => {
@@ -2022,18 +1956,12 @@ export default {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
@@ -2045,7 +1973,7 @@ export default {
         console.log("El municipio, el genero y el año están vacios");
         usuariosRef
           .where("departamento", "==", dpt)
-          .where("meses", "==", meses)
+          .where("cargoActual1", "==", carg)
           .where("edad", "==", edad)
           .get()
           .then((querySnapshot) => {
@@ -2053,25 +1981,19 @@ export default {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
           .catch((error) => {
             console.log("Error getting documents: ", error);
           });
-      } else if (this.mes == "" && this.gene == "" && this.muni == "") {
+      } else if (this.cargoAct == "" && this.gene == "" && this.muni == "") {
         this.vector = [];
         console.log("El municipio, el genero y el mes están vacios");
         usuariosRef
@@ -2084,25 +2006,19 @@ export default {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
           .catch((error) => {
             console.log("Error getting documents: ", error);
           });
-      } else if (this.anio == "" && this.mes == "") {
+      } else if (this.anio == "" && this.cargoAct == "") {
         this.vector = [];
         console.log("El mes y el año están vacios");
         usuariosRef
@@ -2116,18 +2032,12 @@ export default {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
@@ -2141,25 +2051,19 @@ export default {
           .where("departamento", "==", dpt)
           .where("municipio", "==", mun)
           .where("genero", "==", gen)
-          .where("meses", "==", meses)
+          .where("cargoActual1", "==", carg)
           .get()
           .then((querySnapshot) => {
             querySnapshot.forEach((doc) => {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
@@ -2172,7 +2076,7 @@ export default {
         usuariosRef
           .where("departamento", "==", dpt)
           .where("genero", "==", gen)
-          .where("meses", "==", meses)
+          .where("cargoActual1", "==", carg)
           .where("edad", "==", edad)
           .get()
           .then((querySnapshot) => {
@@ -2180,18 +2084,12 @@ export default {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
@@ -2204,7 +2102,7 @@ export default {
         usuariosRef
           .where("departamento", "==", dpt)
           .where("municipio", "==", mun)
-          .where("meses", "==", meses)
+          .where("cargoActual1", "==", carg)
           .where("edad", "==", edad)
           .get()
           .then((querySnapshot) => {
@@ -2212,25 +2110,19 @@ export default {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
           .catch((error) => {
             console.log("Error getting documents: ", error);
           });
-      } else if (this.eda == "" && this.mes == "") {
+      } else if (this.eda == "" && this.cargoAct == "") {
         this.vector = [];
         console.log("La edad y el mes están vacios");
         usuariosRef
@@ -2244,18 +2136,12 @@ export default {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
@@ -2269,25 +2155,19 @@ export default {
           .where("departamento", "==", dpt)
           .where("genero", "==", gen)
           .where("year", "==", anios)
-          .where("meses", "==", meses)
+          .where("cargoActual1", "==", carg)
           .get()
           .then((querySnapshot) => {
             querySnapshot.forEach((doc) => {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
@@ -2301,32 +2181,26 @@ export default {
           .where("departamento", "==", dpt)
           .where("municipio", "==", mun)
           .where("year", "==", anios)
-          .where("meses", "==", meses)
+          .where("cargoActual1", "==", carg)
           .get()
           .then((querySnapshot) => {
             querySnapshot.forEach((doc) => {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
           .catch((error) => {
             console.log("Error getting documents: ", error);
           });
-      } else if (this.muni == "" && this.mes == "") {
+      } else if (this.muni == "" && this.cargoAct == "") {
         this.vector = [];
         console.log("El municipio y el mes están vacios");
         usuariosRef
@@ -2340,18 +2214,12 @@ export default {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
@@ -2365,32 +2233,26 @@ export default {
           .where("departamento", "==", dpt)
           .where("edad", "==", edad)
           .where("year", "==", anios)
-          .where("meses", "==", meses)
+          .where("cargoActual1", "==", carg)
           .get()
           .then((querySnapshot) => {
             querySnapshot.forEach((doc) => {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
           .catch((error) => {
             console.log("Error getting documents: ", error);
           });
-      } else if (this.gene == "" && this.mes == "") {
+      } else if (this.gene == "" && this.cargoAct == "") {
         this.vector = [];
         console.log("El genero y el mes están vacios");
         usuariosRef
@@ -2404,18 +2266,12 @@ export default {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
@@ -2429,25 +2285,19 @@ export default {
           .where("departamento", "==", dpt)
           .where("edad", "==", edad)
           .where("year", "==", anios)
-          .where("meses", "==", meses)
+          .where("cargoActual1", "==", carg)
           .get()
           .then((querySnapshot) => {
             querySnapshot.forEach((doc) => {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
@@ -2462,25 +2312,19 @@ export default {
           .where("genero", "==", gen)
           .where("edad", "==", edad)
           .where("year", "==", anios)
-          .where("meses", "==", meses)
+          .where("cargoActual1", "==", carg)
           .get()
           .then((querySnapshot) => {
             querySnapshot.forEach((doc) => {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
@@ -2495,25 +2339,19 @@ export default {
           .where("municipio", "==", mun)
           .where("genero", "==", gen)
           .where("year", "==", anios)
-          .where("meses", "==", meses)
+          .where("cargoActual1", "==", carg)
           .get()
           .then((querySnapshot) => {
             querySnapshot.forEach((doc) => {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
@@ -2528,32 +2366,26 @@ export default {
           .where("municipio", "==", mun)
           .where("genero", "==", gen)
           .where("edad", "==", edad)
-          .where("meses", "==", meses)
+          .where("cargoActual1", "==", carg)
           .get()
           .then((querySnapshot) => {
             querySnapshot.forEach((doc) => {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
           .catch((error) => {
             console.log("Error getting documents: ", error);
           });
-      } else if (this.mes == "") {
+      } else if (this.cargoAct == "") {
         this.vector = [];
         console.log("El mes está vacio");
         usuariosRef
@@ -2568,18 +2400,12 @@ export default {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
@@ -2595,25 +2421,19 @@ export default {
           .where("genero", "==", gen)
           .where("edad", "==", edad)
           .where("year", "==", anios)
-          .where("meses", "==", meses)
+          .where("cargoActual1", "==", carg)
           .get()
           .then((querySnapshot) => {
             querySnapshot.forEach((doc) => {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
@@ -2630,30 +2450,25 @@ export default {
       dpt = document.getElementById("departamentos").value;
       var mun;
       mun = document.getElementById("municipios").value;
-      var meses;
-      meses = document.getElementById("cargoPrin").value;
+      var carg;
+      carg = document.getElementById("cargoPrin").value;
       var anios;
       anios = document.getElementById("anios").value;
       var edad;
       edad = document.getElementById("edad").value;
-
-      console.log(
-        "departamento " + dpt + " genero " + gen + " municipio " + mun
-      );
-
       this.usuarios = [];
       var usuariosRef = db.collection("usuarios");
 
       if (
-        this.eda == "" &&
+        this.cargoAct == "" &&
         this.anio == "" &&
-        this.mes == "" &&
+        this.eda == "" &&
         this.muni == "" &&
         this.depar == ""
       ) {
         this.vector = [];
         console.log(
-          "El mes, el municipio, el año, el departamento y edad están vacios"
+          "La edad,el municipio, el año, el departamento y el genero están vacios"
         );
         usuariosRef
           .where("genero", "==", gen)
@@ -2663,18 +2478,12 @@ export default {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
@@ -2683,12 +2492,12 @@ export default {
           });
       } else if (
         this.anio == "" &&
-        this.mes == "" &&
+        this.cargoAct == "" &&
         this.eda == "" &&
         this.muni == ""
       ) {
         this.vector = [];
-        console.log("La edad,el municipio, el mes y el año están vacios");
+        console.log("La edad,el municipio, el genero y el año están vacios");
         usuariosRef
           .where("departamento", "==", dpt)
           .where("genero", "==", gen)
@@ -2698,18 +2507,12 @@ export default {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
@@ -2718,12 +2521,12 @@ export default {
           });
       } else if (
         this.anio == "" &&
-        this.mes == "" &&
+        this.cargoAct == "" &&
         this.eda == "" &&
         this.depar == ""
       ) {
         this.vector = [];
-        console.log("La edad,el departamento, el mes y el año están vacios");
+        console.log("La edad,el departamento, el genero y el año están vacios");
         usuariosRef
           .where("municipio", "==", mun)
           .where("genero", "==", gen)
@@ -2733,18 +2536,12 @@ export default {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
@@ -2753,13 +2550,13 @@ export default {
           });
       } else if (
         this.anio == "" &&
-        this.mes == "" &&
+        this.cargoAct == "" &&
         this.muni == "" &&
         this.depar == ""
       ) {
         this.vector = [];
         console.log(
-          "El municipio, el departamento, el mes y el año están vacios"
+          "El municipio, el departamento, el genero y el año están vacios"
         );
         usuariosRef
           .where("edad", "==", edad)
@@ -2770,18 +2567,12 @@ export default {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
@@ -2799,7 +2590,7 @@ export default {
           "El municipio, el departamento, la edad y el año están vacios"
         );
         usuariosRef
-          .where("meses", "==", meses)
+          .where("cargoActual1", "==", carg)
           .where("genero", "==", gen)
           .get()
           .then((querySnapshot) => {
@@ -2807,18 +2598,12 @@ export default {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
@@ -2827,13 +2612,13 @@ export default {
           });
       } else if (
         this.eda == "" &&
-        this.mes == "" &&
+        this.cargoAct == "" &&
         this.muni == "" &&
         this.depar == ""
       ) {
         this.vector = [];
         console.log(
-          "El municipio, el departamento, el mes y la edad están vacios"
+          "El municipio, el departamento, el genero y la edad están vacios"
         );
         usuariosRef
           .where("year", "==", anios)
@@ -2844,27 +2629,21 @@ export default {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
           .catch((error) => {
             console.log("Error getting documents: ", error);
           });
-      } else if (this.anio == "" && this.mes == "" && this.eda == "") {
+      } else if (this.anio == "" && this.cargoAct == "" && this.eda == "") {
         this.vector = [];
-        console.log("La edad, el mes y el año están vacios");
+        console.log("La edad, el genero y el año están vacios");
         usuariosRef
           .where("departamento", "==", dpt)
           .where("municipio", "==", mun)
@@ -2875,27 +2654,21 @@ export default {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
           .catch((error) => {
             console.log("Error getting documents: ", error);
           });
-      } else if (this.anio == "" && this.mes == "" && this.muni == "") {
+      } else if (this.anio == "" && this.cargoAct == "" && this.muni == "") {
         this.vector = [];
-        console.log("El municipio, el mes y el año están vacios");
+        console.log("El municipio, el genero y el año están vacios");
         usuariosRef
           .where("departamento", "==", dpt)
           .where("genero", "==", gen)
@@ -2906,27 +2679,21 @@ export default {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
           .catch((error) => {
             console.log("Error getting documents: ", error);
           });
-      } else if (this.anio == "" && this.mes == "" && this.depar == "") {
+      } else if (this.anio == "" && this.cargoAct == "" && this.depar == "") {
         this.vector = [];
-        console.log("El departamento, el mes y el año están vacios");
+        console.log("El departamento, el genero y el año están vacios");
         usuariosRef
           .where("municipio", "==", mun)
           .where("genero", "==", gen)
@@ -2937,27 +2704,21 @@ export default {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
           .catch((error) => {
             console.log("Error getting documents: ", error);
           });
-      } else if (this.eda == "" && this.mes == "" && this.depar == "") {
+      } else if (this.eda == "" && this.cargoAct == "" && this.depar == "") {
         this.vector = [];
-        console.log("El departamento, el mes y la edad están vacios");
+        console.log("El departamento, el genero y la edad están vacios");
         usuariosRef
           .where("municipio", "==", mun)
           .where("genero", "==", gen)
@@ -2968,27 +2729,21 @@ export default {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
           .catch((error) => {
             console.log("Error getting documents: ", error);
           });
-      } else if (this.eda == "" && this.mes == "" && this.muni == "") {
+      } else if (this.eda == "" && this.cargoAct == "" && this.muni == "") {
         this.vector = [];
-        console.log("El municipio, el mes y la edad están vacios");
+        console.log("El municipio, el genero y la edad están vacios");
         usuariosRef
           .where("departamento", "==", dpt)
           .where("genero", "==", gen)
@@ -2999,18 +2754,12 @@ export default {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
@@ -3023,25 +2772,19 @@ export default {
         usuariosRef
           .where("municipio", "==", mun)
           .where("genero", "==", gen)
-          .where("meses", "==", meses)
+          .where("cargoActual1", "==", carg)
           .get()
           .then((querySnapshot) => {
             querySnapshot.forEach((doc) => {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
@@ -3054,25 +2797,19 @@ export default {
         usuariosRef
           .where("departamento", "==", dpt)
           .where("genero", "==", gen)
-          .where("meses", "==", meses)
+          .where("cargoActual1", "==", carg)
           .get()
           .then((querySnapshot) => {
             querySnapshot.forEach((doc) => {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
@@ -3084,7 +2821,7 @@ export default {
         console.log("El municipio, el departamento y la edad están vacios");
         usuariosRef
           .where("genero", "==", gen)
-          .where("meses", "==", meses)
+          .where("cargoActual1", "==", carg)
           .where("year", "==", anios)
           .get()
           .then((querySnapshot) => {
@@ -3092,18 +2829,12 @@ export default {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
@@ -3115,7 +2846,7 @@ export default {
         console.log("El municipio, el departamento y el año están vacios");
         usuariosRef
           .where("genero", "==", gen)
-          .where("meses", "==", meses)
+          .where("cargoActual1", "==", carg)
           .where("edad", "==", edad)
           .get()
           .then((querySnapshot) => {
@@ -3123,27 +2854,21 @@ export default {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
           .catch((error) => {
             console.log("Error getting documents: ", error);
           });
-      } else if (this.mes == "" && this.depar == "" && this.muni == "") {
+      } else if (this.cargoAct == "" && this.depar == "" && this.muni == "") {
         this.vector = [];
-        console.log("El municipio, el departamento y el mes están vacios");
+        console.log("El municipio, el departamento y el genero están vacios");
         usuariosRef
           .where("genero", "==", gen)
           .where("year", "==", anios)
@@ -3154,27 +2879,21 @@ export default {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
           .catch((error) => {
             console.log("Error getting documents: ", error);
           });
-      } else if (this.anio == "" && this.mes == "") {
+      } else if (this.anio == "" && this.cargoAct == "") {
         this.vector = [];
-        console.log("El mes y el año están vacios");
+        console.log("El genero y el año están vacios");
         usuariosRef
           .where("departamento", "==", dpt)
           .where("municipio", "==", mun)
@@ -3186,18 +2905,12 @@ export default {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
@@ -3211,25 +2924,19 @@ export default {
           .where("departamento", "==", dpt)
           .where("municipio", "==", mun)
           .where("genero", "==", gen)
-          .where("meses", "==", meses)
+          .where("cargoActual1", "==", carg)
           .get()
           .then((querySnapshot) => {
             querySnapshot.forEach((doc) => {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
@@ -3242,7 +2949,7 @@ export default {
         usuariosRef
           .where("departamento", "==", dpt)
           .where("genero", "==", gen)
-          .where("meses", "==", meses)
+          .where("cargoActual1", "==", carg)
           .where("edad", "==", edad)
           .get()
           .then((querySnapshot) => {
@@ -3250,18 +2957,12 @@ export default {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
@@ -3273,7 +2974,7 @@ export default {
         console.log("El departamento y el año están vacios");
         usuariosRef
           .where("genero", "==", gen)
-          .where("meses", "==", meses)
+          .where("cargoActual1", "==", carg)
           .where("edad", "==", edad)
           .get()
           .then((querySnapshot) => {
@@ -3281,27 +2982,21 @@ export default {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
           .catch((error) => {
             console.log("Error getting documents: ", error);
           });
-      } else if (this.eda == "" && this.mes == "") {
+      } else if (this.eda == "" && this.cargoAct == "") {
         this.vector = [];
-        console.log("La edad y el mes están vacios");
+        console.log("La edad y el genero están vacios");
         usuariosRef
           .where("departamento", "==", dpt)
           .where("municipio", "==", mun)
@@ -3313,18 +3008,12 @@ export default {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
@@ -3338,25 +3027,19 @@ export default {
           .where("departamento", "==", dpt)
           .where("genero", "==", gen)
           .where("year", "==", anios)
-          .where("meses", "==", meses)
+          .where("cargoActual1", "==", carg)
           .get()
           .then((querySnapshot) => {
             querySnapshot.forEach((doc) => {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
@@ -3369,34 +3052,28 @@ export default {
         usuariosRef
           .where("genero", "==", gen)
           .where("year", "==", anios)
-          .where("meses", "==", meses)
+          .where("cargoActual1", "==", carg)
           .get()
           .then((querySnapshot) => {
             querySnapshot.forEach((doc) => {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
           .catch((error) => {
             console.log("Error getting documents: ", error);
           });
-      } else if (this.muni == "" && this.mes == "") {
+      } else if (this.muni == "" && this.cargoAct == "") {
         this.vector = [];
-        console.log("El municipio y el mes están vacios");
+        console.log("El municipio y el genero están vacios");
         usuariosRef
           .where("departamento", "==", dpt)
           .where("genero", "==", gen)
@@ -3408,18 +3085,12 @@ export default {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
@@ -3433,34 +3104,28 @@ export default {
           .where("genero", "==", gen)
           .where("edad", "==", edad)
           .where("year", "==", anios)
-          .where("meses", "==", meses)
+          .where("cargoActual1", "==", carg)
           .get()
           .then((querySnapshot) => {
             querySnapshot.forEach((doc) => {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
           .catch((error) => {
             console.log("Error getting documents: ", error);
           });
-      } else if (this.depar == "" && this.mes == "") {
+      } else if (this.depar == "" && this.cargoAct == "") {
         this.vector = [];
-        console.log("El departamento y el mes están vacios");
+        console.log("El departamento y el genero están vacios");
         usuariosRef
           .where("municipio", "==", mun)
           .where("genero", "==", gen)
@@ -3472,18 +3137,12 @@ export default {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
@@ -3497,25 +3156,19 @@ export default {
           .where("genero", "==", gen)
           .where("edad", "==", edad)
           .where("year", "==", anios)
-          .where("meses", "==", meses)
+          .where("cargoActual1", "==", carg)
           .get()
           .then((querySnapshot) => {
             querySnapshot.forEach((doc) => {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
@@ -3530,58 +3183,46 @@ export default {
           .where("genero", "==", gen)
           .where("edad", "==", edad)
           .where("year", "==", anios)
-          .where("meses", "==", meses)
+          .where("cargoActual1", "==", carg)
           .get()
           .then((querySnapshot) => {
             querySnapshot.forEach((doc) => {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
           .catch((error) => {
             console.log("Error getting documents: ", error);
           });
-      } else if (this.gene == "") {
+      } else if (this.eda == "") {
         this.vector = [];
-        console.log("El género está vacio");
+        console.log("La edad está vacio");
         usuariosRef
           .where("departamento", "==", dpt)
           .where("municipio", "==", mun)
-          .where("edad", "==", edad)
+          .where("genero", "==", gen)
           .where("year", "==", anios)
-          .where("meses", "==", meses)
+          .where("cargoActual1", "==", carg)
           .get()
           .then((querySnapshot) => {
             querySnapshot.forEach((doc) => {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
@@ -3596,34 +3237,28 @@ export default {
           .where("municipio", "==", mun)
           .where("genero", "==", gen)
           .where("edad", "==", edad)
-          .where("meses", "==", meses)
+          .where("cargoActual1", "==", carg)
           .get()
           .then((querySnapshot) => {
             querySnapshot.forEach((doc) => {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
           .catch((error) => {
             console.log("Error getting documents: ", error);
           });
-      } else if (this.mes == "") {
+      } else if (this.cargoAct == "") {
         this.vector = [];
-        console.log("El mes está vacio");
+        console.log("El genero está vacio");
         usuariosRef
           .where("departamento", "==", dpt)
           .where("municipio", "==", mun)
@@ -3636,18 +3271,12 @@ export default {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
@@ -3663,25 +3292,19 @@ export default {
           .where("genero", "==", gen)
           .where("edad", "==", edad)
           .where("year", "==", anios)
-          .where("meses", "==", meses)
+          .where("cargoActual1", "==", carg)
           .get()
           .then((querySnapshot) => {
             querySnapshot.forEach((doc) => {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
@@ -3698,8 +3321,8 @@ export default {
       dpt = document.getElementById("departamentos").value;
       var mun;
       mun = document.getElementById("municipios").value;
-      var meses;
-      meses = document.getElementById("cargoPrin").value;
+      var carg;
+      carg = document.getElementById("cargoPrin").value;
       var anios;
       anios = document.getElementById("anios").value;
       var edad;
@@ -3708,15 +3331,15 @@ export default {
       var usuariosRef = db.collection("usuarios");
 
       if (
-        this.eda == "" &&
-        this.anio == "" &&
-        this.mes == "" &&
         this.gene == "" &&
+        this.anio == "" &&
+        this.eda == "" &&
+        this.cargoAct == "" &&
         this.depar == ""
       ) {
         this.vector = [];
         console.log(
-          "El mes, el genero, el año, el departamento y edad están vacios"
+          "La edad,el municipio, el año, el departamento y el genero están vacios"
         );
         usuariosRef
           .where("municipio", "==", mun)
@@ -3726,18 +3349,12 @@ export default {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
@@ -3746,12 +3363,12 @@ export default {
           });
       } else if (
         this.anio == "" &&
-        this.mes == "" &&
+        this.gene == "" &&
         this.eda == "" &&
-        this.gene == ""
+        this.cargoAct == ""
       ) {
         this.vector = [];
-        console.log("La edad,el genero, el mes y el año están vacios");
+        console.log("La edad,el municipio, el genero y el año están vacios");
         usuariosRef
           .where("departamento", "==", dpt)
           .where("municipio", "==", mun)
@@ -3761,18 +3378,12 @@ export default {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
@@ -3781,33 +3392,27 @@ export default {
           });
       } else if (
         this.anio == "" &&
-        this.mes == "" &&
+        this.gene == "" &&
         this.eda == "" &&
         this.depar == ""
       ) {
         this.vector = [];
-        console.log("La edad,el departamento, el mes y el año están vacios");
+        console.log("La edad,el departamento, el genero y el año están vacios");
         usuariosRef
           .where("municipio", "==", mun)
-          .where("genero", "==", gen)
+          .where("cargoActual1", "==", carg)
           .get()
           .then((querySnapshot) => {
             querySnapshot.forEach((doc) => {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
@@ -3816,12 +3421,14 @@ export default {
           });
       } else if (
         this.anio == "" &&
-        this.mes == "" &&
         this.gene == "" &&
+        this.cargoAct == "" &&
         this.depar == ""
       ) {
         this.vector = [];
-        console.log("El genero, el departamento, el mes y el año están vacios");
+        console.log(
+          "El municipio, el departamento, el genero y el año están vacios"
+        );
         usuariosRef
           .where("edad", "==", edad)
           .where("municipio", "==", mun)
@@ -3831,18 +3438,12 @@ export default {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
@@ -3852,34 +3453,28 @@ export default {
       } else if (
         this.anio == "" &&
         this.eda == "" &&
-        this.gene == "" &&
+        this.cargoAct == "" &&
         this.depar == ""
       ) {
         this.vector = [];
         console.log(
-          "El genero, el departamento, la edad y el año están vacios"
+          "El municipio, el departamento, la edad y el año están vacios"
         );
         usuariosRef
-          .where("meses", "==", meses)
           .where("municipio", "==", mun)
+          .where("genero", "==", gen)
           .get()
           .then((querySnapshot) => {
             querySnapshot.forEach((doc) => {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
@@ -3888,13 +3483,13 @@ export default {
           });
       } else if (
         this.eda == "" &&
-        this.mes == "" &&
         this.gene == "" &&
+        this.cargoAct == "" &&
         this.depar == ""
       ) {
         this.vector = [];
         console.log(
-          "El genero, el departamento, el mes y la edad están vacios"
+          "El municipio, el departamento, el genero y la edad están vacios"
         );
         usuariosRef
           .where("year", "==", anios)
@@ -3905,58 +3500,46 @@ export default {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
           .catch((error) => {
             console.log("Error getting documents: ", error);
           });
-      } else if (this.anio == "" && this.mes == "" && this.eda == "") {
+      } else if (this.anio == "" && this.gene == "" && this.eda == "") {
         this.vector = [];
-        console.log("La edad, el mes y el año están vacios");
+        console.log("La edad, el genero y el año están vacios");
         usuariosRef
           .where("departamento", "==", dpt)
           .where("municipio", "==", mun)
-          .where("genero", "==", gen)
+          .where("cargoActual1", "==", carg)
           .get()
           .then((querySnapshot) => {
             querySnapshot.forEach((doc) => {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
           .catch((error) => {
             console.log("Error getting documents: ", error);
           });
-      } else if (this.anio == "" && this.mes == "" && this.gene == "") {
+      } else if (this.anio == "" && this.gene == "" && this.cargoAct == "") {
         this.vector = [];
-        console.log("El genero, el mes y el año están vacios");
+        console.log("El municipio, el genero y el año están vacios");
         usuariosRef
           .where("departamento", "==", dpt)
           .where("municipio", "==", mun)
@@ -3967,30 +3550,24 @@ export default {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
           .catch((error) => {
             console.log("Error getting documents: ", error);
           });
-      } else if (this.anio == "" && this.mes == "" && this.depar == "") {
+      } else if (this.anio == "" && this.gene == "" && this.depar == "") {
         this.vector = [];
-        console.log("El departamento, el mes y el año están vacios");
+        console.log("El departamento, el genero y el año están vacios");
         usuariosRef
           .where("municipio", "==", mun)
-          .where("genero", "==", gen)
+          .where("cargoActual1", "==", carg)
           .where("edad", "==", edad)
           .get()
           .then((querySnapshot) => {
@@ -3998,30 +3575,24 @@ export default {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
           .catch((error) => {
             console.log("Error getting documents: ", error);
           });
-      } else if (this.eda == "" && this.mes == "" && this.depar == "") {
+      } else if (this.eda == "" && this.gene == "" && this.depar == "") {
         this.vector = [];
-        console.log("El departamento, el mes y la edad están vacios");
+        console.log("El departamento, el genero y la edad están vacios");
         usuariosRef
           .where("municipio", "==", mun)
-          .where("genero", "==", gen)
+          .where("cargoActual1", "==", carg)
           .where("year", "==", anios)
           .get()
           .then((querySnapshot) => {
@@ -4029,27 +3600,21 @@ export default {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
           .catch((error) => {
             console.log("Error getting documents: ", error);
           });
-      } else if (this.eda == "" && this.mes == "" && this.gene == "") {
+      } else if (this.eda == "" && this.gene == "" && this.cargoAct == "") {
         this.vector = [];
-        console.log("El genero, el mes y la edad están vacios");
+        console.log("El municipio, el genero y la edad están vacios");
         usuariosRef
           .where("departamento", "==", dpt)
           .where("municipio", "==", mun)
@@ -4060,18 +3625,12 @@ export default {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
@@ -4084,162 +3643,81 @@ export default {
         usuariosRef
           .where("municipio", "==", mun)
           .where("genero", "==", gen)
-          .where("meses", "==", meses)
+          .where("cargoActual1", "==", carg)
           .get()
           .then((querySnapshot) => {
             querySnapshot.forEach((doc) => {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
           .catch((error) => {
             console.log("Error getting documents: ", error);
           });
-      } else if (this.eda == "" && this.anio == "" && this.gene == "") {
+      } else if (this.eda == "" && this.anio == "" && this.cargoAct == "") {
         this.vector = [];
-        console.log("El genero, el año y la edad están vacios");
+        console.log("El municipio, el año y la edad están vacios");
         usuariosRef
           .where("departamento", "==", dpt)
-          .where("municipio", "==", mun)
-          .where("meses", "==", meses)
-          .get()
-          .then((querySnapshot) => {
-            querySnapshot.forEach((doc) => {
-              this.vector.push(doc.id);
-              this.usuarios.push({
-                key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
-                departamento: doc.data().departamento,
-                municipio: doc.data().municipio,
-                genero: doc.data().genero,
-                edad: doc.data().edad,
-                year: doc.data().year,
-                meses: doc.data().meses,
-              });
-            });
-          })
-          .catch((error) => {
-            console.log("Error getting documents: ", error);
-          });
-      } else if (this.eda == "" && this.depar == "" && this.gene == "") {
-        this.vector = [];
-        console.log("El genero, el departamento y la edad están vacios");
-        usuariosRef
-          .where("municipio", "==", mun)
-          .where("meses", "==", meses)
-          .where("year", "==", anios)
-          .get()
-          .then((querySnapshot) => {
-            querySnapshot.forEach((doc) => {
-              this.vector.push(doc.id);
-              this.usuarios.push({
-                key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
-                departamento: doc.data().departamento,
-                municipio: doc.data().municipio,
-                genero: doc.data().genero,
-                edad: doc.data().edad,
-                year: doc.data().year,
-                meses: doc.data().meses,
-              });
-            });
-          })
-          .catch((error) => {
-            console.log("Error getting documents: ", error);
-          });
-      } else if (this.anio == "" && this.depar == "" && this.gene == "") {
-        this.vector = [];
-        console.log("El genero, el departamento y el año están vacios");
-        usuariosRef
-          .where("municipio", "==", mun)
-          .where("meses", "==", meses)
-          .where("edad", "==", edad)
-          .get()
-          .then((querySnapshot) => {
-            querySnapshot.forEach((doc) => {
-              this.vector.push(doc.id);
-              this.usuarios.push({
-                key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
-                departamento: doc.data().departamento,
-                municipio: doc.data().municipio,
-                genero: doc.data().genero,
-                edad: doc.data().edad,
-                year: doc.data().year,
-                meses: doc.data().meses,
-              });
-            });
-          })
-          .catch((error) => {
-            console.log("Error getting documents: ", error);
-          });
-      } else if (this.mes == "" && this.depar == "" && this.gene == "") {
-        this.vector = [];
-        console.log("El genero, el departamento y el mes están vacios");
-        usuariosRef
-          .where("municipio", "==", mun)
-          .where("year", "==", anios)
-          .where("edad", "==", edad)
-          .get()
-          .then((querySnapshot) => {
-            querySnapshot.forEach((doc) => {
-              this.vector.push(doc.id);
-              this.usuarios.push({
-                key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
-                departamento: doc.data().departamento,
-                municipio: doc.data().municipio,
-                genero: doc.data().genero,
-                edad: doc.data().edad,
-                year: doc.data().year,
-                meses: doc.data().meses,
-              });
-            });
-          })
-          .catch((error) => {
-            console.log("Error getting documents: ", error);
-          });
-      } else if (this.anio == "" && this.mes == "") {
-        this.vector = [];
-        console.log("El mes y el año están vacios");
-        usuariosRef
-          .where("departamento", "==", dpt)
-          .where("municipio", "==", mun)
           .where("genero", "==", gen)
+          .where("municipio", "==", mun)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                cargoActual1: doc.data().cargoActual1,
+              });
+            });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
+          });
+      } else if (this.eda == "" && this.depar == "" && this.cargoAct == "") {
+        this.vector = [];
+        console.log("El municipio, el departamento y la edad están vacios");
+        usuariosRef
+          .where("genero", "==", gen)
+          .where("municipio", "==", mun)
+          .where("year", "==", anios)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                cargoActual1: doc.data().cargoActual1,
+              });
+            });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
+          });
+      } else if (this.anio == "" && this.depar == "" && this.cargoAct == "") {
+        this.vector = [];
+        console.log("El municipio, el departamento y el año están vacios");
+        usuariosRef
+          .where("genero", "==", gen)
+          .where("municipio", "==", mun)
           .where("edad", "==", edad)
           .get()
           .then((querySnapshot) => {
@@ -4247,18 +3725,63 @@ export default {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
+              });
+            });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
+          });
+      } else if (this.gene == "" && this.depar == "" && this.cargoAct == "") {
+        this.vector = [];
+        console.log("El municipio, el departamento y el genero están vacios");
+        usuariosRef
+          .where("municipio", "==", mun)
+          .where("year", "==", anios)
+          .where("edad", "==", edad)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                cargoActual1: doc.data().cargoActual1,
+              });
+            });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
+          });
+      } else if (this.anio == "" && this.gene == "") {
+        this.vector = [];
+        console.log("El genero y el año están vacios");
+        usuariosRef
+          .where("departamento", "==", dpt)
+          .where("municipio", "==", mun)
+          .where("cargoActual1", "==", carg)
+          .where("edad", "==", edad)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
@@ -4272,38 +3795,32 @@ export default {
           .where("departamento", "==", dpt)
           .where("municipio", "==", mun)
           .where("genero", "==", gen)
-          .where("meses", "==", meses)
+          .where("cargoActual1", "==", carg)
           .get()
           .then((querySnapshot) => {
             querySnapshot.forEach((doc) => {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
           .catch((error) => {
             console.log("Error getting documents: ", error);
           });
-      } else if (this.anio == "" && this.gene == "") {
+      } else if (this.anio == "" && this.cargoAct == "") {
         this.vector = [];
-        console.log("El genero y el año están vacios");
+        console.log("El municipio y el año están vacios");
         usuariosRef
           .where("departamento", "==", dpt)
+          .where("genero", "==", gen)
           .where("municipio", "==", mun)
-          .where("meses", "==", meses)
           .where("edad", "==", edad)
           .get()
           .then((querySnapshot) => {
@@ -4311,31 +3828,24 @@ export default {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
           .catch((error) => {
             console.log("Error getting documents: ", error);
           });
-      } else if (this.anio == "" && this.depar == "") {
+      } else if (this.anio == "" && this.depar == "" && this.cargoAct == "") {
         this.vector = [];
         console.log("El departamento y el año están vacios");
         usuariosRef
-          .where("municipio", "==", mun)
           .where("genero", "==", gen)
-          .where("meses", "==", meses)
+          .where("municipio", "==", mun)
           .where("edad", "==", edad)
           .get()
           .then((querySnapshot) => {
@@ -4343,50 +3853,12 @@ export default {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
-              });
-            });
-          })
-          .catch((error) => {
-            console.log("Error getting documents: ", error);
-          });
-      } else if (this.eda == "" && this.mes == "") {
-        this.vector = [];
-        console.log("La edad y el mes están vacios");
-        usuariosRef
-          .where("departamento", "==", dpt)
-          .where("municipio", "==", mun)
-          .where("genero", "==", gen)
-          .where("year", "==", anios)
-          .get()
-          .then((querySnapshot) => {
-            querySnapshot.forEach((doc) => {
-              this.vector.push(doc.id);
-              this.usuarios.push({
-                key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
-                departamento: doc.data().departamento,
-                municipio: doc.data().municipio,
-                genero: doc.data().genero,
-                edad: doc.data().edad,
-                year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
@@ -4399,66 +3871,80 @@ export default {
         usuariosRef
           .where("departamento", "==", dpt)
           .where("municipio", "==", mun)
+          .where("cargoActual1", "==", carg)
           .where("year", "==", anios)
-          .where("meses", "==", meses)
           .get()
           .then((querySnapshot) => {
             querySnapshot.forEach((doc) => {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
           .catch((error) => {
             console.log("Error getting documents: ", error);
           });
-      } else if (this.eda == "" && this.depar == "") {
+      } else if (this.eda == "" && this.cargoAct == "") {
+        this.vector = [];
+        console.log("La edad y el munipio están vacios");
+        usuariosRef
+          .where("departamento", "==", dpt)
+          .where("genero", "==", gen)
+          .where("year", "==", anios)
+          .where("municipio", "==", mun)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                cargoActual1: doc.data().cargoActual1,
+              });
+            });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
+          });
+      } else if (this.eda == "" && this.depar == "" && this.cargoAct == "") {
         this.vector = [];
         console.log("La edad y el departamento están vacios");
         usuariosRef
-          .where("municipio", "==", mun)
+          .where("genero", "==", gen)
           .where("year", "==", anios)
-          .where("meses", "==", meses)
+          .where("municipio", "==", mun)
           .get()
           .then((querySnapshot) => {
             querySnapshot.forEach((doc) => {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
           .catch((error) => {
             console.log("Error getting documents: ", error);
           });
-      } else if (this.gene == "" && this.mes == "") {
+      } else if (this.cargoAct == "" && this.gene == "") {
         this.vector = [];
-        console.log("El genero y el mes están vacios");
+        console.log("El municipio y el genero están vacios");
         usuariosRef
           .where("departamento", "==", dpt)
           .where("municipio", "==", mun)
@@ -4470,82 +3956,64 @@ export default {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
           .catch((error) => {
             console.log("Error getting documents: ", error);
           });
-      } else if (this.gene == "" && this.depar == "") {
+      } else if (this.cargoAct == "" && this.depar == "") {
         this.vector = [];
-        console.log("El genero y el departamento están vacios");
+        console.log("El municipio y el departamento están vacios");
         usuariosRef
-          .where("municipio", "==", mun)
-          .where("edad", "==", edad)
-          .where("year", "==", anios)
-          .where("meses", "==", meses)
-          .get()
-          .then((querySnapshot) => {
-            querySnapshot.forEach((doc) => {
-              this.vector.push(doc.id);
-              this.usuarios.push({
-                key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
-                departamento: doc.data().departamento,
-                municipio: doc.data().municipio,
-                genero: doc.data().genero,
-                edad: doc.data().edad,
-                year: doc.data().year,
-                meses: doc.data().meses,
-              });
-            });
-          })
-          .catch((error) => {
-            console.log("Error getting documents: ", error);
-          });
-      } else if (this.depar == "" && this.mes == "") {
-        this.vector = [];
-        console.log("El departamento y el mes están vacios");
-        usuariosRef
-          .where("municipio", "==", mun)
           .where("genero", "==", gen)
           .where("edad", "==", edad)
           .where("year", "==", anios)
+          .where("municipio", "==", mun)
           .get()
           .then((querySnapshot) => {
             querySnapshot.forEach((doc) => {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
+              });
+            });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
+          });
+      } else if (this.depar == "" && this.gene == "") {
+        this.vector = [];
+        console.log("El departamento y el genero están vacios");
+        usuariosRef
+          .where("municipio", "==", mun)
+          .where("cargoActual1", "==", carg)
+          .where("edad", "==", edad)
+          .where("year", "==", anios)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
@@ -4559,59 +4027,46 @@ export default {
           .where("genero", "==", gen)
           .where("edad", "==", edad)
           .where("year", "==", anios)
-          .where("meses", "==", meses)
-          .where("municipio", "==", mun)
+          .where("cargoActual1", "==", carg)
           .get()
           .then((querySnapshot) => {
             querySnapshot.forEach((doc) => {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
           .catch((error) => {
             console.log("Error getting documents: ", error);
           });
-      } else if (this.gene == "") {
+      } else if (this.cargoAct == "") {
         this.vector = [];
-        console.log("El genero está vacio");
+        console.log("El munipio está vacio");
         usuariosRef
           .where("departamento", "==", dpt)
-          .where("municipio", "==", mun)
+          .where("genero", "==", gen)
           .where("edad", "==", edad)
           .where("year", "==", anios)
-          .where("meses", "==", meses)
+          .where("municipio", "==", mun)
           .get()
           .then((querySnapshot) => {
             querySnapshot.forEach((doc) => {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
@@ -4626,25 +4081,19 @@ export default {
           .where("municipio", "==", mun)
           .where("genero", "==", gen)
           .where("year", "==", anios)
-          .where("meses", "==", meses)
+          .where("cargoActual1", "==", carg)
           .get()
           .then((querySnapshot) => {
             querySnapshot.forEach((doc) => {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
@@ -4659,38 +4108,32 @@ export default {
           .where("municipio", "==", mun)
           .where("genero", "==", gen)
           .where("edad", "==", edad)
-          .where("meses", "==", meses)
+          .where("cargoActual1", "==", carg)
           .get()
           .then((querySnapshot) => {
             querySnapshot.forEach((doc) => {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
           .catch((error) => {
             console.log("Error getting documents: ", error);
           });
-      } else if (this.mes == "") {
+      } else if (this.gene == "") {
         this.vector = [];
-        console.log("El mes está vacio");
+        console.log("El genero está vacio");
         usuariosRef
           .where("departamento", "==", dpt)
           .where("municipio", "==", mun)
-          .where("genero", "==", gen)
+          .where("cargoActual1", "==", carg)
           .where("edad", "==", edad)
           .where("year", "==", anios)
           .get()
@@ -4699,18 +4142,12 @@ export default {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
@@ -4726,25 +4163,19 @@ export default {
           .where("genero", "==", gen)
           .where("edad", "==", edad)
           .where("year", "==", anios)
-          .where("meses", "==", meses)
+          .where("cargoActual1", "==", carg)
           .get()
           .then((querySnapshot) => {
             querySnapshot.forEach((doc) => {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
@@ -4761,30 +4192,25 @@ export default {
       dpt = document.getElementById("departamentos").value;
       var mun;
       mun = document.getElementById("municipios").value;
-      var meses;
-      meses = document.getElementById("cargoPrin").value;
+      var carg;
+      carg = document.getElementById("cargoPrin").value;
       var anios;
       anios = document.getElementById("anios").value;
       var edad;
       edad = document.getElementById("edad").value;
-
-      console.log(
-        "departamento " + dpt + " genero " + gen + " municipio " + mun
-      );
-
       this.usuarios = [];
       var usuariosRef = db.collection("usuarios");
 
       if (
         this.gene == "" &&
-        this.mes == "" &&
+        this.cargoAct == "" &&
         this.eda == "" &&
         this.muni == "" &&
         this.depar == ""
       ) {
-         this.vector = [];
+        this.vector = [];
         console.log(
-          "La edad,el municipio, el mes, el departamento y el genero están vacios"
+          "La edad,el municipio, el año, el departamento y el genero están vacios"
         );
         usuariosRef
           .where("year", "==", anios)
@@ -4794,18 +4220,12 @@ export default {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
@@ -4813,13 +4233,13 @@ export default {
             console.log("Error getting documents: ", error);
           });
       } else if (
+        this.cargoAct == "" &&
         this.gene == "" &&
-        this.mes == "" &&
         this.eda == "" &&
         this.muni == ""
       ) {
-         this.vector = [];
-        console.log("La edad,el municipio, el mes y el genero están vacios");
+        this.vector = [];
+        console.log("La edad,el municipio, el genero y el año están vacios");
         usuariosRef
           .where("departamento", "==", dpt)
           .where("year", "==", anios)
@@ -4829,18 +4249,12 @@ export default {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
@@ -4848,13 +4262,13 @@ export default {
             console.log("Error getting documents: ", error);
           });
       } else if (
+        this.cargoAct == "" &&
         this.gene == "" &&
-        this.mes == "" &&
         this.eda == "" &&
         this.depar == ""
       ) {
-         this.vector = [];
-        console.log("La edad,el departamento, el mes y el genero están vacios");
+        this.vector = [];
+        console.log("La edad,el departamento, el genero y el año están vacios");
         usuariosRef
           .where("municipio", "==", mun)
           .where("year", "==", anios)
@@ -4864,18 +4278,12 @@ export default {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
@@ -4883,14 +4291,14 @@ export default {
             console.log("Error getting documents: ", error);
           });
       } else if (
+        this.cargoAct == "" &&
         this.gene == "" &&
-        this.mes == "" &&
         this.muni == "" &&
         this.depar == ""
       ) {
-         this.vector = [];
+        this.vector = [];
         console.log(
-          "El municipio, el departamento, el mes y el genero están vacios"
+          "El municipio, el departamento, el genero y el año están vacios"
         );
         usuariosRef
           .where("edad", "==", edad)
@@ -4901,18 +4309,12 @@ export default {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
@@ -4920,82 +4322,70 @@ export default {
             console.log("Error getting documents: ", error);
           });
       } else if (
+        this.cargoAct == "" &&
+        this.eda == "" &&
+        this.muni == "" &&
+        this.depar == ""
+      ) {
+        this.vector = [];
+        console.log(
+          "El municipio, el departamento, la edad y el año están vacios"
+        );
+        usuariosRef
+          .where("year", "==", anios)
+          .where("genero", "==", gen)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                cargoActual1: doc.data().cargoActual1,
+              });
+            });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
+          });
+      } else if (
+        this.eda == "" &&
         this.gene == "" &&
-        this.eda == "" &&
         this.muni == "" &&
         this.depar == ""
       ) {
-         this.vector = [];
+        this.vector = [];
         console.log(
-          "El municipio, el departamento, la edad y el genero están vacios"
+          "El municipio, el departamento, el genero y la edad están vacios"
         );
         usuariosRef
-          .where("meses", "==", meses)
           .where("year", "==", anios)
+          .where("cargoActual1", "==", carg)
           .get()
           .then((querySnapshot) => {
             querySnapshot.forEach((doc) => {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
           .catch((error) => {
             console.log("Error getting documents: ", error);
           });
-      } else if (
-        this.eda == "" &&
-        this.mes == "" &&
-        this.muni == "" &&
-        this.depar == ""
-      ) {
-         this.vector = [];
-        console.log(
-          "El municipio, el departamento, el mes y la edad están vacios"
-        );
-        usuariosRef
-          .where("year", "==", anios)
-          .where("genero", "==", gen)
-          .get()
-          .then((querySnapshot) => {
-            querySnapshot.forEach((doc) => {
-              this.vector.push(doc.id);
-              this.usuarios.push({
-                key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
-                departamento: doc.data().departamento,
-                municipio: doc.data().municipio,
-                genero: doc.data().genero,
-                edad: doc.data().edad,
-                year: doc.data().year,
-                meses: doc.data().meses,
-              });
-            });
-          })
-          .catch((error) => {
-            console.log("Error getting documents: ", error);
-          });
-      } else if (this.gene == "" && this.mes == "" && this.eda == "") {
-         this.vector = [];
-        console.log("La edad, el mes y el genero están vacios");
+      } else if (this.cargoAct == "" && this.gene == "" && this.eda == "") {
+        this.vector = [];
+        console.log("La edad, el genero y el año están vacios");
         usuariosRef
           .where("departamento", "==", dpt)
           .where("municipio", "==", mun)
@@ -5006,27 +4396,21 @@ export default {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
           .catch((error) => {
             console.log("Error getting documents: ", error);
           });
-      } else if (this.gene == "" && this.mes == "" && this.muni == "") {
-         this.vector = [];
-        console.log("El municipio, el mes y el genero están vacios");
+      } else if (this.cargoAct == "" && this.gene == "" && this.muni == "") {
+        this.vector = [];
+        console.log("El municipio, el genero y el año están vacios");
         usuariosRef
           .where("departamento", "==", dpt)
           .where("year", "==", anios)
@@ -5037,27 +4421,21 @@ export default {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
           .catch((error) => {
             console.log("Error getting documents: ", error);
           });
-      } else if (this.gene == "" && this.mes == "" && this.depar == "") {
-         this.vector = [];
-        console.log("El departamento, el mes y el genero están vacios");
+      } else if (this.cargoAct == "" && this.gene == "" && this.depar == "") {
+        this.vector = [];
+        console.log("El departamento, el genero y el año están vacios");
         usuariosRef
           .where("municipio", "==", mun)
           .where("year", "==", anios)
@@ -5068,80 +4446,12 @@ export default {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
-              });
-            });
-          })
-          .catch((error) => {
-            console.log("Error getting documents: ", error);
-          });
-      } else if (this.eda == "" && this.mes == "" && this.depar == "") {
-         this.vector = [];
-        console.log("El departamento, el mes y la edad están vacios");
-        usuariosRef
-          .where("municipio", "==", mun)
-          .where("genero", "==", gen)
-          .where("year", "==", anios)
-          .get()
-          .then((querySnapshot) => {
-            querySnapshot.forEach((doc) => {
-              this.vector.push(doc.id);
-              this.usuarios.push({
-                key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
-                departamento: doc.data().departamento,
-                municipio: doc.data().municipio,
-                genero: doc.data().genero,
-                edad: doc.data().edad,
-                year: doc.data().year,
-                meses: doc.data().meses,
-              });
-            });
-          })
-          .catch((error) => {
-            console.log("Error getting documents: ", error);
-          });
-      } else if (this.eda == "" && this.mes == "" && this.muni == "") {
-         this.vector = [];
-        console.log("El municipio, el mes y la edad están vacios");
-        usuariosRef
-          .where("departamento", "==", dpt)
-          .where("genero", "==", gen)
-          .where("year", "==", anios)
-          .get()
-          .then((querySnapshot) => {
-            querySnapshot.forEach((doc) => {
-              this.vector.push(doc.id);
-              this.usuarios.push({
-                key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
-                departamento: doc.data().departamento,
-                municipio: doc.data().municipio,
-                genero: doc.data().genero,
-                edad: doc.data().edad,
-                year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
@@ -5149,30 +4459,24 @@ export default {
             console.log("Error getting documents: ", error);
           });
       } else if (this.eda == "" && this.gene == "" && this.depar == "") {
-         this.vector = [];
+        this.vector = [];
         console.log("El departamento, el genero y la edad están vacios");
         usuariosRef
           .where("municipio", "==", mun)
+          .where("cargoActual1", "==", carg)
           .where("year", "==", anios)
-          .where("meses", "==", meses)
           .get()
           .then((querySnapshot) => {
             querySnapshot.forEach((doc) => {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
@@ -5180,30 +4484,74 @@ export default {
             console.log("Error getting documents: ", error);
           });
       } else if (this.eda == "" && this.gene == "" && this.muni == "") {
-         this.vector = [];
+        this.vector = [];
         console.log("El municipio, el genero y la edad están vacios");
         usuariosRef
           .where("departamento", "==", dpt)
+          .where("cargoActual1", "==", carg)
           .where("year", "==", anios)
-          .where("meses", "==", meses)
           .get()
           .then((querySnapshot) => {
             querySnapshot.forEach((doc) => {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
+              });
+            });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
+          });
+      } else if (this.eda == "" && this.cargoAct == "" && this.depar == "") {
+        this.vector = [];
+        console.log("El departamento, el año y la edad están vacios");
+        usuariosRef
+          .where("municipio", "==", mun)
+          .where("genero", "==", gen)
+          .where("year", "==", anios)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                cargoActual1: doc.data().cargoActual1,
+              });
+            });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
+          });
+      } else if (this.eda == "" && this.cargoAct == "" && this.muni == "") {
+        this.vector = [];
+        console.log("El municipio, el año y la edad están vacios");
+        usuariosRef
+          .where("departamento", "==", dpt)
+          .where("genero", "==", gen)
+          .where("year", "==", anios)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
@@ -5211,11 +4559,11 @@ export default {
             console.log("Error getting documents: ", error);
           });
       } else if (this.eda == "" && this.depar == "" && this.muni == "") {
-         this.vector = [];
+        this.vector = [];
         console.log("El municipio, el departamento y la edad están vacios");
         usuariosRef
           .where("genero", "==", gen)
-          .where("meses", "==", meses)
+          .where("cargoActual1", "==", carg)
           .where("year", "==", anios)
           .get()
           .then((querySnapshot) => {
@@ -5223,18 +4571,37 @@ export default {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
+              });
+            });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
+          });
+      } else if (this.cargoAct == "" && this.depar == "" && this.muni == "") {
+        this.vector = [];
+        console.log("El municipio, el departamento y el año están vacios");
+        usuariosRef
+          .where("genero", "==", gen)
+          .where("year", "==", anios)
+          .where("edad", "==", edad)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
@@ -5242,41 +4609,10 @@ export default {
             console.log("Error getting documents: ", error);
           });
       } else if (this.gene == "" && this.depar == "" && this.muni == "") {
-         this.vector = [];
+        this.vector = [];
         console.log("El municipio, el departamento y el genero están vacios");
         usuariosRef
-          .where("year", "==", anios)
-          .where("meses", "==", meses)
-          .where("edad", "==", edad)
-          .get()
-          .then((querySnapshot) => {
-            querySnapshot.forEach((doc) => {
-              this.vector.push(doc.id);
-              this.usuarios.push({
-                key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
-                departamento: doc.data().departamento,
-                municipio: doc.data().municipio,
-                genero: doc.data().genero,
-                edad: doc.data().edad,
-                year: doc.data().year,
-                meses: doc.data().meses,
-              });
-            });
-          })
-          .catch((error) => {
-            console.log("Error getting documents: ", error);
-          });
-      } else if (this.mes == "" && this.depar == "" && this.muni == "") {
-         this.vector = [];
-        console.log("El municipio, el departamento y el mes están vacios");
-        usuariosRef
-          .where("genero", "==", gen)
+          .where("cargoActual1", "==", carg)
           .where("year", "==", anios)
           .where("edad", "==", edad)
           .get()
@@ -5285,27 +4621,21 @@ export default {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
           .catch((error) => {
             console.log("Error getting documents: ", error);
           });
-      } else if (this.gene == "" && this.mes == "") {
-         this.vector = [];
-        console.log("El mes y el genero están vacios");
+      } else if (this.cargoAct == "" && this.gene == "") {
+        this.vector = [];
+        console.log("El genero y el año están vacios");
         usuariosRef
           .where("departamento", "==", dpt)
           .where("municipio", "==", mun)
@@ -5317,126 +4647,102 @@ export default {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
           .catch((error) => {
             console.log("Error getting documents: ", error);
           });
-      } else if (this.gene == "" && this.eda == "") {
-         this.vector = [];
+      } else if (this.cargoAct == "" && this.eda == "") {
+        this.vector = [];
+        console.log("La edad y el año están vacios");
+        usuariosRef
+          .where("departamento", "==", dpt)
+          .where("municipio", "==", mun)
+          .where("genero", "==", gen)
+          .where("year", "==", anios)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                cargoActual1: doc.data().cargoActual1,
+              });
+            });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
+          });
+      } else if (this.cargoAct == "" && this.muni == "") {
+        this.vector = [];
+        console.log("El municipio y el año están vacios");
+        usuariosRef
+          .where("departamento", "==", dpt)
+          .where("genero", "==", gen)
+          .where("year", "==", anios)
+          .where("edad", "==", edad)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                cargoActual1: doc.data().cargoActual1,
+              });
+            });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
+          });
+      } else if (this.cargoAct == "" && this.depar == "") {
+        this.vector = [];
+        console.log("El departamento y el año están vacios");
+        usuariosRef
+          .where("genero", "==", gen)
+          .where("year", "==", anios)
+          .where("edad", "==", edad)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                cargoActual1: doc.data().cargoActual1,
+              });
+            });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
+          });
+      } else if (this.eda == "" && this.gene == "") {
+        this.vector = [];
         console.log("La edad y el genero están vacios");
         usuariosRef
           .where("departamento", "==", dpt)
           .where("municipio", "==", mun)
-          .where("year", "==", anios)
-          .where("meses", "==", meses)
-          .get()
-          .then((querySnapshot) => {
-            querySnapshot.forEach((doc) => {
-              this.vector.push(doc.id);
-              this.usuarios.push({
-                key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
-                departamento: doc.data().departamento,
-                municipio: doc.data().municipio,
-                genero: doc.data().genero,
-                edad: doc.data().edad,
-                year: doc.data().year,
-                meses: doc.data().meses,
-              });
-            });
-          })
-          .catch((error) => {
-            console.log("Error getting documents: ", error);
-          });
-      } else if (this.gene == "" && this.muni == "") {
-         this.vector = [];
-        console.log("El municipio y el genero están vacios");
-        usuariosRef
-          .where("departamento", "==", dpt)
-          .where("year", "==", anios)
-          .where("meses", "==", meses)
-          .where("edad", "==", edad)
-          .get()
-          .then((querySnapshot) => {
-            querySnapshot.forEach((doc) => {
-              this.vector.push(doc.id);
-              this.usuarios.push({
-                key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
-                departamento: doc.data().departamento,
-                municipio: doc.data().municipio,
-                genero: doc.data().genero,
-                edad: doc.data().edad,
-                year: doc.data().year,
-                meses: doc.data().meses,
-              });
-            });
-          })
-          .catch((error) => {
-            console.log("Error getting documents: ", error);
-          });
-      } else if (this.gene == "" && this.depar == "") {
-         this.vector = [];
-        console.log("El departamento y el genero están vacios");
-        usuariosRef
-          .where("year", "==", anios)
-          .where("meses", "==", meses)
-          .where("edad", "==", edad)
-          .get()
-          .then((querySnapshot) => {
-            querySnapshot.forEach((doc) => {
-              this.vector.push(doc.id);
-              this.usuarios.push({
-                key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
-                departamento: doc.data().departamento,
-                municipio: doc.data().municipio,
-                genero: doc.data().genero,
-                edad: doc.data().edad,
-                year: doc.data().year,
-                meses: doc.data().meses,
-              });
-            });
-          })
-          .catch((error) => {
-            console.log("Error getting documents: ", error);
-          });
-      } else if (this.eda == "" && this.mes == "") {
-         this.vector = [];
-        console.log("La edad y el mes están vacios");
-        usuariosRef
-          .where("departamento", "==", dpt)
-          .where("municipio", "==", mun)
-          .where("genero", "==", gen)
+          .where("cargoActual1", "==", carg)
           .where("year", "==", anios)
           .get()
           .then((querySnapshot) => {
@@ -5444,18 +4750,12 @@ export default {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
@@ -5463,31 +4763,25 @@ export default {
             console.log("Error getting documents: ", error);
           });
       } else if (this.eda == "" && this.muni == "") {
-         this.vector = [];
+        this.vector = [];
         console.log("La edad y el munipio están vacios");
         usuariosRef
           .where("departamento", "==", dpt)
           .where("genero", "==", gen)
           .where("year", "==", anios)
-          .where("meses", "==", meses)
+          .where("cargoActual1", "==", carg)
           .get()
           .then((querySnapshot) => {
             querySnapshot.forEach((doc) => {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
@@ -5495,42 +4789,36 @@ export default {
             console.log("Error getting documents: ", error);
           });
       } else if (this.eda == "" && this.depar == "") {
-         this.vector = [];
+        this.vector = [];
         console.log("La edad y el departamento están vacios");
         usuariosRef
           .where("genero", "==", gen)
           .where("year", "==", anios)
-          .where("meses", "==", meses)
+          .where("cargoActual1", "==", carg)
           .get()
           .then((querySnapshot) => {
             querySnapshot.forEach((doc) => {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
           .catch((error) => {
             console.log("Error getting documents: ", error);
           });
-      } else if (this.muni == "" && this.mes == "") {
-         this.vector = [];
-        console.log("El municipio y el mes están vacios");
+      } else if (this.muni == "" && this.gene == "") {
+        this.vector = [];
+        console.log("El municipio y el genero están vacios");
         usuariosRef
           .where("departamento", "==", dpt)
-          .where("genero", "==", gen)
+          .where("cargoActual1", "==", carg)
           .where("edad", "==", edad)
           .where("year", "==", anios)
           .get()
@@ -5539,18 +4827,12 @@ export default {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
@@ -5558,43 +4840,37 @@ export default {
             console.log("Error getting documents: ", error);
           });
       } else if (this.muni == "" && this.depar == "") {
-         this.vector = [];
+        this.vector = [];
         console.log("El municipio y el departamento están vacios");
         usuariosRef
           .where("genero", "==", gen)
           .where("edad", "==", edad)
           .where("year", "==", anios)
-          .where("meses", "==", meses)
+          .where("cargoActual1", "==", carg)
           .get()
           .then((querySnapshot) => {
             querySnapshot.forEach((doc) => {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
           .catch((error) => {
             console.log("Error getting documents: ", error);
           });
-      } else if (this.depar == "" && this.mes == "") {
-         this.vector = [];
-        console.log("El departamento y el mes están vacios");
+      } else if (this.depar == "" && this.gene == "") {
+        this.vector = [];
+        console.log("El departamento y el genero están vacios");
         usuariosRef
           .where("municipio", "==", mun)
-          .where("genero", "==", gen)
+          .where("cargoActual1", "==", carg)
           .where("edad", "==", edad)
           .where("year", "==", anios)
           .get()
@@ -5603,18 +4879,12 @@ export default {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
@@ -5622,31 +4892,25 @@ export default {
             console.log("Error getting documents: ", error);
           });
       } else if (this.depar == "") {
-         this.vector = [];
+        this.vector = [];
         console.log("El departamento está vacio");
         usuariosRef
           .where("genero", "==", gen)
           .where("edad", "==", edad)
           .where("year", "==", anios)
-          .where("meses", "==", meses)
+          .where("cargoActual1", "==", carg)
           .get()
           .then((querySnapshot) => {
             querySnapshot.forEach((doc) => {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
@@ -5654,32 +4918,26 @@ export default {
             console.log("Error getting documents: ", error);
           });
       } else if (this.muni == "") {
-         this.vector = [];
+        this.vector = [];
         console.log("El munipio está vacio");
         usuariosRef
           .where("departamento", "==", dpt)
           .where("genero", "==", gen)
           .where("edad", "==", edad)
           .where("year", "==", anios)
-          .where("meses", "==", meses)
+          .where("cargoActual1", "==", carg)
           .get()
           .then((querySnapshot) => {
             querySnapshot.forEach((doc) => {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
@@ -5687,32 +4945,53 @@ export default {
             console.log("Error getting documents: ", error);
           });
       } else if (this.eda == "") {
-         this.vector = [];
+        this.vector = [];
         console.log("La edad está vacio");
         usuariosRef
           .where("departamento", "==", dpt)
           .where("municipio", "==", mun)
           .where("genero", "==", gen)
           .where("year", "==", anios)
-          .where("meses", "==", meses)
+          .where("cargoActual1", "==", carg)
           .get()
           .then((querySnapshot) => {
             querySnapshot.forEach((doc) => {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
+              });
+            });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
+          });
+      } else if (this.cargoAct == "") {
+        this.vector = [];
+        console.log("El año está vacio");
+        usuariosRef
+          .where("departamento", "==", dpt)
+          .where("municipio", "==", mun)
+          .where("genero", "==", gen)
+          .where("edad", "==", edad)
+          .where("year", "==", anios)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
@@ -5720,45 +4999,12 @@ export default {
             console.log("Error getting documents: ", error);
           });
       } else if (this.gene == "") {
-         this.vector = [];
+        this.vector = [];
         console.log("El genero está vacio");
         usuariosRef
           .where("departamento", "==", dpt)
           .where("municipio", "==", mun)
-          .where("year", "==", anios)
-          .where("edad", "==", edad)
-          .where("meses", "==", meses)
-          .get()
-          .then((querySnapshot) => {
-            querySnapshot.forEach((doc) => {
-              this.vector.push(doc.id);
-              this.usuarios.push({
-                key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
-                departamento: doc.data().departamento,
-                municipio: doc.data().municipio,
-                genero: doc.data().genero,
-                edad: doc.data().edad,
-                year: doc.data().year,
-                meses: doc.data().meses,
-              });
-            });
-          })
-          .catch((error) => {
-            console.log("Error getting documents: ", error);
-          });
-      } else if (this.mes == "") {
-        this.vector = [];
-        console.log("El mes está vacio");
-        usuariosRef
-          .where("departamento", "==", dpt)
-          .where("municipio", "==", mun)
-          .where("genero", "==", gen)
+          .where("cargoActual1", "==", carg)
           .where("edad", "==", edad)
           .where("year", "==", anios)
           .get()
@@ -5767,18 +5013,12 @@ export default {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
@@ -5794,25 +5034,19 @@ export default {
           .where("genero", "==", gen)
           .where("edad", "==", edad)
           .where("year", "==", anios)
-          .where("meses", "==", meses)
+          .where("cargoActual1", "==", carg)
           .get()
           .then((querySnapshot) => {
             querySnapshot.forEach((doc) => {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
@@ -6700,30 +5934,25 @@ export default {
       dpt = document.getElementById("departamentos").value;
       var mun;
       mun = document.getElementById("municipios").value;
-      var meses;
-      meses = document.getElementById("cargoPrin").value;
+      var carg;
+      carg = document.getElementById("cargoPrin").value;
       var anios;
       anios = document.getElementById("anios").value;
       var edad;
       edad = document.getElementById("edad").value;
-
-      console.log(
-        "departamento " + dpt + " genero " + gen + " municipio " + mun
-      );
-
       this.usuarios = [];
       var usuariosRef = db.collection("usuarios");
 
       if (
         this.gene == "" &&
         this.anio == "" &&
-        this.mes == "" &&
+        this.cargoAct == "" &&
         this.muni == "" &&
         this.depar == ""
       ) {
         this.vector = [];
         console.log(
-          "El mes, el municipio, el año, el departamento y el genero están vacios"
+          "La edad,el municipio, el año, el departamento y el genero están vacios"
         );
         usuariosRef
           .where("edad", "==", edad)
@@ -6733,18 +5962,12 @@ export default {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
@@ -6753,12 +5976,12 @@ export default {
           });
       } else if (
         this.anio == "" &&
-        this.mes == "" &&
         this.gene == "" &&
+        this.cargoAct == "" &&
         this.muni == ""
       ) {
         this.vector = [];
-        console.log("genero, el municipio, el mes y el año están vacios");
+        console.log("La edad,el municipio, el genero y el año están vacios");
         usuariosRef
           .where("departamento", "==", dpt)
           .where("edad", "==", edad)
@@ -6768,18 +5991,12 @@ export default {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
@@ -6788,12 +6005,12 @@ export default {
           });
       } else if (
         this.anio == "" &&
-        this.mes == "" &&
         this.gene == "" &&
+        this.cargoAct == "" &&
         this.depar == ""
       ) {
         this.vector = [];
-        console.log("genero,el departamento, el mes y el año están vacios");
+        console.log("La edad,el departamento, el genero y el año están vacios");
         usuariosRef
           .where("municipio", "==", mun)
           .where("edad", "==", edad)
@@ -6803,55 +6020,12 @@ export default {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
-              });
-            });
-          })
-          .catch((error) => {
-            console.log("Error getting documents: ", error);
-          });
-      } else if (
-        this.anio == "" &&
-        this.mes == "" &&
-        this.muni == "" &&
-        this.depar == ""
-      ) {
-        this.vector = [];
-        console.log(
-          "El municipio, el departamento, el mes y el año están vacios"
-        );
-        usuariosRef
-          .where("edad", "==", edad)
-          .where("genero", "==", gen)
-          .get()
-          .then((querySnapshot) => {
-            querySnapshot.forEach((doc) => {
-              this.vector.push(doc.id);
-              this.usuarios.push({
-                key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
-                departamento: doc.data().departamento,
-                municipio: doc.data().municipio,
-                genero: doc.data().genero,
-                edad: doc.data().edad,
-                year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
@@ -6866,29 +6040,23 @@ export default {
       ) {
         this.vector = [];
         console.log(
-          "El municipio, el departamento, genero y el año están vacios"
+          "El municipio, el departamento, el genero y el año están vacios"
         );
         usuariosRef
-          .where("meses", "==", meses)
           .where("edad", "==", edad)
+          .where("cargoActual1", "==", carg)
           .get()
           .then((querySnapshot) => {
             querySnapshot.forEach((doc) => {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
@@ -6896,14 +6064,45 @@ export default {
             console.log("Error getting documents: ", error);
           });
       } else if (
-        this.gene == "" &&
-        this.mes == "" &&
+        this.anio == "" &&
+        this.cargoAct == "" &&
         this.muni == "" &&
         this.depar == ""
       ) {
         this.vector = [];
         console.log(
-          "El municipio, el departamento, el mes y genero están vacios"
+          "El municipio, el departamento, la edad y el año están vacios"
+        );
+        usuariosRef
+          .where("edad", "==", edad)
+          .where("genero", "==", gen)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                cargoActual1: doc.data().cargoActual1,
+              });
+            });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
+          });
+      } else if (
+        this.cargoAct == "" &&
+        this.gene == "" &&
+        this.muni == "" &&
+        this.depar == ""
+      ) {
+        this.vector = [];
+        console.log(
+          "El municipio, el departamento, el genero y la edad están vacios"
         );
         usuariosRef
           .where("year", "==", anios)
@@ -6914,27 +6113,21 @@ export default {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
           .catch((error) => {
             console.log("Error getting documents: ", error);
           });
-      } else if (this.anio == "" && this.mes == "" && this.gene == "") {
+      } else if (this.anio == "" && this.gene == "" && this.cargoAct == "") {
         this.vector = [];
-        console.log("genero, el mes y el año están vacios");
+        console.log("La edad, el genero y el año están vacios");
         usuariosRef
           .where("departamento", "==", dpt)
           .where("municipio", "==", mun)
@@ -6945,27 +6138,146 @@ export default {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
           .catch((error) => {
             console.log("Error getting documents: ", error);
           });
-      } else if (this.anio == "" && this.mes == "" && this.muni == "") {
+      } else if (this.anio == "" && this.gene == "" && this.muni == "") {
         this.vector = [];
-        console.log("El municipio, el mes y el año están vacios");
+        console.log("El municipio, el genero y el año están vacios");
+        usuariosRef
+          .where("departamento", "==", dpt)
+          .where("cargoActual1", "==", carg)
+          .where("edad", "==", edad)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                cargoActual1: doc.data().cargoActual1,
+              });
+            });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
+          });
+      } else if (this.anio == "" && this.gene == "" && this.depar == "") {
+        this.vector = [];
+        console.log("El departamento, el genero y el año están vacios");
+        usuariosRef
+          .where("municipio", "==", mun)
+          .where("cargoActual1", "==", carg)
+          .where("edad", "==", edad)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                cargoActual1: doc.data().cargoActual1,
+              });
+            });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
+          });
+      } else if (this.cargoAct == "" && this.gene == "" && this.depar == "") {
+        this.vector = [];
+        console.log("El departamento, el genero y la edad están vacios");
+        usuariosRef
+          .where("municipio", "==", mun)
+          .where("edad", "==", edad)
+          .where("year", "==", anios)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                cargoActual1: doc.data().cargoActual1,
+              });
+            });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
+          });
+      } else if (this.cargoAct == "" && this.gene == "" && this.muni == "") {
+        this.vector = [];
+        console.log("El municipio, el genero y la edad están vacios");
+        usuariosRef
+          .where("departamento", "==", dpt)
+          .where("edad", "==", edad)
+          .where("year", "==", anios)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                cargoActual1: doc.data().cargoActual1,
+              });
+            });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
+          });
+      } else if (this.cargoAct == "" && this.anio == "" && this.depar == "") {
+        this.vector = [];
+        console.log("El departamento, el año y la edad están vacios");
+        usuariosRef
+          .where("municipio", "==", mun)
+          .where("genero", "==", gen)
+          .where("edad", "==", edad)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                cargoActual1: doc.data().cargoActual1,
+              });
+            });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
+          });
+      } else if (this.cargoAct == "" && this.anio == "" && this.muni == "") {
+        this.vector = [];
+        console.log("El municipio, el año y la edad están vacios");
         usuariosRef
           .where("departamento", "==", dpt)
           .where("genero", "==", gen)
@@ -6976,61 +6288,24 @@ export default {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
           .catch((error) => {
             console.log("Error getting documents: ", error);
           });
-      } else if (this.anio == "" && this.mes == "" && this.depar == "") {
+      } else if (this.cargoAct == "" && this.depar == "" && this.muni == "") {
         this.vector = [];
-        console.log("El departamento, el mes y el año están vacios");
+        console.log("El municipio, el departamento y la edad están vacios");
         usuariosRef
-          .where("municipio", "==", mun)
           .where("genero", "==", gen)
           .where("edad", "==", edad)
-          .get()
-          .then((querySnapshot) => {
-            querySnapshot.forEach((doc) => {
-              this.vector.push(doc.id);
-              this.usuarios.push({
-                key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
-                departamento: doc.data().departamento,
-                municipio: doc.data().municipio,
-                genero: doc.data().genero,
-                edad: doc.data().edad,
-                year: doc.data().year,
-                meses: doc.data().meses,
-              });
-            });
-          })
-          .catch((error) => {
-            console.log("Error getting documents: ", error);
-          });
-      } else if (this.gene == "" && this.mes == "" && this.depar == "") {
-        this.vector = [];
-        console.log("El departamento, el mes y genero están vacios");
-        usuariosRef
-          .where("municipio", "==", mun)
-          .where("edad", "==", edad)
           .where("year", "==", anios)
           .get()
           .then((querySnapshot) => {
@@ -7038,142 +6313,12 @@ export default {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
-              });
-            });
-          })
-          .catch((error) => {
-            console.log("Error getting documents: ", error);
-          });
-      } else if (this.gene == "" && this.mes == "" && this.muni == "") {
-        this.vector = [];
-        console.log("El municipio, el mes y genero están vacios");
-        usuariosRef
-          .where("departamento", "==", dpt)
-          .where("edad", "==", edad)
-          .where("year", "==", anios)
-          .get()
-          .then((querySnapshot) => {
-            querySnapshot.forEach((doc) => {
-              this.vector.push(doc.id);
-              this.usuarios.push({
-                key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
-                departamento: doc.data().departamento,
-                municipio: doc.data().municipio,
-                genero: doc.data().genero,
-                edad: doc.data().edad,
-                year: doc.data().year,
-                meses: doc.data().meses,
-              });
-            });
-          })
-          .catch((error) => {
-            console.log("Error getting documents: ", error);
-          });
-      } else if (this.gene == "" && this.anio == "" && this.depar == "") {
-        this.vector = [];
-        console.log("El departamento, el año y genero están vacios");
-        usuariosRef
-          .where("municipio", "==", mun)
-          .where("edad", "==", edad)
-          .where("meses", "==", meses)
-          .get()
-          .then((querySnapshot) => {
-            querySnapshot.forEach((doc) => {
-              this.vector.push(doc.id);
-              this.usuarios.push({
-                key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
-                departamento: doc.data().departamento,
-                municipio: doc.data().municipio,
-                genero: doc.data().genero,
-                edad: doc.data().edad,
-                year: doc.data().year,
-                meses: doc.data().meses,
-              });
-            });
-          })
-          .catch((error) => {
-            console.log("Error getting documents: ", error);
-          });
-      } else if (this.gene == "" && this.anio == "" && this.muni == "") {
-        this.vector = [];
-        console.log("El municipio, el año y genero están vacios");
-        usuariosRef
-          .where("departamento", "==", dpt)
-          .where("edad", "==", edad)
-          .where("meses", "==", meses)
-          .get()
-          .then((querySnapshot) => {
-            querySnapshot.forEach((doc) => {
-              this.vector.push(doc.id);
-              this.usuarios.push({
-                key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
-                departamento: doc.data().departamento,
-                municipio: doc.data().municipio,
-                genero: doc.data().genero,
-                edad: doc.data().edad,
-                year: doc.data().year,
-                meses: doc.data().meses,
-              });
-            });
-          })
-          .catch((error) => {
-            console.log("Error getting documents: ", error);
-          });
-      } else if (this.gene == "" && this.depar == "" && this.muni == "") {
-        this.vector = [];
-        console.log("El municipio, el departamento y genero están vacios");
-        usuariosRef
-          .where("edad", "==", edad)
-          .where("meses", "==", meses)
-          .where("year", "==", anios)
-          .get()
-          .then((querySnapshot) => {
-            querySnapshot.forEach((doc) => {
-              this.vector.push(doc.id);
-              this.usuarios.push({
-                key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
-                departamento: doc.data().departamento,
-                municipio: doc.data().municipio,
-                genero: doc.data().genero,
-                edad: doc.data().edad,
-                year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
@@ -7185,7 +6330,7 @@ export default {
         console.log("El municipio, el departamento y el año están vacios");
         usuariosRef
           .where("genero", "==", gen)
-          .where("meses", "==", meses)
+          .where("cargoActual1", "==", carg)
           .where("edad", "==", edad)
           .get()
           .then((querySnapshot) => {
@@ -7193,29 +6338,23 @@ export default {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
           .catch((error) => {
             console.log("Error getting documents: ", error);
           });
-      } else if (this.mes == "" && this.depar == "" && this.muni == "") {
+      } else if (this.gene == "" && this.depar == "" && this.muni == "") {
         this.vector = [];
-        console.log("El municipio, el departamento y el mes están vacios");
+        console.log("El municipio, el departamento y el genero están vacios");
         usuariosRef
-          .where("genero", "==", gen)
+          .where("cargoActual1", "==", carg)
           .where("year", "==", anios)
           .where("edad", "==", edad)
           .get()
@@ -7224,27 +6363,47 @@ export default {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
           .catch((error) => {
             console.log("Error getting documents: ", error);
           });
-      } else if (this.anio == "" && this.mes == "") {
+      } else if (this.anio == "" && this.gene == "") {
         this.vector = [];
-        console.log("El mes y el año están vacios");
+        console.log("El genero y el año están vacios");
+        usuariosRef
+          .where("departamento", "==", dpt)
+          .where("municipio", "==", mun)
+          .where("cargoActual1", "==", carg)
+          .where("edad", "==", edad)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                cargoActual1: doc.data().cargoActual1,
+              });
+            });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
+          });
+      } else if (this.anio == "" && this.cargoAct == "") {
+        this.vector = [];
+        console.log("La edad y el año están vacios");
         usuariosRef
           .where("departamento", "==", dpt)
           .where("municipio", "==", mun)
@@ -7256,50 +6415,12 @@ export default {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
-              });
-            });
-          })
-          .catch((error) => {
-            console.log("Error getting documents: ", error);
-          });
-      } else if (this.anio == "" && this.gene == "") {
-        this.vector = [];
-        console.log("genero y el año están vacios");
-        usuariosRef
-          .where("departamento", "==", dpt)
-          .where("municipio", "==", mun)
-          .where("edad", "==", edad)
-          .where("meses", "==", meses)
-          .get()
-          .then((querySnapshot) => {
-            querySnapshot.forEach((doc) => {
-              this.vector.push(doc.id);
-              this.usuarios.push({
-                key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
-                departamento: doc.data().departamento,
-                municipio: doc.data().municipio,
-                genero: doc.data().genero,
-                edad: doc.data().edad,
-                year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
@@ -7312,7 +6433,7 @@ export default {
         usuariosRef
           .where("departamento", "==", dpt)
           .where("genero", "==", gen)
-          .where("meses", "==", meses)
+          .where("cargoActual1", "==", carg)
           .where("edad", "==", edad)
           .get()
           .then((querySnapshot) => {
@@ -7320,18 +6441,12 @@ export default {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
@@ -7343,7 +6458,7 @@ export default {
         console.log("El departamento y el año están vacios");
         usuariosRef
           .where("genero", "==", gen)
-          .where("meses", "==", meses)
+          .where("cargoActual1", "==", carg)
           .where("edad", "==", edad)
           .get()
           .then((querySnapshot) => {
@@ -7351,27 +6466,21 @@ export default {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
           .catch((error) => {
             console.log("Error getting documents: ", error);
           });
-      } else if (this.gene == "" && this.mes == "") {
+      } else if (this.cargoAct == "" && this.gene == "") {
         this.vector = [];
-        console.log("genero y el mes están vacios");
+        console.log("La edad y el genero están vacios");
         usuariosRef
           .where("departamento", "==", dpt)
           .where("municipio", "==", mun)
@@ -7383,93 +6492,75 @@ export default {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
           .catch((error) => {
             console.log("Error getting documents: ", error);
           });
-      } else if (this.gene == "" && this.muni == "") {
+      } else if (this.cargoAct == "" && this.muni == "") {
         this.vector = [];
-        console.log("genero y el munipio están vacios");
-        usuariosRef
-          .where("departamento", "==", dpt)
-          .where("edad", "==", edad)
-          .where("year", "==", anios)
-          .where("meses", "==", meses)
-          .get()
-          .then((querySnapshot) => {
-            querySnapshot.forEach((doc) => {
-              this.vector.push(doc.id);
-              this.usuarios.push({
-                key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
-                departamento: doc.data().departamento,
-                municipio: doc.data().municipio,
-                genero: doc.data().genero,
-                edad: doc.data().edad,
-                year: doc.data().year,
-                meses: doc.data().meses,
-              });
-            });
-          })
-          .catch((error) => {
-            console.log("Error getting documents: ", error);
-          });
-      } else if (this.gene == "" && this.depar == "") {
-        this.vector = [];
-        console.log("genero y el departamento están vacios");
-        usuariosRef
-          .where("edad", "==", edad)
-          .where("year", "==", anios)
-          .where("meses", "==", meses)
-          .get()
-          .then((querySnapshot) => {
-            querySnapshot.forEach((doc) => {
-              this.vector.push(doc.id);
-              this.usuarios.push({
-                key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
-                departamento: doc.data().departamento,
-                municipio: doc.data().municipio,
-                genero: doc.data().genero,
-                edad: doc.data().edad,
-                year: doc.data().year,
-                meses: doc.data().meses,
-              });
-            });
-          })
-          .catch((error) => {
-            console.log("Error getting documents: ", error);
-          });
-      } else if (this.muni == "" && this.mes == "") {
-        this.vector = [];
-        console.log("El municipio y el mes están vacios");
+        console.log("La edad y el munipio están vacios");
         usuariosRef
           .where("departamento", "==", dpt)
           .where("genero", "==", gen)
+          .where("year", "==", anios)
+          .where("edad", "==", edad)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                cargoActual1: doc.data().cargoActual1,
+              });
+            });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
+          });
+      } else if (this.cargoAct == "" && this.depar == "") {
+        this.vector = [];
+        console.log("La edad y el departamento están vacios");
+        usuariosRef
+          .where("genero", "==", gen)
+          .where("year", "==", anios)
+          .where("edad", "==", edad)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.vector.push(doc.id);
+              this.usuarios.push({
+                key: doc.id,
+                departamento: doc.data().departamento,
+                municipio: doc.data().municipio,
+                genero: doc.data().genero,
+                edad: doc.data().edad,
+                year: doc.data().year,
+                cargoActual1: doc.data().cargoActual1,
+              });
+            });
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
+          });
+      } else if (this.muni == "" && this.gene == "") {
+        this.vector = [];
+        console.log("El municipio y el genero están vacios");
+        usuariosRef
+          .where("departamento", "==", dpt)
+          .where("cargoActual1", "==", carg)
           .where("edad", "==", edad)
           .where("year", "==", anios)
           .get()
@@ -7478,18 +6569,12 @@ export default {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
@@ -7503,37 +6588,31 @@ export default {
           .where("genero", "==", gen)
           .where("edad", "==", edad)
           .where("year", "==", anios)
-          .where("meses", "==", meses)
+          .where("cargoActual1", "==", carg)
           .get()
           .then((querySnapshot) => {
             querySnapshot.forEach((doc) => {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
           .catch((error) => {
             console.log("Error getting documents: ", error);
           });
-      } else if (this.depar == "" && this.mes == "") {
+      } else if (this.depar == "" && this.gene == "") {
         this.vector = [];
-        console.log("El departamento y el mes están vacios");
+        console.log("El departamento y el genero están vacios");
         usuariosRef
           .where("municipio", "==", mun)
-          .where("genero", "==", gen)
+          .where("cargoActual1", "==", carg)
           .where("edad", "==", edad)
           .where("year", "==", anios)
           .get()
@@ -7542,18 +6621,12 @@ export default {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
@@ -7567,25 +6640,19 @@ export default {
           .where("genero", "==", gen)
           .where("edad", "==", edad)
           .where("year", "==", anios)
-          .where("meses", "==", meses)
+          .where("cargoActual1", "==", carg)
           .get()
           .then((querySnapshot) => {
             querySnapshot.forEach((doc) => {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
@@ -7600,58 +6667,46 @@ export default {
           .where("genero", "==", gen)
           .where("edad", "==", edad)
           .where("year", "==", anios)
-          .where("meses", "==", meses)
+          .where("cargoActual1", "==", carg)
           .get()
           .then((querySnapshot) => {
             querySnapshot.forEach((doc) => {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
           .catch((error) => {
             console.log("Error getting documents: ", error);
           });
-      } else if (this.gene == "") {
+      } else if (this.cargoAct == "") {
         this.vector = [];
-        console.log("genero está vacio");
+        console.log("La edad está vacio");
         usuariosRef
           .where("departamento", "==", dpt)
           .where("municipio", "==", mun)
-          .where("edad", "==", edad)
+          .where("genero", "==", gen)
           .where("year", "==", anios)
-          .where("meses", "==", meses)
+          .where("edad", "==", edad)
           .get()
           .then((querySnapshot) => {
             querySnapshot.forEach((doc) => {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
@@ -7666,38 +6721,32 @@ export default {
           .where("municipio", "==", mun)
           .where("genero", "==", gen)
           .where("edad", "==", edad)
-          .where("meses", "==", meses)
+          .where("cargoActual1", "==", carg)
           .get()
           .then((querySnapshot) => {
             querySnapshot.forEach((doc) => {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
           .catch((error) => {
             console.log("Error getting documents: ", error);
           });
-      } else if (this.mes == "") {
+      } else if (this.gene == "") {
         this.vector = [];
-        console.log("El mes está vacio");
+        console.log("El genero está vacio");
         usuariosRef
           .where("departamento", "==", dpt)
           .where("municipio", "==", mun)
-          .where("genero", "==", gen)
+          .where("cargoActual1", "==", carg)
           .where("edad", "==", edad)
           .where("year", "==", anios)
           .get()
@@ -7706,18 +6755,12 @@ export default {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
@@ -7733,25 +6776,19 @@ export default {
           .where("genero", "==", gen)
           .where("edad", "==", edad)
           .where("year", "==", anios)
-          .where("meses", "==", meses)
+          .where("cargoActual1", "==", carg)
           .get()
           .then((querySnapshot) => {
             querySnapshot.forEach((doc) => {
               this.vector.push(doc.id);
               this.usuarios.push({
                 key: doc.id,
-                primernombre: doc.data().primernombre,
-                segundonombre: doc.data().segundonombre,
-                primerapellido: doc.data().primerapellido,
-                segundoapellido: doc.data().segundoapellido,
-                tipodocumento: doc.data().tipodocumento,
-                documento: doc.data().documento,
                 departamento: doc.data().departamento,
                 municipio: doc.data().municipio,
                 genero: doc.data().genero,
                 edad: doc.data().edad,
                 year: doc.data().year,
-                meses: doc.data().meses,
+                cargoActual1: doc.data().cargoActual1,
               });
             });
           })
