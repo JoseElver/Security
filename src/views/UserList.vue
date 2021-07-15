@@ -7,11 +7,45 @@
             <v-card-title class="principal"> Filtros: </v-card-title>
             <div class="form-group">
               <v-layout>
+                <v-flex xs12 sm3>
+                  <label class="titulo">Cargo</label>
+                  <select
+                    id="cargoPrin"
+                    class="filtro form-control"
+                    @click="listaCargo()"
+                    v-model="cargoAct"
+                  >
+                    <option value="ANALISTA DE INFORMACION">ANALISTA DE INFORMACION</option>
+                    <option value="ANALISTA DE NOMINA">ANALISTA DE NOMINA</option>
+                    <option value="ANALISTA DE SEGURIDAD">ANALISTA DE SEGURIDAD</option>
+                    <option value="AUXILIAR ADMINISTRATIVO">AUXILIAR ADMINISTRATIVO</option>
+                    <option value="CONDUCTOR DE SEGURIDAD">CONDUCTOR DE SEGURIDAD</option>
+                    <option value="CONDUCTOR VEHICULO BLINDADOS">CONDUCTOR VEHICULO BLINDADOS</option>
+                    <option value="COORDINADOR DE SEGURIDAD FISICA">COORDINADOR DE SEGURIDAD FISICA</option>
+                    <option value="COORDINADOR ESQUEMA DE SEGURIDAD PERSONAL">COORDINADOR ESQUEMA DE SEGURIDAD PERSONAL</option>
+                    <option value="COORDINADOR SALA DE MONITOREO">COORDINADOR SALA DE MONITOREO</option>
+                    <option value="ESCOLTA">ESCOLTA</option>
+                    <option value="GERENTE DE SEGURIDAD">GERENTE DE SEGURIDAD</option>
+                    <option value="GERENTE DEPARTAMENTO DE SEGURIDAD EMPRESARIAL">GERENTE DEPARTAMENTO DE SEGURIDAD EMPRESARIAL</option>
+                    <option value="GERENTE EMPRESA DE SEGURIDAD PRIVADA">GERENTE EMPRESA DE SEGURIDAD PRIVADA</option>
+                    <option value="GUARDA DE SEGURIDAD">GUARDA DE SEGURIDAD</option>
+                    <option value="JEFE TALENTO HUMANO EMPRESAS DE VIGILANCIA">JEFE TALENTO HUMANO EMPRESAS DE VIGILANCIA</option>
+                    <option value="LOGISTICA EMPRESA SEGURIDAD PRIVADA">LOGISTICA EMPRESA SEGURIDAD PRIVADA</option>
+                    <option value="MANEJADOR CANINO">MANEJADOR CANINO</option>
+                    <option value="OPERADOR DE MEDIOS TECNOLOGICOS">OPERADOR DE MEDIOS TECNOLOGICOS</option>
+                    <option value="PROGRAMADOR DE TURNOS">PROGRAMADOR DE TURNOS</option>
+                    <option value="RECEPCIONISTA DE SEGURIDAD">RECEPCIONISTA DE SEGURIDAD</option>
+                    <option value="RISK MANAGER">RISK MANAGERA</option>
+                    <option value="SUPERVISOR CONDUCTOR">SUPERVISOR CONDUCTOR</option>
+                    <option value="SUPERVISOR DE PLANTA">SUPERVISOR DE PLANTA</option>
+                    <option value="SUPERVISOR MOTORIZADO">SUPERVISOR MOTORIZADO</option>
+                  </select>
+                </v-flex>
                 <v-flex xs12 sm2>
-                  <label class="titulo">Departamento</label>
+                  <label class="titulo2">Departamento</label>
                   <select
                     v-model="depar"
-                    class="filtro form-control"
+                    class="filtro2 form-control"
                     id="departamentos"
                     @click="listaDepartamento()"
                   >
@@ -55,10 +89,10 @@
                   </select>
                 </v-flex>
                 <v-flex xs12 sm2>
-                  <label class="titulo2">Municipio</label>
+                  <label class="titulo3">Municipio</label>
                   <select
                     id="municipios"
-                    class="filtro2 form-control"
+                    class="filtro3 form-control"
                     @click="listaMunicipio()"
                     v-model="muni"
                   >
@@ -66,10 +100,10 @@
                   </select>
                 </v-flex>
                 <v-flex xs12 sm2>
-                  <label class="titulo3">Género</label>
+                  <label class="titulo4">Género</label>
                   <select
                     id="genero"
-                    class="filtro3 form-control"
+                    class="filtro4 form-control"
                     @click="listaGenero()"
                     v-model="gene"
                   >
@@ -77,11 +111,11 @@
                     <option value="FEMENINO">FEMENINO</option>
                   </select>
                 </v-flex>
-                <v-flex xs12 sm2>
-                  <label class="titulo4">Edad</label>
+                <v-flex xs12 sm1>
+                  <label class="titulo5">Edad</label>
                   <select
                     id="edad"
-                    class="filtro4 form-control"
+                    class="filtro5 form-control"
                     @click="listaEdad()"
                     v-model="eda"
                   >
@@ -130,11 +164,11 @@
                     <option value="60">60</option>
                   </select>
                 </v-flex>
-                <v-flex xs12 sm1 class="filtro5">
-                  <label class="titulo5">Experiencia</label>
+                <v-flex xs12 sm1 class="margen">
+                  <label class="titulo6">Experiencia</label>
                   <select
                     id="anios"
-                    class="filtro5 form-control"
+                    class="filtro6 form-control"
                     @click="listaAnios()"
                     v-model="anio"
                   >
@@ -170,40 +204,6 @@
                     <option value="30">30</option>
                   </select>
                   <label class="letrero1">Años</label>
-                </v-flex>
-                <v-flex xs12 sm1 class="filtro6">
-                  <label class="titulo6">Cargo</label>
-                  <select
-                    id="cargoPrin"
-                    class="filtro6 form-control"
-                    @click="listaCargo()"
-                    v-model="cargoAct"
-                  >
-                    <option value="ANALISTA DE INFORMACION">ANALISTA DE INFORMACION</option>
-                    <option value="ANALISTA DE NOMINA">ANALISTA DE NOMINA</option>
-                    <option value="ANALISTA DE SEGURIDAD">ANALISTA DE SEGURIDAD</option>
-                    <option value="AUXILIAR ADMINISTRATIVO">AUXILIAR ADMINISTRATIVO</option>
-                    <option value="CONDUCTOR DE SEGURIDAD">CONDUCTOR DE SEGURIDAD</option>
-                    <option value="CONDUCTOR VEHICULO BLINDADOS">CONDUCTOR VEHICULO BLINDADOS</option>
-                    <option value="COORDINADOR DE SEGURIDAD FISICA">COORDINADOR DE SEGURIDAD FISICA</option>
-                    <option value="COORDINADOR ESQUEMA DE SEGURIDAD PERSONAL">COORDINADOR ESQUEMA DE SEGURIDAD PERSONAL</option>
-                    <option value="COORDINADOR SALA DE MONITOREO">COORDINADOR SALA DE MONITOREO</option>
-                    <option value="ESCOLTA">ESCOLTA</option>
-                    <option value="GERENTE DE SEGURIDAD">GERENTE DE SEGURIDAD</option>
-                    <option value="GERENTE DEPARTAMENTO DE SEGURIDAD EMPRESARIAL">GERENTE DEPARTAMENTO DE SEGURIDAD EMPRESARIAL</option>
-                    <option value="GERENTE EMPRESA DE SEGURIDAD PRIVADA">GERENTE EMPRESA DE SEGURIDAD PRIVADA</option>
-                    <option value="GUARDA DE SEGURIDAD">GUARDA DE SEGURIDAD</option>
-                    <option value="JEFE TALENTO HUMANO EMPRESAS DE VIGILANCIA">JEFE TALENTO HUMANO EMPRESAS DE VIGILANCIA</option>
-                    <option value="LOGISTICA EMPRESA SEGURIDAD PRIVADA">LOGISTICA EMPRESA SEGURIDAD PRIVADA</option>
-                    <option value="MANEJADOR CANINO">MANEJADOR CANINO</option>
-                    <option value="OPERADOR DE MEDIOS TECNOLOGICOS">OPERADOR DE MEDIOS TECNOLOGICOS</option>
-                    <option value="PROGRAMADOR DE TURNOS">PROGRAMADOR DE TURNOS</option>
-                    <option value="RECEPCIONISTA DE SEGURIDAD">RECEPCIONISTA DE SEGURIDAD</option>
-                    <option value="RISK MANAGER">RISK MANAGERA</option>
-                    <option value="SUPERVISOR CONDUCTOR">SUPERVISOR CONDUCTOR</option>
-                    <option value="SUPERVISOR DE PLANTA">SUPERVISOR DE PLANTA</option>
-                    <option value="SUPERVISOR MOTORIZADO">SUPERVISOR MOTORIZADO</option>
-                  </select>
                 </v-flex>
                  <v-flex xs12 sm1 class="filtro6">
                    <div class="botonBorrar">
@@ -7052,7 +7052,10 @@ export default {
             );
             pdf.text("Tipo de documento: " + doc.data().tipodocumento, 20, 160);
             pdf.text("Documento: " + doc.data().documento, 120, 160);
-            pdf.text("Altura en cms: " + doc.data().altura, 20, 170);
+            pdf.text("Edad: " + doc.data().edad, 20, 170);
+            pdf.text("años", 38, 170);
+            pdf.text("Altura: " + doc.data().altura, 60, 170);
+            pdf.text("cms", 81, 170);
             pdf.text("Género: " + doc.data().genero, 120, 170);
             pdf.text("Fecha de nacimiento: " + doc.data().nacimiento, 20, 180);
             pdf.text("Estado civil: " + doc.data().civil, 120, 180);
@@ -7628,58 +7631,58 @@ export default {
 }
 .filtro {
   margin-bottom: 10%;
-  margin-left: 10% !important;
+  margin-left: 5% !important;
   margin-right: 10% !important;
 }
 .titulo {
-  margin-left: 10% !important;
+  margin-left: 5% !important;
 }
 .filtro2 {
   margin-bottom: 10%;
-  margin-left: 15% !important;
+  margin-left: 12% !important;
 }
 .titulo2 {
-  margin-left: 15% !important;
+  margin-left: 12% !important;
 }
 .filtro3 {
   margin-bottom: 10%;
-  margin-left: 20% !important;
+  margin-left: 16% !important;
 }
 .titulo3 {
-  margin-left: 20% !important;
+  margin-left: 16% !important;
 }
 .filtro4 {
   margin-bottom: 10%;
-  margin-left: 25% !important;
+  margin-left: 20% !important;
 }
 .titulo4 {
-  margin-left: 25% !important;
+  margin-left: 20% !important;
 }
 .filtro5 {
-  margin-left: 5% !important;
+  margin-left: 47% !important;
 }
 .titulo5 {
-  margin-left: 5% !important;
+  margin-left: 47% !important;
 }
 .filtro6 {
   margin-left: 1% !important;
 }
 .titulo6 {
-  margin-left: -13% !important;
+  margin-left: 3% !important;
+}
+.margen {
+  margin-left: 4% !important;
 }
 .letrero1 {
-  margin-left: 40% !important;
-}
-.letrero2 {
-  margin-left: 27% !important;
+  margin-left: 35% !important;
 }
 .botonDescargar {
   margin-left: 82% !important;
   margin-top: 2% !important;
 }
 .botonBorrar {
-  padding: 20%;
-  margin-top: 5% !important;
+  padding: 10%;
+  margin-top: 16% !important;
   margin-left: -27% !important;
 }
 </style>
